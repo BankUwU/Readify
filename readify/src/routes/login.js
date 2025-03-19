@@ -1,13 +1,22 @@
-import React from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { auth } from "../firebaseConfig"; // Import Firebase auth
 import "./login.css";
 
 function Login() {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const navigate = useNavigate();
 
-  const handleLogin = () => {
-    alert("Login successful!");
-    navigate("/"); // Redirect to home after login
+  const handleLogin = async () => {
+    try {
+      // Sign in with Firebase Authentication
+      await auth.signInWithEmailAndPassword(email, password);
+      alert("Login successful!");
+      navigate("/"); // Redirect to home after successful login
+    } catch (error) {
+      alert(error.message); // Display Firebase error message
+    }
   };
 
   return (
@@ -23,12 +32,28 @@ function Login() {
       <div className="right-section">
         <div className="login-box">
           <label>Username/email</label>
-          <input type="text" className="input-field" />
+          <input
+            type="email"
+            className="input-field"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+          />
 
           <label>Password</label>
-          <input type="password" className="input-field" />
+          <input
+            type="password"
+            className="input-field"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+          />
 
-          <a href="/forgot-password" className="forgot-password">Forget password</a>
+          <a
+            href="/forget-password"
+            className="forgot-password"
+            onClick={() => navigate("/forget-password")}
+          >
+            Forget password
+          </a>
 
           <button className="login-btn" onClick={handleLogin}>Login</button>
         </div>
@@ -38,4 +63,3 @@ function Login() {
 }
 
 export default Login;
-
