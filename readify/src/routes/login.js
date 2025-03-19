@@ -1,21 +1,22 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { auth } from "../firebaseConfig"; // Import Firebase auth
+import { loginWithEmailAndPassword } from "../api/auth"; // Import the login API
 import "./login.css";
 
 function Login() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState("");  // State for email input
+  const [password, setPassword] = useState("");  // State for password input
+  const [error, setError] = useState("");  // State for error handling
   const navigate = useNavigate();
 
   const handleLogin = async () => {
-    try {
-      // Sign in with Firebase Authentication
-      await auth.signInWithEmailAndPassword(email, password);
+    const response = await loginWithEmailAndPassword(email, password);
+
+    if (response.success) {
       alert("Login successful!");
       navigate("/"); // Redirect to home after successful login
-    } catch (error) {
-      alert(error.message); // Display Firebase error message
+    } else {
+      setError(response.error); // Set error message if login fails
     }
   };
 
@@ -31,12 +32,13 @@ function Login() {
       {/* Right Section */}
       <div className="right-section">
         <div className="login-box">
-          <label>Username/email</label>
+          <label>Email</label>
           <input
             type="email"
             className="input-field"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
+            placeholder="Enter your email"
           />
 
           <label>Password</label>
@@ -45,17 +47,14 @@ function Login() {
             className="input-field"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
+            placeholder="Enter your password"
           />
 
-          <a
-            href="/forget-password"
-            className="forgot-password"
-            onClick={() => navigate("/forget-password")}
-          >
-            Forget password
-          </a>
+          {error && <div className="error-message">{error}</div>} {/* Display error message if login fails */}
 
           <button className="login-btn" onClick={handleLogin}>Login</button>
+
+          <a href="/forgot-password" className="forgot-password" onClick={() => navigate("/forgot-password")}>Forget password</a>
         </div>
       </div>
     </div>
