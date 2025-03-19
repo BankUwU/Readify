@@ -93,21 +93,9 @@
     color: #555;
   }
   
-  /* Google Login Button */
-  .google-login {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background-color: #d1d1d1;
-    border: none;
-    padding: 10px 15px;
-    font-size: 16px;
-    cursor: pointer;
-    border-radius: 8px;
-    width: 100%;
+  .error-message {
+    color: red; /* Red color for the error message */
+    font-size: 14px; /* Adjust the font size */
+    margin-top: 10px; /* Add some space above the error message */
+    font-weight: bold; /* Make the error message bold */
   }
-  
-  .google-login img {
-    margin-right: 8px;
-  }
-  
