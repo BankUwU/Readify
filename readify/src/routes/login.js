@@ -1,12 +1,12 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { loginWithEmailAndPassword } from "../api/auth"; // Import the login API
+import { loginWithEmailAndPassword } from "../api/auth";
 import "./login.css";
 
 function Login() {
-  const [email, setEmail] = useState("");  // State for email input
-  const [password, setPassword] = useState("");  // State for password input
-  const [error, setError] = useState("");  // State for error handling
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
   const navigate = useNavigate();
 
   const handleLogin = async () => {
@@ -14,9 +14,9 @@ function Login() {
 
     if (response.success) {
       alert("Login successful!");
-      navigate("/"); // Redirect to home after successful login
+      navigate("/"); // Redirect to home ถ้า login ผ่านฃ
     } else {
-      setError(response.error); // Set error message if login fails
+      setError(response.error);
     }
   };
 
