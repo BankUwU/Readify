@@ -1,0 +1,60 @@
+/* Header Container */
+.custom-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: #d3d3d3;
+    padding: 10px 20px;
+    height: 60px;
+    width: 100%;
+    box-sizing: border-box;
+  }
+  
+  /* Hamburger Menu Icon */
+  .menu-icon {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 20px;
+    cursor: pointer;
+  }
+  
+  .menu-icon span {
+    display: block;
+    width: 25px;
+    height: 3px;
+    background-color: #3a3a3a;
+    border-radius: 2px;
+  }
+  
+  /* User Info Section */
+  .user-info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  
+  /* Username Styling */
+  .username {
+    font-weight: bold;
+    color: #000;
+  }
+  
+  /* Avatar Circle */
+  .avatar {
+    width: 40px;
+    height: 40px;
+    background-color: #000;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  /* Avatar Icon */
+  .avatar img {
+    width: 24px;
+    height: 24px;
+    filter: invert(1); /* make icon white */
+  }
+  
