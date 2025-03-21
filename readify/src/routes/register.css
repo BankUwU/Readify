@@ -32,7 +32,7 @@
   }
   
   input {
-    width: 100%;
+    width: 90%;
     padding: 8px;
     margin-top: 5px;
     border: 1px solid #ccc;
@@ -49,6 +49,7 @@
     border-radius: 4px;
     cursor: pointer;
     font-size: 16px;
+    align-items: center;
   }
   
   .register-btn:hover {
