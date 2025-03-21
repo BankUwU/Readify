@@ -1,7 +1,7 @@
 import { getAnalytics } from "firebase/analytics";
 import { initializeApp } from "firebase/app";
-import "firebase/auth";
 import { getAuth } from "firebase/auth";
+import { getFirestore } from "firebase/firestore";
 
 const firebaseConfig = {
   apiKey: "AIzaSyC5w6l1INDg_y8mjhku-3Uo9euynvbL0lw",
@@ -10,11 +10,14 @@ const firebaseConfig = {
   storageBucket: "readify-ad2d8.firebasestorage.app",
   messagingSenderId: "240035693079",
   appId: "1:240035693079:web:2e5ada2e29fcb4e5ce9252",
-  measurementId: "G-31DNL1MBN0"
+  measurementId: "G-31DNL1MBN0",
 };
 
-
+// Initialize Firebase
 export const app = initializeApp(firebaseConfig);
 const analytics = getAnalytics(app);
 const auth = getAuth(app);
-export { auth };
+const db = getFirestore(app);
+
+export { auth, db };
+
