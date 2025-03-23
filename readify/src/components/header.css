@@ -37,11 +37,11 @@
   border-radius: 50%;
 }
 
-/* Side Panel - Before interact with hamburgur button */
+/* Side Panel - Initially Hidden */
 .side-panel {
   position: fixed;
   top: 0;
-  left: -300px;
+  left: -300px; /* Fully hidden */
   width: 250px;
   height: 100vh;
   background: white;
@@ -54,13 +54,13 @@
   visibility: hidden;
 }
 
-/* Show Sidebar */
+/* Show Sidebar When Open */
 .side-panel.open {
   left: 0;
   visibility: visible;
 }
 
-/* Overlay (blur bg) */
+/* Overlay (Click Anywhere to Close) */
 .overlay {
   position: fixed;
   top: 0;
@@ -69,9 +69,11 @@
   height: 100%;
   background: rgba(0, 0, 0, 0.3);
   z-index: 999;
-  visibility: visible;
+  transition: opacity 1s ease-in-out;
 }
 
+/* Hide Overlay When Closed */
 .overlay.hidden {
   display: none;
+  transition: opacity 0.3s ease-in-out;
 }

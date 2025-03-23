@@ -11,14 +11,12 @@ const Header = ({ username = "User0909" }) => {
   return (
     <>
       <header className="custom-header">
-        {/* Hamburger Menu */}
         <div className="menu-icon" onClick={toggleMenu}>
           <span></span>
           <span></span>
           <span></span>
         </div>
 
-        {/* Username & Avatar */}
         <div className="user-info">
           <span className="username">{username}</span>
           <div className="avatar">
@@ -32,21 +30,20 @@ const Header = ({ username = "User0909" }) => {
 
       {/* Side Panel */}
       <div className={`side-panel ${isOpen ? "open" : ""}`}>
-        <button className="close-btn" onClick={toggleMenu}>✖</button>
         <h3>Menu</h3>
         <ul>
           <li><a href="/dashboard">Dashboard</a></li>
           <li><a href="/profile">Profile</a></li>
           <li><a href="/settings">Settings</a></li>
-          <li><a href="/logout">Logout</a></li>
+          
+          <li><a href="/login">Logout</a></li>
         </ul>
       </div>
 
-      {/* Overlay to close side panel */}
+      {/* Overlay (Click to Close) */}
       {isOpen && <div className="overlay" onClick={toggleMenu}></div>}
     </>
   );
 };
 
 export default Header;
-
