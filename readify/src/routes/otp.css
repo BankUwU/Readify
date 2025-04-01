@@ -1,0 +1,56 @@
+/* Center everything */
+.otp-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  background-color: #ffffff;
+}
+
+/* Title Styling */
+.otp-title {
+  font-size: 32px;
+  font-weight: bold;
+  margin-bottom: 20px;
+}
+
+/* OTP Box */
+.otp-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  background: #fff;
+}
+
+/* Input Field */
+.otp-input {
+  width: 250px;
+  height: 35px;
+  font-size: 16px;
+  padding: 5px;
+  border: 1px solid #aaa;
+  border-radius: 5px;
+  margin-top: 5px;
+  background-color: #d3d3d3;
+}
+
+/* Button */
+.otp-btn {
+  width: 200px;
+  height: 45px;
+  font-size: 16px;
+  font-weight: bold;
+  margin-top: 15px;
+  border: none;
+  border-radius: 8px;
+  background-color: #d3d3d3;
+  cursor: pointer;
+}
+
+.otp-btn:hover {
+  background-color: #bfbfbf;
+}
