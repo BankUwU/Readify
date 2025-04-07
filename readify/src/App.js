@@ -6,6 +6,7 @@ import Login from "./routes/login";
 import Register from "./routes/register";
 import Favorite from "./routes/favorites";
 import Myreviews from "./routes/myreviews";
+import EditProfile from "./routes/editprofile"
 function App() {
     return (
         <Router>
@@ -16,6 +17,7 @@ function App() {
             <Route path="/register" element={<Register />} />
             <Route path="/favorite" element={<Favorite />} />
             <Route path="/my-reviews" element={<Myreviews />} />
+            <Route path="edit-profile" element={<EditProfile/>} />
           </Routes>
         </Router>
       );

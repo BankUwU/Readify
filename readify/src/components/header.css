@@ -49,6 +49,8 @@
     display: flex;
     justify-content: center;
     align-items: center;
+    cursor: pointer;
+    position: relative;
   }
   
   /* Avatar Icon */
@@ -57,4 +59,46 @@
     height: 24px;
     filter: invert(1); /* make icon white */
   }
-  
+  .login-button{
+    color: black;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: x-large;
+    padding: 40px;
+  }
+
+  .dropdown-menu{
+    background-color: #ADD8E6;
+    position: absolute;
+    top: 55px;
+    padding: 20px;
+    right: -7px;
+    border: 3px solid #9ec5d1;
+    border-radius: 15px;
+    z-index: 100;
+    min-width: 180px;
+    text-align: center;
+  }
+  .dropdown-item {
+    display: block;
+    padding: 8px;
+    color: #0F52BA;
+    text-decoration: none;
+  }
+  .logout-button{
+    padding: 10px 0px;
+    width: 100%;
+    color: white;
+    background-color: #0F52BA;
+    border: none;
+    border-radius: 15px;
+    cursor: pointer;
+    margin-top: 2px;
+  }
+  .dropdown-item, .logout-button{
+    font-size: 17px;
+  }
+  .logout-button:hover {
+    background-color:  #063a88;
+    transition-duration: 0.4s;
+  }
