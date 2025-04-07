@@ -1,5 +1,6 @@
 import React, { useState } from "react";
-import { registerUser } from "../api/registerapi"; // Import API function
+import { useNavigate } from "react-router-dom";
+import { registerUser } from "../api/registerapi";
 import "./register.css";
 
 function Register() {
@@ -9,7 +10,7 @@ function Register() {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
-
+  const navigate = useNavigate();
   const handleRegister = async (e) => {
     e.preventDefault();
 
@@ -47,7 +48,7 @@ function Register() {
           <label>Re-enter password</label>
           <input type="password" placeholder="Confirm your password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} required />
 
-          <button type="submit" className="register-btn">Register</button>
+          <button type="submit" className="register-btn" onClick={() => navigate("/register/OTP")}>Register</button>
         </form>
       </div>
     </div>
