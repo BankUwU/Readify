@@ -1,5 +1,4 @@
 .custom-header {
-<<<<<<< HEAD
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -102,13 +101,7 @@
     background-color:  #063a88;
     transition-duration: 0.4s;
   }
-=======
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  background: #d3d3d3;
-  padding: 10px 20px;
-}
+ 
 
 /* Hamburger Menu */
 .menu-icon {
@@ -181,4 +174,3 @@
   display: none;
   transition: opacity 0.3s ease-in-out;
 }
->>>>>>> 6ac74835f1c99295e69feaf33f896d62561b3185

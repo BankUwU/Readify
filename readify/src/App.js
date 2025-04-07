@@ -5,12 +5,8 @@ import Forget from "./routes/forgetpass";
 import Home from "./routes/home";
 import Login from "./routes/login";
 import Myreviews from "./routes/myreviews";
-<<<<<<< HEAD
 import EditProfile from "./routes/editprofile"
-=======
-import OTP from "./routes/Otp";
-import Register from "./routes/register";
->>>>>>> 6ac74835f1c99295e69feaf33f896d62561b3185
+import Register from "./routes/register"
 function App() {
     return (
         <Router>
@@ -21,11 +17,7 @@ function App() {
             <Route path="/register" element={<Register />} />
             <Route path="/favorite" element={<Favorite />} />
             <Route path="/my-reviews" element={<Myreviews />} />
-<<<<<<< HEAD
             <Route path="edit-profile" element={<EditProfile/>} />
-=======
-            <Route path="/register/OTP" element={<OTP />} />
->>>>>>> 6ac74835f1c99295e69feaf33f896d62561b3185
           </Routes>
         </Router>
       );
