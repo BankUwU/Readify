@@ -43,7 +43,7 @@ const Header = () => {
         </>
           
         ):(
-          <Link to="/login" className="login-button">Login</Link>)
+          <Link to="/login" className="login-button">LOGIN</Link>)
           }
         
        {user&& (

@@ -1,0 +1,37 @@
+.content{
+    display: flex;
+    align-items: center;
+    background-color: aliceblue;
+    max-width: 80%;
+    margin: auto;
+    margin-top: 50px;
+    min-height: 70vh;
+    border-radius: 30px;
+    justify-content: space-around;
+    text-align: left;
+}
+.main-avatar{
+    width: 350px;
+    height: 350px;
+    background-color: white;
+    border-radius: 50%;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    position: center;
+    display: flex;
+}
+.main-avatar img {
+    width: 150px;
+    height: 150px;
+    filter: invert(1); 
+}
+.content .info{
+    flex: 1;
+    text-align: left;
+    max-width: 500px;
+}
+.info h1{
+    text-align: left;
+    font-size: 50px;
+}
