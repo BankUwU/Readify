@@ -1,124 +1,33 @@
+/* Header Bar */
 .custom-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    background-color: #002D62;
-    padding: 10px 20px;
-    height: 60px;
-    width: 100%;
-    box-sizing: border-box;
-  }
-  
-  /* Hamburger Menu Icon */
-  .menu-icon {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    height: 20px;
-    cursor: pointer;
-  }
-  
-  .menu-icon span {
-    display: block;
-    width: 25px;
-    height: 3px;
-    background-color: aliceblue;
-    border-radius: 2px;
-  }
-  
-  /* User Info Section */
-  .user-info {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
-  
-  /* Username Styling */
-  .username {
-    font-weight: bold;
-    color: white;
-  }
-  
-  /* Avatar Circle */
-  .avatar {
-    width: 40px;
-    height: 40px;
-    background-color: white;
-    border-radius: 50%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    cursor: pointer;
-    position: relative;
-  }
-  
-  /* Avatar Icon */
-  .avatar img {
-    width: 24px;
-    height: 24px;
-    filter: invert(1); /* make icon white */
-  }
- 
-  
-  
- 
-  .login-button{
-    color: aliceblue;
-    text-decoration: none;
-    font-weight: bold;
-    font-size: x-large;
-    padding: 40px;
-  }
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: #002D62;
+  padding: 10px 20px;
+  height: 60px;
+  width: 100%;
+  box-sizing: border-box;
+  position: relative;
+  z-index: 999; /* Ensure header is above the overlay */
+}
 
-  .dropdown-menu{
-    background-color: aliceblue;
-    position: absolute;
-    top: 55px;
-    padding: 20px;
-    right: -7px;
-    border: 3px solid #9ec5d1;
-    border-radius: 15px;
-    z-index: 100;
-    min-width: 180px;
-    text-align: center;
-  }
-  .dropdown-item {
-    display: block;
-    padding: 8px;
-    color: #0F52BA;
-    text-decoration: none;
-  }
-  .logout-button{
-    padding: 10px 0px;
-    width: 100%;
-    color: white;
-    background-color: #0F52BA;
-    border: none;
-    border-radius: 15px;
-    cursor: pointer;
-    margin-top: 2px;
-  }
-  .dropdown-item, .logout-button{
-    font-size: 17px;
-  }
-  .logout-button:hover {
-    background-color:  #063a88;
-    transition-duration: 0.4s;
-  }
- 
-
-/* Hamburger Menu */
+/* Hamburger Menu Icon */
 .menu-icon {
   display: flex;
   flex-direction: column;
+  justify-content: space-between;
+  height: 20px;
   cursor: pointer;
 }
 
 .menu-icon span {
-  background: #333;
-  height: 3px;
+  display: block;
   width: 25px;
-  margin: 4px 0;
+  height: 3px;
+  background-color: aliceblue;
+  border-radius: 2px;
+  margin: 3px 0;
 }
 
 /* User Info */
@@ -128,21 +37,85 @@
   gap: 10px;
 }
 
+/* Username Styling */
 .username {
   font-weight: bold;
+  color: white;
 }
 
+/* Avatar Circle */
+.avatar {
+  width: 40px;
+  height: 40px;
+  background-color: white;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  position: relative;
+}
+
+/* Avatar Icon */
 .avatar img {
-  width: 30px;
-  height: 30px;
+  width: 24px;
+  height: 24px;
+  filter: invert(1); /* make icon white */
   border-radius: 50%;
 }
 
-/* Side Panel - Initially Hidden */
+/* Login Button */
+.login-button {
+  color: aliceblue;
+  text-decoration: none;
+  font-weight: bold;
+  font-size: x-large;
+  padding: 40px;
+}
+
+/* Dropdown Menu */
+.dropdown-menu {
+  background-color: aliceblue;
+  position: absolute;
+  top: 55px;
+  padding: 20px;
+  right: -7px;
+  border: 3px solid #9ec5d1;
+  border-radius: 15px;
+  z-index: 1002;
+  min-width: 180px;
+  text-align: center;
+}
+
+.dropdown-item {
+  display: block;
+  padding: 8px;
+  color: #0F52BA;
+  text-decoration: none;
+}
+
+.logout-button {
+  padding: 10px 0px;
+  width: 100%;
+  color: white;
+  background-color: #0F52BA;
+  border: none;
+  border-radius: 15px;
+  cursor: pointer;
+  margin-top: 2px;
+  font-size: 17px;
+}
+
+.logout-button:hover {
+  background-color: #063a88;
+  transition-duration: 0.4s;
+}
+
+/* Side Panel */
 .side-panel {
   position: fixed;
   top: 0;
-  left: -300px; /* Fully hidden */
+  left: -300px;
   width: 250px;
   height: 100vh;
   background: white;
@@ -153,15 +126,32 @@
   display: flex;
   flex-direction: column;
   visibility: hidden;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
 }
 
-/* Show Sidebar When Open */
 .side-panel.open {
   left: 0;
   visibility: visible;
 }
 
-/* Overlay (Click Anywhere to Close) */
+.sidebar-link {
+  text-decoration: none;
+  color: #0F52BA;
+  font-size: 18px;
+  font-weight: bold;
+  padding: 10px 15px;
+  border-radius: 10px;
+  transition: background 0.2s ease;
+  margin-bottom: 10px;
+}
+
+.sidebar-link:hover {
+  background-color: #e6f0ff;
+}
+
+/* Overlay Background */
 .overlay {
   position: fixed;
   top: 0;
@@ -170,11 +160,18 @@
   height: 100%;
   background: rgba(0, 0, 0, 0.3);
   z-index: 999;
-  transition: opacity 1s ease-in-out;
 }
 
-/* Hide Overlay When Closed */
 .overlay.hidden {
-  display: none;
-  transition: opacity 0.3s ease-in-out;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.side-link {
+  text-decoration: none;
+  color: #002D62;
+  font-weight: bold;
+  padding: 10px;
+  border-radius: 10px;
+  transition: background-color 0.2s;
 }
