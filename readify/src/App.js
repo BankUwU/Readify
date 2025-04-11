@@ -7,6 +7,7 @@ import Login from "./routes/login";
 import Myreviews from "./routes/myreviews";
 import EditProfile from "./routes/editprofile"
 import Register from "./routes/register"
+import AddReview from "./routes/addreview";
 function App() {
     return (
         <Router>
@@ -18,6 +19,7 @@ function App() {
             <Route path="/favorite" element={<Favorite />} />
             <Route path="/my-reviews" element={<Myreviews />} />
             <Route path="edit-profile" element={<EditProfile/>} />
+            <Route path="add-review" element={<AddReview/>} />
           </Routes>
         </Router>
       );

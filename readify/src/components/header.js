@@ -46,7 +46,7 @@ const Header = () => {
           {user ? (
             <>
               <span className="username">{user.displayName}</span>
-              <div className="avatar" onClick={toggleDropdown}>
+              <div className="avatar">
                 <img
                   src="https://img.icons8.com/ios-glyphs/30/ffffff/user--v1.png"
                   alt="User Icon"
