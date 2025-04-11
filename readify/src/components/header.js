@@ -6,7 +6,6 @@ import "./header.css";
 
 const Header = () => {
   const [user, setUser] = useState(null);
-  const [dropdownOpen, setDropdownOpen] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   useEffect(() => {
@@ -19,10 +18,6 @@ const Header = () => {
   const handleLogout = async () => {
     await signOut(auth);
     setUser(null);
-  };
-
-  const toggleDropdown = () => {
-    setDropdownOpen((prev) => !prev);
   };
 
   const toggleSidebar = () => {
@@ -47,17 +42,12 @@ const Header = () => {
           {user ? (
             <>
               <span className="username">{user.displayName}</span>
-              <div className="avatar" onClick={toggleDropdown}>
+              <div className="avatar">
                 <img
                   src="https://img.icons8.com/ios-glyphs/30/ffffff/user--v1.png"
                   alt="User Icon"
                 />
-                {dropdownOpen && (
-                  <div className="dropdown-menu">
-                    <Link to="/edit-profile" className="dropdown-item">Edit Profile</Link>
-                    <button className="logout-button" onClick={handleLogout}>Log Out</button>
-                  </div>
-                )}
+                
               </div>
             </>
           ) : (
