@@ -175,3 +175,7 @@
   border-radius: 10px;
   transition: background-color 0.2s;
 }
+
+.side-link:hover {
+  background-color: #f0f0f0;
+}
