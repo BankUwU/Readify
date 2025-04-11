@@ -33,6 +33,7 @@ const Header = () => {
     setIsSidebarOpen(false);
   };
 
+  
   return (
     <>
       <header className="custom-header">
@@ -46,7 +47,7 @@ const Header = () => {
           {user ? (
             <>
               <span className="username">{user.displayName}</span>
-              <div className="avatar">
+              <div className="avatar" onClick={toggleDropdown}>
                 <img
                   src="https://img.icons8.com/ios-glyphs/30/ffffff/user--v1.png"
                   alt="User Icon"
@@ -77,6 +78,8 @@ const Header = () => {
         <Link to="/web-theme" className="side-link">Web Theme</Link>
         <Link to="/favorite" className="side-link">Favorite</Link>
         <Link to="/add-review" className="side-link">Add Review</Link>
+        <Link to="/login" className="side-link" onClick={handleLogout} >Log Out</Link>
+
       </div>
     </>
   );
