@@ -91,8 +91,9 @@
 }
 .Save-btn{
     background-color:#00BFFF;
-    border: 1px solid #ccc;
+    /* border: 1px solid #ccc; */
     cursor: pointer;
+
 }
 .Save-btn:hover{
     background-color: #01abe3;
