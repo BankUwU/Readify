@@ -1,7 +1,7 @@
 import React from "react";
 import Header from "../components/header";
 import "./myreviews.css";
-function Myreviews() {
+function myreviews() {
   return(<>
     <Header/>
     <h1>MY REVIEWS</h1>
@@ -9,4 +9,4 @@ function Myreviews() {
     );
 }
 
-export default Myreviews;
+export default myreviews;
