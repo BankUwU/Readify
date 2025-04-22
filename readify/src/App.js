@@ -10,6 +10,8 @@ import Myreviews from "./routes/myreviews";
 import OTP from "./routes/Otp";
 import Register from "./routes/register";
 import AddReview from "./routes/addreview";
+import Forgetpass from "./routes/forgetpass";
+
 function App() {
     return (
         <Router>
@@ -24,6 +26,7 @@ function App() {
             <Route path="/achievements" element={<Achievement/>} />
             <Route path="/register/Otp" element={<OTP/>} />
             <Route path="/add-review" element={<AddReview/>} />
+            <Route path="/forgot-password" element={<Forgetpass/>} />
           </Routes>
         </Router>
       );
