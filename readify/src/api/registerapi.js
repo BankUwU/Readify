@@ -1,6 +1,5 @@
 import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
-import { collection, doc, setDoc } from "firebase/firestore";
-import { auth, db } from "../firebaseConfig";
+import { auth } from "../firebaseConfig";
 
 export const registerUser = async (email, username, password) => {
   try {
@@ -11,18 +10,6 @@ export const registerUser = async (email, username, password) => {
     // Update user's displayName in Authentication
     await updateProfile(user, {
       displayName: username,
-    });
-
-    // Create the main user document
-    await setDoc(doc(db, "Users", user.uid), {
-      email: email,
-    });
-
-    // Create subcollection "UserID" under that user
-    await setDoc(doc(collection(db, "Users", user.uid, "UserID")), {
-      username: username,
-      email: email,
-      displayname: username,
     });
 
     return { success: true, user };
