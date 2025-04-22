@@ -1,56 +1,55 @@
-/* Center everything */
 .otp-container {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   height: 100vh;
-  background-color: #ffffff;
-}
-
-/* Title Styling */
-.otp-title {
-  font-size: 32px;
-  font-weight: bold;
-  margin-bottom: 20px;
-}
-
-/* OTP Box */
-.otp-box {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
   padding: 20px;
-  border: 1px solid #ccc;
-  border-radius: 10px;
   background: #fff;
 }
 
-/* Input Field */
-.otp-input {
-  width: 250px;
-  height: 35px;
-  font-size: 16px;
-  padding: 5px;
-  border: 1px solid #aaa;
-  border-radius: 5px;
-  margin-top: 5px;
-  background-color: #d3d3d3;
+.otp-title {
+  font-size: 32px;
+  font-weight: bold;
+  margin-bottom: 10px;
 }
 
-/* Button */
-.otp-btn {
-  width: 200px;
-  height: 45px;
+.otp-subtitle {
+  font-size: 24px;
+  font-weight: 600;
+  margin-bottom: 30px;
+}
+
+.otp-form {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 400px;
+}
+
+.otp-label {
   font-size: 16px;
-  font-weight: bold;
-  margin-top: 15px;
+  margin-bottom: 8px;
+}
+
+.otp-input {
+  padding: 12px;
+  margin-bottom: 20px;
+  background-color: #e0e0e0;
   border: none;
   border-radius: 8px;
-  background-color: #d3d3d3;
-  cursor: pointer;
+  font-size: 16px;
 }
 
-.otp-btn:hover {
-  background-color: #bfbfbf;
+.otp-button {
+  padding: 10px;
+  background-color: #fff;
+  border: 1px solid black;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.otp-button:hover {
+  background-color: #f0f0f0;
 }
