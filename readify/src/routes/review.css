@@ -1,0 +1,64 @@
+.review-container {
+    padding: 2rem;
+  }
+  
+  .review-wrapper {
+    display: flex;
+    gap: 2rem;
+  }
+  
+  .book-cover {
+    width: 200px;
+    height: 260px;
+    background-color: #d9d9d9;
+    border-radius: 8px;
+  }
+  
+  .review-content {
+    flex: 1;
+  }
+  
+  .review-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+  }
+  
+  .book-title {
+    margin-bottom: 0;
+  }
+  
+  .reviewer-name {
+    margin-top: 4px;
+    color: #555;
+    font-size: 0.9rem;
+  }
+  
+  .fav-button {
+    background: transparent;
+    border: none;
+    font-weight: bold;
+    font-size: 0.9rem;
+    cursor: pointer;
+  }
+  
+  .review-box {
+    margin-top: 1rem;
+    background-color: #d9d9d9;
+    height: 150px;
+    border-radius: 8px;
+    padding: 1rem;
+  }
+  
+  .review-text {
+    color: #444;
+  }
+
+  .fav-button {
+    background: transparent;
+    border: 10px;
+    cursor: pointer;
+    padding: 0.2rem;
+    display: flex;
+    align-items: center;
+  }
