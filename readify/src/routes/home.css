@@ -1,0 +1,68 @@
+.home-container {
+    padding: 20px;
+  }
+  
+  .section {
+    margin-top: 30px;
+  }
+  
+  .reading-list-box {
+    display: flex;
+    gap: 16px;
+    padding: 16px;
+    border: 1px solid #000;
+    border-radius: 8px;
+    overflow-x: auto;
+  }
+  
+  .book-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 80px;
+  }
+  
+  .book-placeholder {
+    width: 60px;
+    height: 90px;
+    background-color: #ccc;
+    margin-bottom: 6px;
+    border-radius: 4px;
+  }
+  
+  .book-title {
+    font-weight: bold;
+    font-size: 12px;
+  }
+  
+  .review-card {
+    display: flex;
+    align-items: flex-start;
+    border: 1px solid #000;
+    border-radius: 8px;
+    padding: 12px;
+    margin-bottom: 16px;
+    position: relative;
+  }
+  
+  .review-img {
+    width: 60px;
+    height: 90px;
+    background-color: #ccc;
+    margin-right: 16px;
+    border-radius: 4px;
+  }
+  
+  .review-content {
+    flex: 1;
+  }
+  
+  .fav-btn {
+    background: none;
+    border: none;
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    cursor: pointer;
+  }
+  
