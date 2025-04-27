@@ -9,8 +9,9 @@ import Home from "./routes/home";
 import Login from "./routes/login";
 import Myreviews from "./routes/myreviews";
 import OTP from "./routes/Otp";
-import Register from "./routes/register";
+import Register   from "./routes/register";
 import Review from "./routes/review";
+
 function App() {
     return (
         <Router>
