@@ -2,7 +2,7 @@ import { onAuthStateChanged } from "firebase/auth";
 import React, { useEffect, useState } from "react";
 import { FaStar } from "react-icons/fa";
 import Header from "../components/header";
-import { auth } from "../firebaseConfig";
+import { auth } from "../config/firebaseConfig";
 import "./home.css";
 
 function Home() {

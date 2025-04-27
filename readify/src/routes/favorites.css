@@ -41,8 +41,10 @@ h1{
     height: 250px;
     object-fit: cover;
     border-radius: 8px;
-    margin-bottom: 15px;
+    margin: 0 auto 15px; /* This line changed! */
+    display: block; /* Make sure it behaves like a block for margin auto to work */
   }
+  
   
   .review-details {
     text-align: center;
