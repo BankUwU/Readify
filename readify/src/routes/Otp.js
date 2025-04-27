@@ -1,7 +1,7 @@
 import { collection, doc, setDoc } from "firebase/firestore";
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { auth, db } from "../firebaseConfig";
+import { auth, db } from "../config/firebaseConfig";
 import "./otp.css";
 
 function OTPPage() {

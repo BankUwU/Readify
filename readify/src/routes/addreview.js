@@ -6,7 +6,6 @@ import { saveReview } from "../api/reviewapi";
 import { useNavigate } from "react-router-dom";
 
 
-
 function AddReview() {
   const dropArea = useRef(null);
   const inputFile = useRef(null);

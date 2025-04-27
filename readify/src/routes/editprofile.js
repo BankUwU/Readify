@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Header from "../components/header";
 import "./editprofile.css";
-import {auth} from "../firebaseConfig"
+import {auth} from "../config/firebaseConfig"
 import { onAuthStateChanged } from "firebase/auth";
 
 function EditProfile() {

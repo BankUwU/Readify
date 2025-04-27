@@ -48,7 +48,7 @@ function Register() {
           <label>Re-enter password</label>
           <input type="password" placeholder="Confirm your password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} required />
 
-          <button type="submit" className="register-btn" onClick={() => navigate("/register/OTP")}>Register</button>
+          <button type="submit" className="register-btn" /*onClick={() => navigate("/register/OTP") }*/>Register</button>
         </form>
       </div>
     </div>
