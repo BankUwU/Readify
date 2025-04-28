@@ -9,7 +9,7 @@ import Home from "./routes/home";
 import Login from "./routes/login";
 import MyReading from "./routes/myreading";
 import Myreviews from "./routes/myreviews";
-import OTP from "./routes/Otp";
+import OTP from "./routes/otp";
 import Register from "./routes/register";
 import Review from "./routes/review";
 
