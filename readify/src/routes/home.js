@@ -1,13 +1,14 @@
 import { onAuthStateChanged } from "firebase/auth";
+import { collection, getDocs } from "firebase/firestore";
 import React, { useEffect, useState } from "react";
 import { FaStar } from "react-icons/fa";
+import { Link } from "react-router-dom";
 import Header from "../components/header";
-import { db, auth } from "../config/firebaseConfig";
-import { collection, getDocs } from "firebase/firestore";
-import "./home.css";
 import MyReadingList from "../components/myreadinglist";
 import Plus from "../components/plus";
-import "../components/plus.css"
+import "../components/plus.css";
+import { auth, db } from "../config/firebaseConfig";
+import "./home.css";
 
 function Home() {
   const [user, setUser] = useState(null);
@@ -55,7 +56,7 @@ function Home() {
             <h2>Hello {user.displayName} :)</h2>
 
             <div className="section">
-              <h3>My Reading List</h3>
+              <h3><Link to="/my-readding">My Review</Link></h3>
               <div className="reading-list-box">
                 {/* {Array.from({ length: 6 }).map((_, index) => (
                   <div className="book-item" key={index}>
