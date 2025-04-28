@@ -10,9 +10,10 @@
     display: flex;
     gap: 16px;
     padding: 16px;
-    border: 1px solid #000;
-    border-radius: 8px;
+    border: 1px solid white;
+    border-radius: 10px;
     overflow-x: auto;
+    background-color: rgb(205, 209, 228, 0.5);
   }
   
   .book-item {
@@ -23,8 +24,8 @@
   }
   
   .book-placeholder {
-    width: 60px;
-    height: 90px;
+    width: 80px;
+    height: 110px;
     background-color: #ccc;
     margin-bottom: 6px;
     border-radius: 4px;

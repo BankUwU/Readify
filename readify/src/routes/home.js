@@ -2,18 +2,42 @@ import { onAuthStateChanged } from "firebase/auth";
 import React, { useEffect, useState } from "react";
 import { FaStar } from "react-icons/fa";
 import Header from "../components/header";
-import { auth } from "../config/firebaseConfig";
+import { db, auth } from "../config/firebaseConfig";
+import { collection, getDocs } from "firebase/firestore";
 import "./home.css";
+import MyReadingList from "../components/myreadinglist";
+import Plus from "../components/plus";
+import "../components/plus.css"
 
 function Home() {
   const [user, setUser] = useState(null);
   const [favorites, setFavorites] = useState([false, false]);
+  const [readingList, setReadingList] = useState([]);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
       setUser(currentUser);
     });
     return () => unsubscribe();
+  }, []);
+
+  useEffect(() => {
+    async function fetchReadingList() {
+      try {
+        const querySnapshot = await getDocs(collection(db, "reviews"));  // <-- collection name
+        const booksArray = [];
+
+        querySnapshot.forEach((doc) => {
+          booksArray.push({ id: doc.id, ...doc.data() });
+        });
+
+        setReadingList(booksArray);
+      } catch (error) {
+        console.error("Error fetching reading list:", error);
+      } 
+    }
+
+    fetchReadingList();
   }, []);
 
   const toggleFavorite = (index) => {
@@ -33,12 +57,14 @@ function Home() {
             <div className="section">
               <h3>My Reading List</h3>
               <div className="reading-list-box">
-                {Array.from({ length: 6 }).map((_, index) => (
+                {/* {Array.from({ length: 6 }).map((_, index) => (
                   <div className="book-item" key={index}>
                     <div className="book-placeholder"></div>
                     <p className="book-title">bookTitle</p>
                   </div>
-                ))}
+                ))} */}
+                <MyReadingList readingList={readingList} />
+                <Plus/>
               </div>
             </div>
 
