@@ -21,8 +21,8 @@ function Myreviews() {
 
           reviewsSnapshot.forEach((reviewDoc) => {
             allReviews.push({ 
-              reviewId: reviewDoc.id,  // Save reviewId separately
-              userId: userDoc.id,       // Save userId separately
+              reviewId: reviewDoc.id, 
+              userId: userDoc.id, 
               ...reviewDoc.data() 
             });
           });
@@ -40,13 +40,16 @@ function Myreviews() {
   }, []);
 
   const handleDelete = async (userId, reviewId) => {
-    try {
-      const reviewRef = doc(db, "Users", userId, "Reviews", reviewId);
-      await deleteDoc(reviewRef);
-      setReviews((prevReviews) => prevReviews.filter((review) => review.reviewId !== reviewId));
-      console.log("Review deleted successfully");
-    } catch (error) {
-      console.error("Error deleting review:", error);
+    const confirmDelete = window.confirm("Are you sure you want to delete this review?");
+    if (confirmDelete) {
+      try {
+        const reviewRef = doc(db, "Users", userId, "Reviews", reviewId);
+        await deleteDoc(reviewRef);
+        setReviews((prevReviews) => prevReviews.filter((review) => review.reviewId !== reviewId));
+        console.log("Review deleted successfully");
+      } catch (error) {
+        console.error("Error deleting review:", error);
+      }
     }
   };
 
