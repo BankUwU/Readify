@@ -56,7 +56,7 @@ function Home() {
             <h2>Hello {user.displayName} :)</h2>
 
             <div className="section">
-              <h3><Link to="/my-readding">My Review</Link></h3>
+              <h3><Link to="/my-reading">My Reading</Link></h3>
               <div className="reading-list-box">
                 {/* {Array.from({ length: 6 }).map((_, index) => (
                   <div className="book-item" key={index}>

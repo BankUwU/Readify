@@ -7,9 +7,10 @@ import Favorite from "./routes/favorites";
 import { default as Forget, default as Forgetpass } from "./routes/forgetpass";
 import Home from "./routes/home";
 import Login from "./routes/login";
+import MyReading from "./routes/myreading";
 import Myreviews from "./routes/myreviews";
 import OTP from "./routes/Otp";
-import Register   from "./routes/register";
+import Register from "./routes/register";
 import Review from "./routes/review";
 
 function App() {
@@ -28,6 +29,7 @@ function App() {
             <Route path="/add-review" element={<AddReview/>} />
             <Route path="/forgot-password" element={<Forgetpass/>} />
             <Route path="/review-page" element={<Review/>} />
+            <Route path="/my-reading" element={<MyReading/>} />
           </Routes>
         </Router>
       );
