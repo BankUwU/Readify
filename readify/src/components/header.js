@@ -61,14 +61,14 @@ const Header = () => {
 
       {/* Sidebar */}
       <div className={`side-panel ${isSidebarOpen ? "open" : ""}`}>
-      <Link to="/" className="side-link">Home</Link>
+      <Link to="/" className="side-link">Home</Link>   
         <Link to="/edit-profile" className="side-link">User Setting</Link>
-        <Link to="/my-reading" className="side-link">My Reading</Link>
         <Link to="/achievements" className="side-link">Achievements</Link>
         <Link to="/favorite" className="side-link">Favorite</Link>
+        <Link to="/my-reading" className="side-link">My Reading</Link>
+        <Link to="/my-reviews" className="side-link">My Review</Link>
         <Link to="/add-review" className="side-link">Add Review</Link>
         <Link to="/login" className="side-link" onClick={handleLogout} >Log Out</Link>
-
       </div>
     </>
   );

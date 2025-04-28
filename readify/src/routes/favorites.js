@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from "react";
-import { db } from "../config/firebaseConfig";
 import { collection, getDocs } from "firebase/firestore";
+import React, { useEffect, useState } from "react";
 import Header from "../components/header";
+import { db } from "../config/firebaseConfig";
 import "./favorites.css";
 
 function Favorite() {
@@ -30,7 +30,10 @@ function Favorite() {
   }, []);
 
   return (
+    <>
+    <Header />
     <div className="favorite-page">
+    
       <h1>Favorite Books</h1>
 
       {loading ? (
@@ -53,6 +56,7 @@ function Favorite() {
         </div>
       )}
     </div>
+    </>
   );
 }
 
