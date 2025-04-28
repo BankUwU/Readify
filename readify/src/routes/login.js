@@ -22,42 +22,48 @@ function Login() {
 
   return (
     <div className="login-container">
-      {/* Left Section */}
-      <div className="left-section">
-        <h1>Readify</h1>
+  <div className="background-left"></div>
+
+  <div className="login-center">
+    <h1>Readify</h1>
+    <div className="login-box">
+      <label>Email</label>
+      <input
+        type="email"
+        className="input-field"
+        value={email}
+        onChange={(e) => setEmail(e.target.value)}
+        placeholder="Enter your email"
+      />
+
+      <label>Password</label>
+      <input
+        type="password"
+        className="input-field"
+        value={password}
+        onChange={(e) => setPassword(e.target.value)}
+        placeholder="Enter your password"
+      />
+
+      {error && <div className="error-message">{error}</div>}
+
+      <button className="login-btn" onClick={handleLogin}>Login</button>
+
+      <div className="register-link">
         <p>Don’t have an account?</p>
-        <button className="register-btn" onClick={() => navigate("/register")}>Register</button>
-      </div>
-
-      {/* Right Section */}
-      <div className="right-section">
-        <div className="login-box">
-          <label>Email</label>
-          <input
-            type="email"
-            className="input-field"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            placeholder="Enter your email"
-          />
-
-          <label>Password</label>
-          <input
-            type="password"
-            className="input-field"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            placeholder="Enter your password"
-          />
-
-          {error && <div className="error-message">{error}</div>} {/* Display error message if login fails */}
-
-          <button className="login-btn" onClick={handleLogin}>Login</button>
-
-          <a href="/forgot-password" className="forgot-password" onClick={() => navigate("/forgot-password")}>Forget password</a>
-        </div>
+        <button className="register-btn" onClick={() => navigate("/register")}>
+          Register
+        </button>
+        <a className="forgot-password" onClick={() => navigate("/forgot-password")}>
+          Forgot password?
+        </a>
       </div>
     </div>
+  </div>
+
+  <div className="background-right"></div>
+</div>
+
   );
 }
 
