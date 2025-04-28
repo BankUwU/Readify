@@ -6,14 +6,18 @@ import { Link } from "react-router-dom";
 import Header from "../components/header";
 import MyReadingList from "../components/myreadinglist";
 import Plus from "../components/plus";
-import "../components/plus.css";
 import { auth, db } from "../config/firebaseConfig";
+import Bookreview from "../components/bookreview";
+
 import "./home.css";
+import "../components/plus.css";
+import "../components/bookreview.css"; 
 
 function Home() {
   const [user, setUser] = useState(null);
   const [favorites, setFavorites] = useState([false, false]);
   const [readingList, setReadingList] = useState([]);
+  const [bookreview, setBookReview] = useState([]);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
@@ -38,8 +42,26 @@ function Home() {
       } 
     }
 
+    async function fetchBookReviews() {
+      try {
+        const querySnapshot = await getDocs(collection(db, "allreviews"));  // <-- collection name for reviews
+        const reviewsArray = [];
+
+        querySnapshot.forEach((doc) => {
+          reviewsArray.push({ id: doc.id, ...doc.data() });
+        });
+
+        setBookReview(reviewsArray);
+      } catch (error) {
+        console.error("Error fetching book reviews:", error);
+      }
+    }
+
     fetchReadingList();
+    fetchBookReviews();
   }, []);
+
+  
 
   const toggleFavorite = (index) => {
     const updatedFavorites = [...favorites];
@@ -58,12 +80,6 @@ function Home() {
             <div className="section">
               <h3><Link to="/my-readding">My Review</Link></h3>
               <div className="reading-list-box">
-                {/* {Array.from({ length: 6 }).map((_, index) => (
-                  <div className="book-item" key={index}>
-                    <div className="book-placeholder"></div>
-                    <p className="book-title">bookTitle</p>
-                  </div>
-                ))} */}
                 <MyReadingList readingList={readingList} />
                 <Plus/>
               </div>
@@ -71,14 +87,10 @@ function Home() {
 
             <div className="section">
               <h3>Review</h3>
-              {[1, 2].map((_, index) => (
+              {bookreview.map((_, index) => (
                 <div className="review-card" key={index}>
-                  <div className="review-img"></div>
-                  <div className="review-content">
-                    <p className="book-title">bookTitle</p>
-                    <p>{user.displayName}</p>
-                    <p>Description</p>
-                  </div>
+                  <Bookreview bookreview={bookreview} />
+                  
                   <button
                     className="fav-btn"
                     onClick={() => toggleFavorite(index)}

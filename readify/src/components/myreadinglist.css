@@ -1,10 +1,3 @@
-/* .reading-list-page {
-    padding: 10px;
-    min-height: 30vh;
-    max-width: 20vh;
-    text-align: center;
-  } */
-  
 .reading-list-page h1 {
     font-size: 36px;
     margin-bottom: 30px;
@@ -12,8 +5,9 @@
 }
   
 .reading-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+    display: flex;
+    flex-wrap: wrap;
+    /* grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); */
     gap: 25px;
 }
   
@@ -26,6 +20,7 @@
     display: flex;
     flex-direction: column;
     align-items: center;
+    width: 190px;
 }
   
 .reading-card:hover {
@@ -37,7 +32,7 @@
     height: 220px;
     object-fit: cover;
     border-radius: 8px;
-    margin: 0 auto 10px;
+    margin: 2px auto 10px;
     display: block;
 }
   
