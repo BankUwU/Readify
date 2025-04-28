@@ -78,7 +78,7 @@ function Home() {
             <h2>Hello {user.displayName} :)</h2>
 
             <div className="section">
-              <h3><Link to="/my-readding">My Review</Link></h3>
+              <h3><Link to="/my-reading">My Reading</Link></h3>
               <div className="reading-list-box">
                 <MyReadingList readingList={readingList} />
                 <Plus/>
