@@ -13,7 +13,6 @@ function Login() {
     const response = await loginWithEmailAndPassword(email, password);
 
     if (response.success) {
-      alert("Login successful!");
       navigate("/"); // Redirect to home ถ้า login ผ่านฃ
     } else {
       setError(response.error);
