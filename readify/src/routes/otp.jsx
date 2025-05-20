@@ -2,7 +2,6 @@ import { collection, doc, setDoc } from "firebase/firestore";
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { auth, db } from "../config/firebaseConfig";
-import "./otp.css";
 
 function OTPPage() {
   const [otp, setOtp] = useState("");
@@ -35,31 +34,32 @@ function OTPPage() {
     }
   };
 
-  return React.createElement(
-    "div",
-    { className: "otp-container" },
-    React.createElement("h2", { className: "otp-title" }, "Readify"),
-    React.createElement("h3", { className: "otp-subtitle" }, "Enter OTP"),
-    React.createElement(
-      "form",
-      { onSubmit: handleOTPSubmit, className: "otp-form" },
-      React.createElement("label", { className: "otp-label" }, "OTP"),
-      React.createElement("input", {
-        type: "text",
-        placeholder: "Enter OTP",
-        value: otp,
-        onChange: (e) => setOtp(e.target.value),
-        className: "otp-input",
-        required: true,
-      }),
-      React.createElement(
-        "button",
-        { type: "submit", className: "otp-button" },
-        "Submit"
-      )
-    )
+  return (
+    <div className="flex flex-col items-center justify-center h-screen p-5 bg-white">
+      <h2 className="text-3xl font-bold mb-2">Readify</h2>
+      <h3 className="text-2xl font-semibold mb-8">Enter OTP</h3>
+      <form
+        onSubmit={handleOTPSubmit}
+        className="flex flex-col w-full max-w-md"
+      >
+        <label className="text-base font-medium mb-2">OTP</label>
+        <input
+          type="text"
+          placeholder="Enter OTP"
+          value={otp}
+          onChange={(e) => setOtp(e.target.value)}
+          className="p-3 mb-6 bg-gray-200 rounded-lg text-base focus:outline-none focus:ring-2 focus:ring-black"
+          required
+        />
+        <button
+          type="submit"
+          className="py-3 bg-white border border-black rounded-lg text-base font-medium hover:bg-gray-100 transition"
+        >
+          Submit
+        </button>
+      </form>
+    </div>
   );
 }
 
 export default OTPPage;
-

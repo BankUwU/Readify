@@ -3,7 +3,6 @@ import React, { useEffect, useState } from "react";
 
 import Header from "../components/header";
 import { db } from "../config/firebaseConfig";
-import "./favorites.css";
 
 function Myreviews() {
   const [reviews, setReviews] = useState([]);
@@ -20,10 +19,10 @@ function Myreviews() {
           const reviewsSnapshot = await getDocs(reviewsRef);
 
           reviewsSnapshot.forEach((reviewDoc) => {
-            allReviews.push({ 
-              reviewId: reviewDoc.id, 
-              userId: userDoc.id, 
-              ...reviewDoc.data() 
+            allReviews.push({
+              reviewId: reviewDoc.id,
+              userId: userDoc.id,
+              ...reviewDoc.data(),
             });
           });
         }
@@ -40,12 +39,16 @@ function Myreviews() {
   }, []);
 
   const handleDelete = async (userId, reviewId) => {
-    const confirmDelete = window.confirm("Are you sure you want to delete this review?");
+    const confirmDelete = window.confirm(
+      "Are you sure you want to delete this review?"
+    );
     if (confirmDelete) {
       try {
         const reviewRef = doc(db, "Users", userId, "Reviews", reviewId);
         await deleteDoc(reviewRef);
-        setReviews((prevReviews) => prevReviews.filter((review) => review.reviewId !== reviewId));
+        setReviews((prevReviews) =>
+          prevReviews.filter((review) => review.reviewId !== reviewId)
+        );
         console.log("Review deleted successfully");
       } catch (error) {
         console.error("Error deleting review:", error);
@@ -56,25 +59,38 @@ function Myreviews() {
   return (
     <>
       <Header />
-      <div className="my-review-page">
-        <h1>My Reviews</h1>
+      <div className="px-10 py-10 text-center min-h-screen bg-[aliceblue]">
+        <h1 className="text-4xl font-bold text-gray-800 mb-8">My Reviews</h1>
 
         {loading ? (
-          <p>Loading reviews...</p>
+          <p className="text-lg">Loading reviews...</p>
         ) : reviews.length === 0 ? (
-          <p>No reviews yet.</p>
+          <p className="text-lg">No reviews yet.</p>
         ) : (
-          <div className="reviews-grid">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
             {reviews.map((review) => (
-              <div key={review.reviewId} className="review-card">
-                <img src={review.imageurl} alt={review.title} className="review-image" />
-                <div className="review-details">
-                  <h2>{review.title}</h2>
-                  <h4>Category: {review.category}</h4>
-                  <p>{review.review}</p>
+              <div
+                key={review.reviewId}
+                className="bg-white p-6 rounded-2xl shadow-md hover:-translate-y-1 transition duration-200 flex flex-col items-center"
+              >
+                <img
+                  src={review.imageurl}
+                  alt={review.title}
+                  className="w-44 h-[250px] object-cover rounded-lg mb-4"
+                />
+                <div className="text-center w-full">
+                  <h2 className="text-xl font-semibold text-gray-800">
+                    {review.title}
+                  </h2>
+                  <h4 className="text-sm text-gray-600 mb-2">
+                    Category: {review.category}
+                  </h4>
+                  <p className="text-sm text-gray-700 leading-relaxed mb-4">
+                    {review.review}
+                  </p>
                   <button
-                    className="delete-button"
                     onClick={() => handleDelete(review.userId, review.reviewId)}
+                    className="bg-red-600 hover:bg-red-700 text-white py-2 px-4 rounded-full transition duration-300"
                   >
                     Delete
                   </button>
