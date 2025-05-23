@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { loginWithEmailAndPassword } from "../api/auth";
 import { getAuth, sendSignInLinkToEmail } from "firebase/auth";
-import "./forgetpass.css";
 
 function Sendotp() {
   const navigate = useNavigate();
