@@ -2,7 +2,7 @@ import axios from "axios";
 import { onAuthStateChanged, updateProfile } from "firebase/auth";
 import { doc, getDoc, setDoc } from "firebase/firestore";
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom"; // import this
+import { useNavigate } from "react-router-dom";
 import Header from "../components/header";
 import { auth, db } from "../config/firebaseConfig";
 
@@ -12,7 +12,7 @@ function EditProfile() {
   const [previewUrl, setPreviewUrl] = useState("");
   const [uploading, setUploading] = useState(false);
 
-  const navigate = useNavigate(); // useNavigate hook for redirect
+  const navigate = useNavigate();
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
@@ -29,7 +29,7 @@ function EditProfile() {
         }
       } else {
         alert("Please Login to continue");
-        navigate("/login", { replace: true }); // redirect to login
+        navigate("/login", { replace: true });
       }
     });
 
