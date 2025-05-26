@@ -14,147 +14,84 @@ function Login() {
     const response = await loginWithEmailAndPassword(email, password);
 
     if (response.success) {
-      navigate("/"); // Redirect to home if login is successful
+      navigate("/");
     } else {
       setError(response.error);
     }
   };
 
   return (
-    <div style={styles.container}>
-      <div style={styles.backgroundLeft}></div>
+    <div className="flex h-screen w-full overflow-hidden">
+      {/* Left background image */}
+      <div
+        className="w-1/4 bg-cover bg-center hidden md:block"
+        style={{ backgroundImage: `url(${BG1})` }}
+      />
 
-      <div style={styles.loginCenter}>
-        <h1 style={styles.title}>Readify</h1>
-        <div style={styles.loginBox}>
-          <label>Email</label>
-          <input
-            type="email"
-            style={styles.inputField}
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            placeholder="Enter your email"
-          />
+      {/* Center form */}
+      <div className="w-full md:w-2/4 flex items-center justify-center bg-white px-6 py-12 shadow-lg">
+        <div className="w-full max-w-md">
+          <h1 className="text-4xl font-bold text-center mb-8 text-blue-600">Readify</h1>
 
-          <label>Password</label>
-          <input
-            type="password"
-            style={styles.inputField}
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            placeholder="Enter your password"
-          />
+          <div className="space-y-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700">Email</label>
+              <input
+                type="email"
+                className="w-full border border-gray-300 rounded px-4 py-2 mt-1 focus:outline-none focus:ring-2 focus:ring-blue-400"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="Enter your email"
+              />
+            </div>
 
-          {error && <div style={styles.error}>{error}</div>}
+            <div>
+              <label className="block text-sm font-medium text-gray-700">Password</label>
+              <input
+                type="password"
+                className="w-full border border-gray-300 rounded px-4 py-2 mt-1 focus:outline-none focus:ring-2 focus:ring-blue-400"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="Enter your password"
+              />
+            </div>
 
-          <button style={styles.loginBtn} onClick={handleLogin}>
-            Login
-          </button>
+            {error && <div className="text-red-500 text-sm">{error}</div>}
 
-          <div style={styles.registerLink}>
-            <p>Don’t have an account?</p>
-            <button style={styles.registerBtn} onClick={() => navigate("/register")}>
-              Register
+            <button
+              onClick={handleLogin}
+              className="w-full bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 rounded transition duration-300"
+            >
+              Login
             </button>
-            <a style={styles.forgotPassword} onClick={() => navigate("/forgot-password")}>
-              Forgot password?
-            </a>
+
+            <div className="text-center mt-4 text-sm">
+              Don’t have an account?{" "}
+              <button
+                onClick={() => navigate("/register")}
+                className="text-blue-500 hover:underline"
+              >
+                Register
+              </button>
+              <br />
+              <button
+                onClick={() => navigate("/forgot-password")}
+                className="mt-2 text-blue-400 hover:underline"
+              >
+                Forgot password?
+              </button>
+            </div>
           </div>
         </div>
       </div>
 
-      <div style={styles.backgroundRight}></div>
+      {/* Right background image */}
+      <div
+        className="w-1/4 bg-cover bg-center hidden md:block"
+        style={{ backgroundImage: `url(${BG2})` }}
+      />
     </div>
   );
 }
-
-const styles = {
-  container: {
-    display: "flex",
-    height: "100vh",
-    width: "100%",
-    overflow: "hidden",
-  },
-  backgroundLeft: {
-    flex: 1,
-    backgroundImage: `url(${BG1})`,
-    backgroundSize: "cover",
-    backgroundPosition: "center",
-    backgroundRepeat: "no-repeat",
-  },
-  backgroundRight: {
-    flex: 1,
-    backgroundImage: `url(${BG2})`,
-    backgroundSize: "cover",
-    backgroundPosition: "center",
-    backgroundRepeat: "no-repeat",
-  },
-  loginCenter: {
-    flex: 2,
-    background: "white",
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center",
-    justifyContent: "center",
-    padding: "30px",
-    boxShadow: "0 0 20px rgba(0, 0, 0, 0.1)",
-  },
-  title: {
-    fontSize: "2.5rem",
-    marginBottom: "30px",
-    color: "#333",
-  },
-  loginBox: {
-    width: "100%",
-    maxWidth: "400px",
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center",
-  },
-  inputField: {
-    width: "100%",
-    padding: "12px",
-    marginBottom: "15px",
-    border: "1px solid #ddd",
-    borderRadius: "4px",
-  },
-  loginBtn: {
-    width: "100%",
-    padding: "12px",
-    backgroundColor: "#4a90e2",
-    color: "white",
-    fontWeight: "bold",
-    border: "none",
-    borderRadius: "4px",
-    cursor: "pointer",
-    marginTop: "10px",
-    transition: "background-color 0.3s ease",
-  },
-  registerLink: {
-    marginTop: "20px",
-    textAlign: "center",
-  },
-  registerBtn: {
-    marginTop: "10px",
-    padding: "8px 16px",
-    backgroundColor: "transparent",
-    border: "1px solid #4a90e2",
-    color: "#4a90e2",
-    borderRadius: "4px",
-    cursor: "pointer",
-  },
-  forgotPassword: {
-    display: "block",
-    marginTop: "10px",
-    fontSize: "14px",
-    color: "#4a90e2",
-    textDecoration: "none",
-    cursor: "pointer",
-  },
-  error: {
-    color: "#e74c3c",
-    marginBottom: "10px",
-  },
-};
 
 export default Login;

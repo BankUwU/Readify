@@ -1,13 +1,12 @@
 import { onAuthStateChanged } from "firebase/auth";
 import { collection, getDocs } from "firebase/firestore";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { FaStar } from "react-icons/fa";
-import { Link } from "react-router-dom";
+import Bookreview from "../components/bookreview";
 import Header from "../components/header";
 import MyReadingList from "../components/myreadinglist";
 import Plus from "../components/plus";
 import { auth, db } from "../config/firebaseConfig";
-import Bookreview from "../components/bookreview";
 
 function Home() {
   const [user, setUser] = useState(null);
@@ -69,9 +68,7 @@ function Home() {
 
             <div className="mt-8">
               <h3 className="text-lg font-bold">
-                <div  className="text-black">
-                  My Reading
-                </div>
+                <div className="text-black">My Reading</div>
               </h3>
               <div className="flex flex-wrap gap-4 p-4 border border-white rounded-lg bg-[rgba(205,209,228,0.5)] overflow-x-auto">
                 <MyReadingList readingList={readingList} />
