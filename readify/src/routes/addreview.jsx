@@ -1,7 +1,7 @@
 import { getAuth } from "firebase/auth";
 import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { saveReview } from "../api/reviewapi";
+import { saveReview } from "../api/addreviewapi";
 import Header from "../components/header";
 import cloudIcon from "../img/cloud-upload-icon.png";
 
@@ -22,7 +22,7 @@ function AddReview() {
     if (file) {
       setImageFile(file);
       const imgLink = URL.createObjectURL(file);
-      imageView.current.style.backgroundImage = `url(${imgLink})`;
+      imageView.current.style.backgroundImage = `url(${imgLink})`; // ✅ fixed
       imageView.current.innerHTML = "";
       imageView.current.style.border = "none";
     }
@@ -81,8 +81,10 @@ function AddReview() {
     };
 
     try {
+      console.log("Attempting to save review...");
       const id = await saveReview(reviewData, imageFile, user.uid);
-      alert(`Review saved! ID: ${id}`);
+      console.log("Review saved with ID:", id);
+      alert(`Review saved! ID: ${id}`); // ✅ fixed template string
       navigate("/");
     } catch (error) {
       console.error("Error saving review:", error);
@@ -155,25 +157,25 @@ function AddReview() {
               value={reviewText}
               onChange={(e) => setReviewText(e.target.value)}
             />
+
+            {/* Moved buttons inside the form */}
+            <div className="w-full flex justify-center gap-5 mt-5">
+              <button
+                type="button"
+                onClick={() => navigate("/")}
+                className="px-12 py-2 rounded-lg bg-gray-300 text-gray-700 hover:bg-gray-400 transition"
+              >
+                Cancel
+              </button>
+              <button
+                type="submit"
+                className="px-12 py-2 rounded-lg bg-[#00BFFF] text-white hover:bg-[#01abe3] transition"
+              >
+                Save
+              </button>
+            </div>
           </div>
         </form>
-
-        <div className="w-full flex justify-center gap-5 mt-5">
-          <button
-            type="button"
-            onClick={() => navigate("/")}
-            className="px-12 py-2 rounded-lg bg-gray-300 text-gray-700 hover:bg-gray-400 transition"
-          >
-            Cancel
-          </button>
-          <button
-            type="submit"
-            onClick={handleSave}
-            className="px-12 py-2 rounded-lg bg-[#00BFFF] text-white hover:bg-[#01abe3] transition"
-          >
-            Save
-          </button>
-        </div>
       </div>
     </>
   );

@@ -1,33 +1,34 @@
+import { getAuth } from "firebase/auth";
 import { collection, deleteDoc, doc, getDocs } from "firebase/firestore";
-import React, { useEffect, useState } from "react";
-
+import { useEffect, useState } from "react";
 import Header from "../components/header";
+import ReviewPopup from "../components/ReviewPopup";
 import { db } from "../config/firebaseConfig";
-
 function Myreviews() {
   const [reviews, setReviews] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [selectedReview, setSelectedReview] = useState(null);
 
   useEffect(() => {
     async function fetchReviews() {
+      const auth = getAuth();
+      const user = auth.currentUser;
+
+      if (!user) {
+        setReviews([]);
+        setLoading(false);
+        return;
+      }
+
       try {
-        const usersSnapshot = await getDocs(collection(db, "Users"));
-        const allReviews = [];
-
-        for (const userDoc of usersSnapshot.docs) {
-          const reviewsRef = collection(db, "Users", userDoc.id, "Reviews");
-          const reviewsSnapshot = await getDocs(reviewsRef);
-
-          reviewsSnapshot.forEach((reviewDoc) => {
-            allReviews.push({
-              reviewId: reviewDoc.id,
-              userId: userDoc.id,
-              ...reviewDoc.data(),
-            });
-          });
-        }
-
-        setReviews(allReviews);
+        const reviewsRef = collection(db, "users", user.uid, "reviews");
+        const reviewsSnapshot = await getDocs(reviewsRef);
+        const userReviews = reviewsSnapshot.docs.map(doc => ({
+          reviewId: doc.id,
+          userId: user.uid,
+          ...doc.data(),
+        }));
+        setReviews(userReviews);
       } catch (error) {
         console.error("Error fetching reviews:", error);
       } finally {
@@ -38,21 +39,26 @@ function Myreviews() {
     fetchReviews();
   }, []);
 
-  const handleDelete = async (userId, reviewId) => {
+  const handleDelete = async (reviewId) => {
+    const auth = getAuth();
+    const user = auth.currentUser;
+
+    if (!user) return;
+
     const confirmDelete = window.confirm(
       "Are you sure you want to delete this review?"
     );
-    if (confirmDelete) {
-      try {
-        const reviewRef = doc(db, "Users", userId, "Reviews", reviewId);
-        await deleteDoc(reviewRef);
-        setReviews((prevReviews) =>
-          prevReviews.filter((review) => review.reviewId !== reviewId)
-        );
-        console.log("Review deleted successfully");
-      } catch (error) {
-        console.error("Error deleting review:", error);
-      }
+    if (!confirmDelete) return;
+
+    try {
+      const reviewRef = doc(db, "users", user.uid, "reviews", reviewId);
+      await deleteDoc(reviewRef);
+      setReviews((prevReviews) =>
+        prevReviews.filter((review) => review.reviewId !== reviewId)
+      );
+      console.log("Review deleted successfully");
+    } catch (error) {
+      console.error("Error deleting review:", error);
     }
   };
 
@@ -71,12 +77,14 @@ function Myreviews() {
             {reviews.map((review) => (
               <div
                 key={review.reviewId}
-                className="bg-white p-6 rounded-2xl shadow-md hover:-translate-y-1 transition duration-200 flex flex-col items-center"
+                className="bg-white p-6 rounded-2xl shadow-md hover:-translate-y-1 transition duration-200 flex flex-col items-center cursor-pointer"
+                onClick={() => setSelectedReview(review)}
               >
                 <img
-                  src={review.imageurl}
+                  src={review.books_pics_url}
                   alt={review.title}
                   className="w-44 h-[250px] object-cover rounded-lg mb-4"
+                  onError={(e) => (e.target.src = "/placeholder.png")} // fallback
                 />
                 <div className="text-center w-full">
                   <h2 className="text-xl font-semibold text-gray-800">
@@ -85,11 +93,14 @@ function Myreviews() {
                   <h4 className="text-sm text-gray-600 mb-2">
                     Category: {review.category}
                   </h4>
-                  <p className="text-sm text-gray-700 leading-relaxed mb-4">
+                  <p className="text-sm text-gray-700 leading-relaxed mb-4 line-clamp-3">
                     {review.review}
                   </p>
                   <button
-                    onClick={() => handleDelete(review.userId, review.reviewId)}
+                    onClick={(e) => {
+                      e.stopPropagation(); // prevent opening popup
+                      handleDelete(review.reviewId);
+                    }}
                     className="bg-red-600 hover:bg-red-700 text-white py-2 px-4 rounded-full transition duration-300"
                   >
                     Delete
@@ -100,8 +111,16 @@ function Myreviews() {
           </div>
         )}
       </div>
+
+      {selectedReview && (
+        <ReviewPopup
+          review={selectedReview}
+          onClose={() => setSelectedReview(null)}
+        />
+      )}
     </>
   );
 }
 
 export default Myreviews;
+
