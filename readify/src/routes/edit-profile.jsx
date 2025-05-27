@@ -5,36 +5,44 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Header from "../components/header";
 import { auth, db } from "../config/firebaseConfig";
+import editIcon from "../img/edit-icon.png"
 
 function EditProfile() {
   const [user, setUser] = useState(null);
   const [image, setImage] = useState(null);
   const [previewUrl, setPreviewUrl] = useState("");
   const [uploading, setUploading] = useState(false);
+  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
+
 
   const navigate = useNavigate();
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
-      if (currentUser) {
-        setUser(currentUser);
+  const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
+    if (currentUser) {
+      setUser(currentUser);
+      setEmail(currentUser.email || "");
 
-        const docRef = doc(db, "users", currentUser.uid);
-        const docSnap = await getDoc(docRef);
-        if (docSnap.exists()) {
-          const data = docSnap.data();
-          setPreviewUrl(data.photoURL || currentUser.photoURL || "");
-        } else {
-          setPreviewUrl(currentUser.photoURL || "");
-        }
+      const docRef = doc(db, "users", currentUser.uid);
+      const docSnap = await getDoc(docRef);
+      if (docSnap.exists()) {
+        const data = docSnap.data();
+        setPreviewUrl(data.photoURL || currentUser.photoURL || "");
+        setUsername(data.username || currentUser.displayName || "");
       } else {
-        alert("Please Login to continue");
-        navigate("/login", { replace: true });
+        setPreviewUrl(currentUser.photoURL || "");
+        setUsername(currentUser.displayName || "");
       }
-    });
+    } else {
+      alert("Please Login to continue");
+      navigate("/login", { replace: true });
+    }
+  });
 
-    return () => unsubscribe();
-  }, [navigate]);
+  return () => unsubscribe();
+}, [navigate]);
+
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
@@ -87,22 +95,41 @@ function EditProfile() {
     <>
       <Header />
       <div className="flex items-center justify-around bg-[aliceblue] max-w-[80%] mt-12 mx-auto min-h-[70vh] rounded-[30px] text-left px-6">
-        <div className="w-[350px] h-[350px] bg-white rounded-full flex items-center justify-center overflow-hidden">
-          {previewUrl ? (
-            <img
-              src={previewUrl}
-              alt="Profile"
-              className="w-full h-full object-cover rounded-full"
+          <div className="relative w-[350px] h-[350px]">
+            <div className="w-full h-full bg-white rounded-full overflow-hidden">
+              {previewUrl ? (
+                <img
+                  src={previewUrl}
+                  alt="Profile"
+                  className="w-full h-full object-cover"
+                />
+              ) : (
+                <p>No Image</p>
+              )}
+            </div>
+
+            <label
+              htmlFor="imageUpload"
+              className="absolute top-4 right-8 bg-blue-900 p-2 rounded-full cursor-pointer shadow-md w-12 h-12"
+            >
+              <img
+                src={editIcon}
+                alt="Edit"
+                className="w-8 h-8 invert"
+              />
+            </label>
+
+            <input
+              id="imageUpload"
+              type="file"
+              accept="image/*"
+              onChange={handleImageChange}
+              className="hidden"
             />
-          ) : (
-            <p>No Image</p>
-          )}
-        </div>
+          </div>
 
-        <div className="flex-1 max-w-[500px] text-left">
-          <h1 className="text-5xl mb-4">Edit Profile</h1>
 
-          <label className="block mb-2 font-medium">Upload Image:</label>
+        <label className="block mb-2 font-medium">Upload Image:</label>
           <input
             type="file"
             accept="image/*"
@@ -118,6 +145,23 @@ function EditProfile() {
           >
             {uploading ? "Saving..." : "Save Changes"}
           </button>
+
+  
+
+        
+
+        <div className="flex-1 max-w-[500px] text-left">
+          <h1 className="text-5xl mb-4">Edit Profile</h1>
+          <p className="text-lg">
+            <strong>Username:</strong> {username || "Not set"}
+          </p>
+          <p className="text-lg">
+            <strong>Email:</strong> {email}
+          </p>
+
+
+
+    
         </div>
       </div>
     </>

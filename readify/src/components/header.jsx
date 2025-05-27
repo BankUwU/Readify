@@ -91,15 +91,20 @@ const Header = () => {
         <div className="flex items-center gap-3">
           {user ? (
             <>
-              <div className="w-10 h-10 bg-white rounded-full flex items-center justify-center overflow-hidden">
-                <img
-                  src={
-                    user.photoURL ||
-                    "https://img.icons8.com/ios-glyphs/30/000000/user--v1.png"
-                  }
-                  alt="User Profile"
-                  className="w-full h-full object-cover"
-                />
+              <div className="w-10 h-10 bg-white rounded-full flex items-center justify-center overflow-hidden cursor-pointer">
+                <Link
+                  to="/edit-profile"
+                  className="w-10 h-10 bg-white rounded-full flex items-center justify-center overflow-hidden cursor-pointer"
+                >
+                  <img
+                    src={
+                      user.photoURL ||
+                      "https://img.icons8.com/ios-glyphs/30/000000/user--v1.png"
+                    }
+                    alt="User Profile"
+                    className="w-full h-full object-cover"
+                  />
+                </Link>
               </div>
             </>
           ) : (
