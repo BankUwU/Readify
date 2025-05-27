@@ -33,7 +33,7 @@ const ReviewPopup = ({ review, onClose }) => {
           <div className="flex flex-col justify-center space-y-3">
             <h2 className="text-2xl font-bold text-gray-800">{review.title}</h2>
             <p className="text-sm text-gray-600">
-              <span className="font-semibold">Created At:</span> {review.createdAt || "N/A"}
+              <span className="font-semibold">Created At:</span> {review.createAt || "N/A"}
             </p>
             <p className="text-sm text-gray-600">
               <span className="font-semibold">Genre:</span> {review.category}
