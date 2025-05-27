@@ -25,7 +25,7 @@ const ReviewPopup = ({ review, onClose }) => {
             <img
               src={review.books_pics_url}
               alt={review.title}
-              className="w-full max-w-xs rounded-xl object-cover"
+              className="w-280 h-392 rounded-xl object-cover"
             />
           </div>
 
