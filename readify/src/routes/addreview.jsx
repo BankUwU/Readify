@@ -22,7 +22,7 @@ function AddReview() {
     if (file) {
       setImageFile(file);
       const imgLink = URL.createObjectURL(file);
-      imageView.current.style.backgroundImage = `url(${imgLink})`; // ✅ fixed
+      imageView.current.style.backgroundImage = `url(${imgLink})`;
       imageView.current.innerHTML = "";
       imageView.current.style.border = "none";
     }
@@ -77,14 +77,15 @@ function AddReview() {
       title: bookTitle,
       category: category,
       review: reviewText,
+      displayName: user.displayName,
       timestamp: new Date(),
     };
 
     try {
       console.log("Attempting to save review...");
-      const id = await saveReview(reviewData, imageFile, user.uid);
+      const id = await saveReview(reviewData, imageFile, user);
       console.log("Review saved with ID:", id);
-      alert(`Review saved! ID: ${id}`); // ✅ fixed template string
+      alert(`Review saved! ID: ${id}`);
       navigate("/");
     } catch (error) {
       console.error("Error saving review:", error);

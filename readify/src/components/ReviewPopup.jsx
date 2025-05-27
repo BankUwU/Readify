@@ -33,8 +33,7 @@ const ReviewPopup = ({ review, onClose }) => {
           <div className="flex flex-col justify-center space-y-3">
             <h2 className="text-2xl font-bold text-gray-800">{review.title}</h2>
             <p className="text-sm text-gray-600">
-              <span className="font-semibold">Created At:</span>{" "}
-              {review.datecreated || "N/A"}
+              <span className="font-semibold">Created At:</span> {review.createdAt || "N/A"}
             </p>
             <p className="text-sm text-gray-600">
               <span className="font-semibold">Genre:</span> {review.category}
@@ -43,7 +42,7 @@ const ReviewPopup = ({ review, onClose }) => {
               <span className="font-semibold">Review:</span> {review.review}
             </p>
             <p className="text-sm text-gray-600">
-              <span className="font-semibold">Created by:</span> {review.creator || "Unknown"}
+              <span className="font-semibold">Created by:</span> {review.createdBy || "Unknown"}
             </p>
             <button
               className="mt-4 bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg self-start"

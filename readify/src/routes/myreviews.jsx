@@ -40,27 +40,34 @@ function Myreviews() {
   }, []);
 
   const handleDelete = async (reviewId) => {
-    const auth = getAuth();
-    const user = auth.currentUser;
+  const auth = getAuth();
+  const user = auth.currentUser;
 
-    if (!user) return;
+  if (!user) return;
 
-    const confirmDelete = window.confirm(
-      "Are you sure you want to delete this review?"
+  const confirmDelete = window.confirm(
+    "Are you sure you want to delete this review?"
+  );
+  if (!confirmDelete) return;
+
+  try {
+    const userReviewRef = doc(db, "users", user.uid, "reviews", reviewId);
+    const globalReviewRef = doc(db, "allreview", reviewId);
+
+    await Promise.all([
+      deleteDoc(userReviewRef),
+      deleteDoc(globalReviewRef),
+    ]);
+
+    setReviews((prevReviews) =>
+      prevReviews.filter((review) => review.reviewId !== reviewId)
     );
-    if (!confirmDelete) return;
 
-    try {
-      const reviewRef = doc(db, "users", user.uid, "reviews", reviewId);
-      await deleteDoc(reviewRef);
-      setReviews((prevReviews) =>
-        prevReviews.filter((review) => review.reviewId !== reviewId)
-      );
-      console.log("Review deleted successfully");
-    } catch (error) {
-      console.error("Error deleting review:", error);
-    }
-  };
+    console.log("Review deleted successfully from both user and global collections");
+  } catch (error) {
+    console.error("Error deleting review:", error);
+  }
+};
 
   return (
     <>
