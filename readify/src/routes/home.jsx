@@ -62,22 +62,24 @@ function Home() {
     <>
       <Header />
       <div className="p-5">
-        {user ? (
+       
           <>
-            <h2 className="text-xl font-semibold">Hello {user.displayName} :)</h2>
+            {/* <h2 className="text-xl font-semibold">Hello {user.displayName} :)</h2> */}
 
-            <div className="mt-8">
+            <div className="mt-4">
               <h3 className="text-lg font-bold">
-                <div className="text-black">My Reading</div>
+                <div className="text-black text-3xl ml-3">
+                  {user?.displayName ? `${user.displayName}'s Readings` : "My Readings"}
+                </div>
               </h3>
-              <div className="flex flex-wrap gap-4 p-4 border border-white rounded-lg bg-[rgba(205,209,228,0.5)] overflow-x-auto">
-                <MyReadingList readingList={readingList} />
+              <div className="flex flex-wrap border border-white rounded-3xl bg-blue-900 overflow-x-auto mt-2">
                 <Plus />
+                <MyReadingList readingList={readingList} />
               </div>
             </div>
 
             <div className="mt-8">
-              <h3 className="text-lg font-bold">Review</h3>
+              <h3 className="text-3xl font-bold ml-3">Reviews</h3>
               {bookreview.map((_, index) => (
                 <div
                   key={index}
@@ -99,9 +101,7 @@ function Home() {
               ))}
             </div>
           </>
-        ) : (
-          <h2 className="text-lg font-semibold">Please Login</h2>
-        )}
+        
       </div>
     </>
   );

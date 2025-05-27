@@ -91,9 +91,6 @@ const Header = () => {
         <div className="flex items-center gap-3">
           {user ? (
             <>
-              <span className="font-bold text-white">
-                {user.displayName || user.email || "User"}
-              </span>
               <div className="w-10 h-10 bg-white rounded-full flex items-center justify-center overflow-hidden">
                 <img
                   src={
