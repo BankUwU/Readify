@@ -1,8 +1,9 @@
-import React, { useState, useRef, useEffect } from "react";
+import { getAuth } from "firebase/auth";
+import { useEffect, useRef, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { saveReview } from "../api/reviewapi";
 import Header from "../components/header";
 import cloudIcon from "../img/cloud-upload-icon.png";
-import { saveReview } from "../api/reviewapi";
-import { useNavigate } from "react-router-dom";
 
 function AddReview() {
   const dropArea = useRef(null);
@@ -14,7 +15,10 @@ function AddReview() {
   const [reviewText, setReviewText] = useState("");
   const [imageFile, setImageFile] = useState(null);
 
-  function uploadImage(file) {
+  const auth = getAuth();
+  const navigate = useNavigate();
+
+  const uploadImage = (file) => {
     if (file) {
       setImageFile(file);
       const imgLink = URL.createObjectURL(file);
@@ -22,7 +26,7 @@ function AddReview() {
       imageView.current.innerHTML = "";
       imageView.current.style.border = "none";
     }
-  }
+  };
 
   useEffect(() => {
     const area = dropArea.current;
@@ -54,10 +58,21 @@ function AddReview() {
     };
   }, []);
 
-  const navigate = useNavigate();
-
   const handleSave = async (e) => {
     e.preventDefault();
+    const user = auth.currentUser;
+
+    if (!user) {
+      alert("You must be logged in to add a review.");
+      navigate("/login");
+      return;
+    }
+
+    if (!bookTitle || !category || !reviewText || !imageFile) {
+      alert("Please fill in all fields and upload an image.");
+      return;
+    }
+
     const reviewData = {
       title: bookTitle,
       category: category,
@@ -65,14 +80,13 @@ function AddReview() {
       timestamp: new Date(),
     };
 
-    if (imageFile) {
-      try {
-        const id = await saveReview(reviewData, imageFile);
-        alert(`Review saved! ID: ${id}`);
-        navigate("/");
-      } catch (error) {
-        alert("Error saving review.");
-      }
+    try {
+      const id = await saveReview(reviewData, imageFile, user.uid);
+      alert(`Review saved! ID: ${id}`);
+      navigate("/");
+    } catch (error) {
+      console.error("Error saving review:", error);
+      alert("Error saving review.");
     }
   };
 
