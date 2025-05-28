@@ -1,26 +1,42 @@
 import React from "react";
+import { FaStar } from "react-icons/fa";
 
-function Bookreview({ bookreview }) {
+function Bookreview({ review, isFavorite, onToggleFavorite, userPhotoURL }) {
   return (
-    <div className="book-list-page">
-      <div className="book-grid space-y-6">
-        {bookreview.map((item) => (
-          <div key={item.id} className="flex flex-row">
-            <img
-              src={item.imageurl}
-              alt={item.title}
-              className="w-48 h-72 object-cover border-l-2 border-gray-200"
-            />
-            <div className="p-4 flex-grow text-gray-800">
-              <h2 className="text-2xl m-0 text-[#2c3e50]">{item.title}</h2>
-              <h2 className="text-xl mt-2 text-purple-700">{item.category}</h2>
-              <p className="mt-4 text-base text-gray-600 leading-relaxed">{item.description}</p>
-            </div>
-          </div>
-        ))}
+    <div className="relative flex flex-row p-5 bg-blue-100 rounded-3xl">
+    <img
+      src={review.books_pics_url || review.imageurl}
+      alt={review.title}
+      className="w-44 min-h-[262px] object-cover rounded-2xl"
+    />
+    <div className="ml-5 flex flex-col flex-grow text-gray-800">
+      <h2 className="text-4xl text-[#2c3e50]">{review.title}</h2>
+      <h2 className="text-2xl mt-2 text-purple-700">{review.category}</h2>
+      <p className="mt-2 text-xl text-gray-600 leading-relaxed">{review.review || review.description}</p>
+      <div className="flex items-center mt-auto pt-4">
+        <img
+          src={review.photoURL}
+          alt="User"
+          className="w-8 h-8 rounded-full object-cover"
+        />
+        <span className="ml-2 text-sm text-gray-700 font-medium">{review.createdBy}</span>
       </div>
     </div>
+
+    <button
+      onClick={onToggleFavorite}
+      aria-label="Favorite"
+      className="absolute top-3 right-3 bg-transparent border-none cursor-pointer z-10"
+    >
+      <FaStar
+        size={28}
+        color={isFavorite ? "#000" : "#e0e0e0"}
+        style={{ stroke: "#000", strokeWidth: 1 }}
+      />
+    </button>
+  </div>
   );
 }
+
 
 export default Bookreview;

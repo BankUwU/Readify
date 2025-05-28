@@ -1,18 +1,19 @@
 import { onAuthStateChanged } from "firebase/auth";
 import { collection, getDocs } from "firebase/firestore";
 import { useEffect, useState } from "react";
-import { FaStar } from "react-icons/fa";
 import Bookreview from "../components/bookreview";
 import Header from "../components/header";
 import MyReadingList from "../components/myreadinglist";
 import Plus from "../components/plus";
 import { auth, db } from "../config/firebaseConfig";
+import { getDoc, doc } from "firebase/firestore";
 
 function Home() {
   const [user, setUser] = useState(null);
   const [favorites, setFavorites] = useState([false, false]);
   const [readingList, setReadingList] = useState([]);
   const [bookreview, setBookReview] = useState([]);
+  const [userPhotos, setUserPhotos] = useState({});
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
@@ -22,33 +23,50 @@ function Home() {
   }, []);
 
   useEffect(() => {
-    async function fetchReadingList() {
-      try {
-        const querySnapshot = await getDocs(collection(db, "reviews"));
-        const booksArray = [];
-        querySnapshot.forEach((doc) => {
-          booksArray.push({ id: doc.id, ...doc.data() });
-        });
-        setReadingList(booksArray);
-      } catch (error) {
-        console.error("Error fetching reading list:", error);
-      }
-    }
+    // async function fetchReadingList() {
+    //   try {
+    //     const querySnapshot = await getDocs(collection(db, "reviews"));
+    //     const booksArray = [];
+    //     querySnapshot.forEach((doc) => {
+    //       booksArray.push({ id: doc.id, ...doc.data() });
+    //     });
+    //     setReadingList(booksArray);
+    //   } catch (error) {
+    //     console.error("Error fetching reading list:", error);
+    //   }
+    // }
 
     async function fetchBookReviews() {
-      try {
-        const querySnapshot = await getDocs(collection(db, "allreviews"));
-        const reviewsArray = [];
-        querySnapshot.forEach((doc) => {
-          reviewsArray.push({ id: doc.id, ...doc.data() });
-        });
-        setBookReview(reviewsArray);
-      } catch (error) {
-        console.error("Error fetching book reviews:", error);
+  try {
+    const querySnapshot = await getDocs(collection(db, "allreview"));
+    const reviewsArray = [];
+
+    for (const docSnap of querySnapshot.docs) {
+      const data = docSnap.data();
+      const review = { id: docSnap.id, ...data };
+
+      // Fetch user's photoURL
+      if (review.createdBy) {
+        const userRef = doc(db, "users", review.createdBy);
+        const userDoc = await getDoc(userRef);
+        if (userDoc.exists()) {
+          const userData = userDoc.data();
+          review.photoURL = userData.photoURL || null;
+        }
       }
+
+      reviewsArray.push(review);
     }
 
-    fetchReadingList();
+    setBookReview(reviewsArray);
+  } catch (error) {
+    console.error("Error fetching book reviews:", error);
+  }
+}
+
+
+
+    // fetchReadingList();
     fetchBookReviews();
   }, []);
 
@@ -72,33 +90,29 @@ function Home() {
                   {user?.displayName ? `${user.displayName}'s Readings` : "My Readings"}
                 </div>
               </h3>
-              <div className="flex flex-wrap border border-white rounded-3xl bg-blue-900 overflow-x-auto mt-2">
+              <div className="flex flex-wrap rounded-3xl bg-blue-900 overflow-x-auto mt-2">
                 <Plus />
-                <MyReadingList readingList={readingList} />
+                {/* <MyReadingList readingList={readingList} /> */}
               </div>
             </div>
 
             <div className="mt-8">
               <h3 className="text-3xl font-bold ml-3">Reviews</h3>
-              {bookreview.map((_, index) => (
-                <div
-                  key={index}
-                  className="relative flex items-start border border-black rounded-lg p-3 mb-4"
-                >
-                  <Bookreview bookreview={bookreview} />
-                  <button
-                    className="absolute top-3 right-3 bg-transparent border-none cursor-pointer"
-                    onClick={() => toggleFavorite(index)}
-                    aria-label="Favorite"
-                  >
-                    <FaStar
-                      size={20}
-                      color={favorites[index] ? "#000" : "#e0e0e0"}
-                      style={{ stroke: "#000", strokeWidth: 1 }}
-                    />
-                  </button>
-                </div>
-              ))}
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 mt-4">
+              {bookreview.map((review, index) => (
+              <div 
+                key={review.id} 
+                className=" flex items-start border bg-blue-100 rounded-3xl p-3 mt-2 mb-4">
+
+              <Bookreview 
+                review={review}
+                isFavorite={favorites[index]}
+                onToggleFavorite={() => toggleFavorite(index)}/>
+              </div>
+             
+            ))}
+
+            </div>
             </div>
           </>
         
