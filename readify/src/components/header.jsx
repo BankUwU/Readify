@@ -1,13 +1,15 @@
 import { onAuthStateChanged, signOut } from "firebase/auth";
 import { doc, getDoc } from "firebase/firestore";
 import { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom"; // Import useNavigate
+import { Link, useNavigate, useLocation } from "react-router-dom"; 
 import { auth, db } from "../config/firebaseConfig";
 
 const Header = () => {
   const [user, setUser] = useState(() => auth.currentUser);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  const navigate = useNavigate(); // Create navigate instance
+  const navigate = useNavigate(); 
+  const location = useLocation();
+
 
   useEffect(() => {
     // If user exists synchronously, fetch extra profile data immediately
@@ -25,7 +27,7 @@ const Header = () => {
     });
 
     return () => unsubscribe();
-  }, []);
+  }, [location]);
 
   // Helper function to get Firestore user profile and set user state
   const fetchUserProfile = async (currentUser) => {
