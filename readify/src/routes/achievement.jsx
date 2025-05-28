@@ -18,9 +18,24 @@ function Achievement() {
   const [achievements, setAchievements] = useState([]);
   const [userProgress, setUserProgress] = useState({});
   const [userStats, setUserStats] = useState({});
-
-  // Track if achievements loaded to avoid checking before ready
   const [achievementsLoaded, setAchievementsLoaded] = useState(false);
+
+  const ensureUserAchievementsExists = async (uid) => {
+  const achRef = doc(db, "userAchievements", uid);
+  const achSnap = await getDoc(achRef);
+
+  if (!achSnap.exists()) {
+    const globalAchievementsSnapshot = await getDocs(collection(db, "achievements"));
+
+    const initialProgress = {};
+    globalAchievementsSnapshot.forEach((doc) => {
+      initialProgress[doc.id] = false;
+    });
+
+    await setDoc(achRef, { achievements: initialProgress });
+  }
+};
+
 
   useEffect(() => {
     const auth = getAuth();
@@ -30,6 +45,10 @@ function Achievement() {
         navigate("/login");
       } else {
         setUser(currentUser);
+
+        // ✅ Ensure userAchievements/{uid} document exists
+        await ensureUserAchievementsExists(currentUser.uid);
+
         const achList = await fetchAchievements();
         setAchievements(achList);
         await fetchUserProgress(currentUser.uid);

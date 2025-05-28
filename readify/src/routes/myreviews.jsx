@@ -103,9 +103,6 @@ function Myreviews() {
                   <h4 className="text-sm text-gray-600 mb-2">
                     Category: {review.category}
                   </h4>
-                  <p className="text-sm text-gray-700 leading-relaxed mb-4 line-clamp-3">
-                    {review.review}
-                  </p>
                   <div className="flex gap-2 justify-center">
                     <button
                       onClick={(e) => {
