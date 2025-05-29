@@ -65,7 +65,7 @@ function Myreviews() {
         ) : reviews.length === 0 ? (
           <p className="text-lg">No reviews yet.</p>
         ) : (
-          <div className="flex justify-center gap-6">
+          <div className="flex flex-col gap-6">
             {reviews.map((review) => (
               <div
                 key={review.reviewId}
