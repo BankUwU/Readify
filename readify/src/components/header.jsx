@@ -142,7 +142,7 @@ const Header = () => {
           Home
         </Link>
         <Link
-          to="/profile"
+          to="/edit-profile"
           className="text-blue-900 font-bold px-3 py-2 rounded hover:bg-blue-100"
           onClick={closeSidebar}
         >
@@ -160,21 +160,21 @@ const Header = () => {
           className="text-blue-900 font-bold px-3 py-2 rounded hover:bg-blue-100"
           onClick={closeSidebar}
         >
-          Favorite
+          Favorites
         </Link>
         <Link
           to="/my-reading"
           className="text-blue-900 font-bold px-3 py-2 rounded hover:bg-blue-100"
           onClick={closeSidebar}
         >
-          My Reading
+          My Readings
         </Link>
         <Link
           to="/my-reviews"
           className="text-blue-900 font-bold px-3 py-2 rounded hover:bg-blue-100"
           onClick={closeSidebar}
         >
-          My Review
+          My Reviews
         </Link>
         <Link
           to="/add-review"

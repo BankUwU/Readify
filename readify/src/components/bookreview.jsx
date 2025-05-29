@@ -10,7 +10,7 @@ function Bookreview({ review, isFavorite, onToggleFavorite, userPhotoURL }) {
       className="w-44 min-h-[262px] object-cover rounded-2xl"
     />
     <div className="ml-5 flex flex-col flex-grow text-gray-800">
-      <h2 className="text-4xl text-[#2c3e50]">{review.title}</h2>
+      <h2 className="text-3xl text-[#2c3e50]">{review.title}</h2>
       <h2 className="text-2xl mt-2 text-purple-700">{review.category}</h2>
       <p className="mt-2 text-xl text-gray-600 leading-relaxed">{review.review || review.description}</p>
       <div className="flex items-center mt-auto pt-4">

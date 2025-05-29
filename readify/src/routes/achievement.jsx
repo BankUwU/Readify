@@ -122,7 +122,7 @@ function Achievement() {
   return (
     <>
       <Header />
-      <div className="bg-[#eaf6ff] p-10 min-h-[calc(100vh-60px)] font-['Segoe_UI']">
+      <div className="p-10 min-h-[calc(100vh-60px)] ">
         <div className="flex items-center gap-3 mb-5">
           <img
             src="https://img.icons8.com/emoji/48/trophy-emoji.png"

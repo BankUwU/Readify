@@ -1,7 +1,8 @@
 import { getAuth } from "firebase/auth";
-import { doc, updateDoc } from "firebase/firestore";
-import { useRef, useState } from "react";
+import { doc, updateDoc, deleteDoc } from "firebase/firestore";
+import { useEffect, useRef, useState } from "react";
 import { db } from "../config/firebaseConfig";
+import deleteIcon from "../img/delete-icon.png"
 
 const CLOUD_NAME = "djxipn8kj";
 const UPLOAD_PRESET = "Readify";
@@ -20,13 +21,29 @@ const uploadToCloudinary = async (file) => {
   return data.secure_url;
 };
 
-function EditPopup({ review, onClose, onSave }) {
-  const [title, setTitle] = useState(review.title);
-  const [category, setCategory] = useState(review.category);
-  const [reviewText, setReviewText] = useState(review.review);
-  const [imageUrl, setImageUrl] = useState(review.books_pics_url);
+function EditPopup({ review, onClose, onSave, onDelete }) {
+  const [title, setTitle] = useState("");
+  const [category, setCategory] = useState("");
+  const [reviewText, setReviewText] = useState("");
+  const [imageUrl, setImageUrl] = useState("");
   const [imageFile, setImageFile] = useState(null);
   const inputRef = useRef();
+  const [reviews, setReviews] = useState([]);
+
+
+
+  useEffect(() => {
+    if (review) {
+      setTitle(review.title || "");
+      setCategory(review.category || "");
+      setReviewText(review.review || "");
+      setImageUrl(review.books_pics_url || "");
+    }
+  }, [review]);
+
+  if (!review) return null;
+
+  
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
@@ -36,6 +53,31 @@ function EditPopup({ review, onClose, onSave }) {
       setImageUrl(preview);
     }
   };
+
+   const handleDelete = async (reviewId) => {
+  const user = getAuth().currentUser;
+  if (!user) return;
+
+  const confirmDelete = window.confirm("Are you sure you want to delete this review?");
+  if (!confirmDelete) return;
+
+  try {
+    const userReviewRef = doc(db, "users", user.uid, "reviews", reviewId);
+    await deleteDoc(userReviewRef);
+
+    const globalReviewRef = doc(db, "allreview", reviewId);
+    await deleteDoc(globalReviewRef);
+
+    console.log("Review deleted successfully");
+
+    if (typeof onDelete === "function") {
+      onDelete(reviewId); 
+    }
+  } catch (error) {
+    console.error("Error deleting review:", error);
+  }
+};
+
 
   const handleSave = async () => {
     const auth = getAuth();
@@ -86,6 +128,20 @@ function EditPopup({ review, onClose, onSave }) {
       <div className="bg-white p-6 rounded-xl shadow-xl w-[90%] max-w-xl relative">
         <h2 className="text-2xl font-semibold mb-4">Edit Review</h2>
 
+        <label
+          onClick={(e) => {
+            e.stopPropagation(); // Don't open view popup
+            handleDelete(review.reviewId);
+          }}
+          className="absolute bg-red-600 hover:bg-red-700 text-white w-12 h-12 flex justify-center items-center cursor-pointer rounded-full transition duration-300 right-5 top-5"
+        >
+          <img 
+            src={deleteIcon}
+            alt="Delete"
+            className="w-7 h-7 invert brightness-0"
+            />
+        </label>
+
         <label>Book Title</label>
         <input
           type="text"
@@ -129,16 +185,16 @@ function EditPopup({ review, onClose, onSave }) {
           />
         </div>
 
-        <div className="flex justify-end gap-4 mt-6">
+        <div className="flex justify-center gap-4 mt-10">
           <button
             onClick={onClose}
-            className="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400"
+            className="px-6 py-2 bg-gray-300 rounded-full hover:bg-gray-400"
           >
             Cancel
           </button>
           <button
             onClick={handleSave}
-            className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+            className="px-6 py-2 bg-blue-500 text-white rounded-full  hover:bg-blue-600"
           >
             Save
           </button>
