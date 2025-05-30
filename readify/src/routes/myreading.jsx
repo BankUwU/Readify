@@ -3,6 +3,7 @@ import { collection, deleteDoc, doc, getDocs } from "firebase/firestore";
 import { useEffect, useState } from "react";
 import { FiPlus, FiTrash2 } from "react-icons/fi";
 import ReadingPopup from "../components/AddReadingPopup";
+import BookLogPopup from "../components/BookLogPopup";
 import Header from "../components/header";
 import { db } from "../config/firebaseConfig";
 
@@ -10,6 +11,7 @@ function MyReading() {
   const [showPopup, setShowPopup] = useState(false);
   const [user, setUser] = useState(null);
   const [readingList, setReadingList] = useState([]);
+  const [selectedReading, setSelectedReading] = useState(null);
 
   useEffect(() => {
     const auth = getAuth();
@@ -39,7 +41,7 @@ function MyReading() {
 
     try {
       await deleteDoc(doc(db, "users", user.uid, "myreading", readingId));
-      fetchReadingList(user.uid); // Refresh after deletion
+      fetchReadingList(user.uid);
     } catch (error) {
       console.error("Failed to delete reading:", error);
       alert("Error deleting the book. Try again.");
@@ -65,7 +67,11 @@ function MyReading() {
         ) : (
           <div className="grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
             {readingList.map((book) => (
-              <div key={book.id} className="bg-white p-4 rounded-xl shadow relative">
+              <div
+                key={book.id}
+                onClick={() => setSelectedReading(book)}
+                className="bg-white p-4 rounded-xl shadow relative cursor-pointer hover:shadow-lg transition"
+              >
                 <img
                   src={book.booksCover}
                   alt="Book Cover"
@@ -75,10 +81,13 @@ function MyReading() {
                 <p className="text-gray-600">📚 {book.category}</p>
                 <p className="text-gray-600">📄 Pages: {book.numberOfPage}</p>
                 <p className="text-sm text-gray-400">📅 Date: {book.createDate}</p>
-                <p className="text-sm text-gray-500">📈 Progress: {book.progress}%</p>
+                <p className="text-sm text-gray-500">📈 Progress: {book.progress || 0}%</p>
 
                 <button
-                  onClick={() => handleDelete(book.id)}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleDelete(book.id);
+                  }}
                   className="absolute top-3 right-3 text-red-500 hover:text-red-700"
                   title="Delete"
                 >
@@ -95,6 +104,15 @@ function MyReading() {
           user={user}
           onClose={() => setShowPopup(false)}
           onReadingAdded={handleReadingAdded}
+        />
+      )}
+
+      {selectedReading && (
+        <BookLogPopup
+          reading={selectedReading}
+          user={user}
+          onClose={() => setSelectedReading(null)}
+          refresh={() => fetchReadingList(user.uid)}
         />
       )}
     </>
