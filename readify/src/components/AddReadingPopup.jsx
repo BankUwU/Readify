@@ -21,6 +21,7 @@ const uploadToCloudinary = async (imageFile) => {
 };
 
 function ReadingPopup({ user, onClose, onReadingAdded }) {
+  const [title, setTitle] = useState("");
   const [booksCover, setBooksCover] = useState("");
   const [imageUploading, setImageUploading] = useState(false);
   const [category, setCategory] = useState("");
@@ -38,7 +39,6 @@ function ReadingPopup({ user, onClose, onReadingAdded }) {
       setBooksCover(url);
     } catch (error) {
       console.error("Image upload failed:", error);
-      // Optionally show error to user
     } finally {
       setImageUploading(false);
     }
@@ -54,8 +54,6 @@ function ReadingPopup({ user, onClose, onReadingAdded }) {
 
     const readingId = uuidv4();
     const finalCategory = category === "Other" ? customCategory : category;
-
-    // Format date like "May 27, 2025"
     const createDate = new Date().toLocaleDateString("en-US", {
       year: "numeric",
       month: "short",
@@ -63,6 +61,7 @@ function ReadingPopup({ user, onClose, onReadingAdded }) {
     });
 
     const readingData = {
+      title,
       booksCover,
       createDate,
       category: finalCategory,
@@ -85,10 +84,23 @@ function ReadingPopup({ user, onClose, onReadingAdded }) {
       <div className="bg-white p-6 rounded-lg w-[90%] max-w-lg shadow-xl">
         <h2 className="text-xl font-bold mb-4">Add New Reading</h2>
         <form onSubmit={handleSubmit} className="space-y-4">
+
+          {/* Title */}
+          <input
+            type="text"
+            placeholder="Book title"
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+            className="w-full border rounded px-3 py-2"
+            required
+          />
+
+          {/* Image Upload */}
           <input type="file" accept="image/*" onChange={handleImageUpload} required />
           {imageUploading && <p className="text-sm text-gray-500">Uploading...</p>}
           {booksCover && <img src={booksCover} alt="Preview" className="w-32 mt-2 rounded" />}
 
+          {/* Category */}
           <div>
             <label className="block font-medium mb-1">Category</label>
             <select
@@ -97,13 +109,9 @@ function ReadingPopup({ user, onClose, onReadingAdded }) {
               className="w-full border rounded px-3 py-2"
               required
             >
-              <option value="" disabled>
-                Select category
-              </option>
+              <option value="" disabled>Select category</option>
               {predefinedCategories.map((cat) => (
-                <option key={cat} value={cat}>
-                  {cat}
-                </option>
+                <option key={cat} value={cat}>{cat}</option>
               ))}
             </select>
             {category === "Other" && (
@@ -118,6 +126,7 @@ function ReadingPopup({ user, onClose, onReadingAdded }) {
             )}
           </div>
 
+          {/* Number of Pages */}
           <input
             type="number"
             placeholder="Number of pages"
