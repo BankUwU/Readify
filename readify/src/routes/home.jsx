@@ -7,6 +7,8 @@ import MyReadingList from "../components/myreadinglist";
 import Plus from "../components/plus";
 import { auth, db } from "../config/firebaseConfig";
 import { getDoc, doc } from "firebase/firestore";
+import { useNavigate } from "react-router-dom";
+import ReadingPopup from "../components/AddReadingPopup";
 
 function Home() {
   const [user, setUser] = useState(null);
@@ -14,6 +16,8 @@ function Home() {
   const [readingList, setReadingList] = useState([]);
   const [bookreview, setBookReview] = useState([]);
   const [userPhotos, setUserPhotos] = useState({});
+  const navigate = useNavigate();
+  const [showPopup, setShowPopup] = useState(false);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
@@ -77,6 +81,22 @@ function Home() {
     <>
       <Header />
       <div className="p-5">
+        {showPopup && (
+          <ReadingPopup
+            user={user}
+            onClose={() => setShowPopup(false)}
+            onReadingAdded={() => {
+              // Refetch the list
+              const fetchReadingList = async () => {
+                const snapshot = await getDocs(collection(db, "users", user.uid, "myreading"));
+                const booksArray = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+                setReadingList(booksArray);
+              };
+              fetchReadingList();
+            }}
+          />
+        )}
+
        
           <>
             {/* <h2 className="text-xl font-semibold">Hello {user.displayName} :)</h2> */}
@@ -88,7 +108,14 @@ function Home() {
                 </div>
               </h3>
               <div className="flex flex-wrap rounded-3xl bg-blue-900 overflow-x-auto mt-2">
-                <Plus />
+                <Plus onClick={() => {
+                  if (!user) {
+                    navigate("/login");
+                  } else {
+                    setShowPopup(true);
+                  }
+                }} />
+
                 <MyReadingList readingList={readingList} />
               </div>
             </div>
