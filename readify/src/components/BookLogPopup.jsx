@@ -1,5 +1,5 @@
 import { addDoc, collection, doc, increment, setDoc, updateDoc } from "firebase/firestore";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { db } from "../config/firebaseConfig";
 
 const CLOUD_NAME = "djxipn8kj";
@@ -31,12 +31,6 @@ function BookLogPopup({ reading, user, onClose, refresh }) {
     review: "",
   });
 
-  useEffect(() => {
-    if (reading.progress === 100) {
-      setShowReviewPrompt(true);
-    }
-  }, []);
-
   const today = new Date().toLocaleDateString("en-US", {
     year: "numeric",
     month: "short",
@@ -52,7 +46,7 @@ function BookLogPopup({ reading, user, onClose, refresh }) {
     }
 
     const newTotal = (reading.currentPage || 0) + readCount;
-    if (newTotal > reading.numberOfPage) {
+    if (reading.numberOfPage && newTotal > reading.numberOfPage) {
       setError("You cannot log more than the total number of pages.");
       return;
     }
@@ -80,13 +74,15 @@ function BookLogPopup({ reading, user, onClose, refresh }) {
         currentPage,
       });
 
-      refresh();
-
       if (progress === 100) {
+        const statRef = doc(db, `users/${user.uid}/stats/progress`);
+        await setDoc(statRef, { totalRead: increment(1) }, { merge: true });
         setShowReviewPrompt(true);
       } else {
         onClose();
       }
+
+      refresh();
     } catch (error) {
       console.error("Error logging reading:", error);
       alert("Failed to save log.");
