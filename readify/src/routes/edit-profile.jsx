@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 import Header from "../components/header";
 import { auth, db } from "../config/firebaseConfig";
 import editIcon from "../img/edit-icon.png";
+import Longbg from "../img/longbg.jpg"
 
 function EditProfile() {
   const [user, setUser] = useState(null);
@@ -56,6 +57,8 @@ function EditProfile() {
   }, [navigate]);
 
   const handleEditClick = () => {
+    setNewPreviewUrl(previewUrl);
+    setNewImageChosen(false); 
     setShowPopup(true);
     setTimeout(() => {
       fileInputRef.current?.click();
@@ -155,80 +158,15 @@ function EditProfile() {
   return (
     <>
       <Header />
-      {/* <div className="max-w-7xl mx-auto px-6 mt-8 flex justify-end">
-        <label
-          onClick={openEditInfoPopup}
-          className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition"
-        >
-          <img
-            src={editIcon}
-            alt="Edit"
-            className="w-7 h-7"
-          />
-        </label>
-      </div> */}
-      {showEditInfoPopup && (
-        <div className="fixed inset-0 bg-black bg-opacity-40 flex justify-center items-center z-50">
-          <div className="bg-white p-6 rounded-2xl shadow-lg text-center w-[90%] max-w-md">
-            <h2 className="text-2xl font-semibold mb-4">Edit Profile Info</h2>
-            <div className="mb-4 text-left">
-              <label className="block mb-1 font-medium">Username</label>
-              <input
-                type="text"
-                value={editUsername}
-                onChange={(e) => setEditUsername(e.target.value)}
-                className="w-full border border-gray-300 rounded px-3 py-2 outline-none focus:ring-2 focus:ring-blue-400"
-              />
-            </div>
-            <div className="mb-4 text-left">
-              <label className="block mb-1 font-medium">Email</label>
-              <input
-                type="email"
-                value={editEmail}
-                onChange={(e) => setEditEmail(e.target.value)}
-                className="w-full border border-gray-300 rounded px-3 py-2 outline-none focus:ring-2 focus:ring-blue-400"
-              />
-            </div>
+      <div className="w-full relative">
+        <img
+          src={Longbg}
+          alt="background"
+          className="w-full object-cover h-[200px]"
+        />
 
-            <div className="flex justify-center gap-4 mt-4">
-              <button
-                onClick={() => setShowEditInfoPopup(false)}
-                className="px-6 py-2 rounded-full border border-gray-400 hover:bg-gray-100"
-                disabled={savingInfo}
-              >
-                Cancel
-              </button>
-              <button
-                onClick={handleSaveInfo}
-                disabled={savingInfo || !editUsername || !editEmail}
-                className={`px-6 py-2 rounded-full text-white ${
-                  !editUsername || !editEmail || savingInfo
-                    ? "bg-gray-400 cursor-not-allowed"
-                    : "bg-green-500 hover:bg-green-700"
-                }`}
-              >
-                {savingInfo ? "Saving..." : "Save"}
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Existing profile picture and info section */}
-      <div className="relative flex items-center justify-around bg-[aliceblue] w-full max-w-7xl mt-12 mx-auto min-h-[650px] rounded-[30px] text-left px-6">
-        <div className="absolute top-8 right-8">
-        <label
-          onClick={openEditInfoPopup}
-          className="cursor-pointer "
-        >
-          <img
-            src={editIcon}
-            alt="Edit"
-            className="w-7 h-7"
-          />
-        </label>
-      </div>
-        <div className="relative w-[350px] h-[350px]">
+        <div className="absolute inset-0 top-[80px] flex bg-white w-[250px] h-[250px] mx-auto rounded-full items-center justify-center">
+        <div className="relative w-[230px] h-[230px]">
           <div className="w-full h-full bg-white rounded-full overflow-hidden">
             {previewUrl ? (
               <img
@@ -240,15 +178,16 @@ function EditProfile() {
               <p>No Image</p>
             )}
           </div>
+          
 
           <label
             onClick={handleEditClick}
-            className="absolute bottom-4 right-8 bg-blue-500 flex rounded-full cursor-pointer shadow-md w-12 h-12 items-center justify-center"
+            className="absolute bottom-1 right-5 bg-blue-600 flex rounded-full cursor-pointer shadow-md w-10 h-10 items-center justify-center"
           >
             <img
               src={editIcon}
               alt="Edit"
-              className="w-7 h-7 invert brightness-0"
+              className="w-6 h-6 invert brightness-0"
             />
           </label>
 
@@ -261,25 +200,82 @@ function EditProfile() {
             className="hidden"
           />
         </div>
+        </div>
+    </div>
+      {showEditInfoPopup && (
+        <div className="fixed inset-0 bg-black bg-opacity-40 flex justify-center items-center z-50">
+          <div className="bg-white p-6 rounded-2xl shadow-lg text-center w-full max-w-md">
+            <h2 className="text-2xl font-semibold mb-4">Edit Profile Info</h2>
+            <div className="mb-4 text-left">
+              <label className="block text-sm font-medium">Username</label>
+              <input
+                type="text"
+                value={editUsername}
+                onChange={(e) => setEditUsername(e.target.value)}
+                className="w-full border border-gray-300 rounded px-3 py-2 mt-1 outline-none focus:ring-2 focus:ring-blue-400"
+              />
+            </div>
+            <div className="mb-4 text-left">
+              <label className="block text-sm font-medium">Email</label>
+              <input
+                type="email"
+                value={editEmail}
+                onChange={(e) => setEditEmail(e.target.value)}
+                className="w-full border border-gray-300 rounded px-3 py-2 mt-1 outline-none focus:ring-2 focus:ring-blue-400"
+              />
+            </div>
 
-        <div className="w-px h-[350px] bg-gray-300 mx-6" />
+            <div className="flex justify-center gap-4 mt-6">
+              <button
+                onClick={() => setShowEditInfoPopup(false)}
+                className="px-4 py-2 rounded-full border bg-gray-200 hover:bg-gray-300"
+                disabled={savingInfo}
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleSaveInfo}
+                disabled={savingInfo || !editUsername || !editEmail}
+                className={`px-6 py-2 rounded-full text-white ${
+                  !editUsername || !editEmail || savingInfo
+                    ? "bg-gray-400 cursor-not-allowed"
+                    : "bg-blue-500 hover:bg-blue-700"
+                }`}
+              >
+                {savingInfo ? "Saving..." : "Save"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
-
-        <div className="flex-1 max-w-[500px] text-left">
-          <h1 className="text-5xl mb-4">Edit Profile</h1>
-          <p className="text-lg">
-            <strong>Username:</strong> {username || "Not set"}
-          </p>
-          <p className="text-lg mb-8">
-            <strong>Email:</strong> {email || "Not set"}
-          </p>
-
-          {/* Image upload popup */}
+      <div className="border relative mt-40 items-center bg-white shadow-xl w-full max-w-6xl grid grid-cols-1 md:grid-cols-2 mx-auto rounded-3xl p-8">
+          <div>
+             <label
+              onClick={openEditInfoPopup}
+              className="cursor-pointer absolute right-6 top-6"
+            >
+            <img
+              src={editIcon}
+              alt="Edit"
+              className="w-7 h-7 right-0"
+            />
+        </label>
+            <h1 className="text-4xl font-bold text-gray-800">Edit Profile</h1>
+            <p className="text-lg text-gray-700">
+              <strong>Username:</strong> {username || "Not set"}
+            </p>
+            <p className="text-lg text-gray-700 mb-8">
+              <strong>Email:</strong> {email || "Not set"}
+            </p>
+          </div>
+        </div>
+          
           {showPopup && (
-            <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+            <div className="fixed inset-0 bg-black bg-opacity-40 flex justify-center items-center z-50">
               <div className="bg-white rounded-xl p-6 shadow-lg w-[300px] text-center">
                 <h2 className="text-xl mb-4 font-semibold">Change Profile Image</h2>
-                {newImageChosen ? (
+                {newPreviewUrl ? (
                   <img
                     src={newPreviewUrl}
                     alt="New Preview"
@@ -289,14 +285,22 @@ function EditProfile() {
                   <p>No image selected yet.</p>
                 )}
 
+                <button
+                  onClick={() => fileInputRef.current?.click()}
+                  className="underline text-gray-600"
+                >
+                  Select Image
+                </button>
                 <input
                   type="file"
                   accept="image/*"
+                  ref={fileInputRef}
                   onChange={handleImageChange}
-                  className="my-2"
+                  className="hidden"
                 />
 
-                <div className="flex justify-around mt-4">
+
+                <div className="flex justify-center gap-4 mt-4">
                   <button
                     onClick={() => {
                       setShowPopup(false);
@@ -313,20 +317,20 @@ function EditProfile() {
                   <button
                     onClick={handleSave}
                     disabled={uploading || !newImageChosen}
-                    className={`px-4 py-2 rounded-full text-white ${
+                    className={`px-6 py-2 rounded-full text-white ${
                       uploading || !newImageChosen
                         ? "bg-gray-400 cursor-not-allowed"
                         : "bg-blue-600 hover:bg-blue-700"
                     }`}
                   >
-                    {uploading ? "Saving..." : "Save"}
+                    Save
                   </button>
                 </div>
               </div>
             </div>
           )}
-        </div>
-      </div>
+        
+    
     </>
   );
 }
