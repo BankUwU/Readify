@@ -51,7 +51,7 @@ function MyReading() {
   return (
     <>
       <Header />
-      <div className="p-5 min-h-[calc(100vh-60px)] bg-[#eaf6ff] font-['Segoe_UI']">
+      <div className="p-5 min-h-[calc(100vh-60px)]">
         <div className="flex justify-between items-center mb-6">
           <h2 className="text-2xl font-bold">My Reading List</h2>
           <button

@@ -23,18 +23,15 @@ function Home() {
   }, []);
 
   useEffect(() => {
-    // async function fetchReadingList() {
-    //   try {
-    //     const querySnapshot = await getDocs(collection(db, "reviews"));
-    //     const booksArray = [];
-    //     querySnapshot.forEach((doc) => {
-    //       booksArray.push({ id: doc.id, ...doc.data() });
-    //     });
-    //     setReadingList(booksArray);
-    //   } catch (error) {
-    //     console.error("Error fetching reading list:", error);
-    //   }
-    // }
+  async function fetchReadingList() {
+    try {
+      const snapshot = await getDocs(collection(db, "users", user.uid, "myreading"));
+      const booksArray = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+      setReadingList(booksArray);
+    } catch (error) {
+      console.error("Error fetching reading list:", error);
+    }
+  }
 
     async function fetchBookReviews() {
   try {
@@ -66,9 +63,9 @@ function Home() {
 
 
 
-    // fetchReadingList();
+    fetchReadingList();
     fetchBookReviews();
-  }, []);
+  }, [user]);
 
   const toggleFavorite = (index) => {
     const updatedFavorites = [...favorites];
@@ -92,7 +89,7 @@ function Home() {
               </h3>
               <div className="flex flex-wrap rounded-3xl bg-blue-900 overflow-x-auto mt-2">
                 <Plus />
-                {/* <MyReadingList readingList={readingList} /> */}
+                <MyReadingList readingList={readingList} />
               </div>
             </div>
 

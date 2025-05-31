@@ -1,11 +1,11 @@
 import axios from "axios";
-import { onAuthStateChanged, updateProfile } from "firebase/auth";
+import { onAuthStateChanged, updateProfile, updateEmail } from "firebase/auth";
 import { doc, getDoc, setDoc } from "firebase/firestore";
 import { useEffect, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import Header from "../components/header";
 import { auth, db } from "../config/firebaseConfig";
-import editIcon from "../img/edit-icon.png"
+import editIcon from "../img/edit-icon.png";
 
 function EditProfile() {
   const [user, setUser] = useState(null);
@@ -16,54 +16,60 @@ function EditProfile() {
   const [email, setEmail] = useState("");
   const [showPopup, setShowPopup] = useState(false);
   const [newImageChosen, setNewImageChosen] = useState(false);
-  const [newPreviewUrl, setNewPreviewUrl] = useState(""); 
+  const [newPreviewUrl, setNewPreviewUrl] = useState("");
 
+  // NEW STATES for editing username/email
+  const [showEditInfoPopup, setShowEditInfoPopup] = useState(false);
+  const [editUsername, setEditUsername] = useState("");
+  const [editEmail, setEditEmail] = useState("");
+  const [savingInfo, setSavingInfo] = useState(false);
 
   const navigate = useNavigate();
   const fileInputRef = useRef(null);
 
   useEffect(() => {
-  const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
-    if (currentUser) {
-      setUser(currentUser);
-      setEmail(currentUser.email || "");
-
-      const docRef = doc(db, "users", currentUser.uid);
-      const docSnap = await getDoc(docRef);
-      if (docSnap.exists()) {
-        const data = docSnap.data();
-        setPreviewUrl(data.photoURL || currentUser.photoURL || "");
-        setUsername(data.username || currentUser.displayName || "");
-      } else {
-        setPreviewUrl(currentUser.photoURL || "");
+    const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
+      if (currentUser) {
+        setUser(currentUser);
+        setEmail(currentUser.email || "");
         setUsername(currentUser.displayName || "");
-      }
-    } else {
-      alert("Please Login to continue");
-      navigate("/login", { replace: true });
-    }
-  });
 
-  return () => unsubscribe();
-}, [navigate]);
+        const docRef = doc(db, "users", currentUser.uid);
+        const docSnap = await getDoc(docRef);
+        if (docSnap.exists()) {
+          const data = docSnap.data();
+          setPreviewUrl(data.photoURL || currentUser.photoURL || "");
+          setUsername(data.username || currentUser.displayName || "");
+          setEmail(data.email || currentUser.email || "");
+        } else {
+          setPreviewUrl(currentUser.photoURL || "");
+          setUsername(currentUser.displayName || "");
+          setEmail(currentUser.email || "");
+        }
+      } else {
+        alert("Please Login to continue");
+        navigate("/login", { replace: true });
+      }
+    });
+
+    return () => unsubscribe();
+  }, [navigate]);
 
   const handleEditClick = () => {
     setShowPopup(true);
     setTimeout(() => {
       fileInputRef.current?.click();
-    }); 
+    });
   };
 
-
   const handleImageChange = (e) => {
-  const file = e.target.files[0];
-  setImage(file);
-  if (file) {
-    setNewPreviewUrl(URL.createObjectURL(file));
-    setNewImageChosen(true);
-  }
-};
-
+    const file = e.target.files[0];
+    setImage(file);
+    if (file) {
+      setNewPreviewUrl(URL.createObjectURL(file));
+      setNewImageChosen(true);
+    }
+  };
 
   const handleSave = async () => {
     if (!user) return;
@@ -96,7 +102,7 @@ function EditProfile() {
 
       setShowPopup(false);
       setImage(null);
-      setPreviewUrl(imageUrl); 
+      setPreviewUrl(imageUrl);
       setNewImageChosen(false);
       setNewPreviewUrl("");
     } catch (err) {
@@ -107,101 +113,218 @@ function EditProfile() {
     }
   };
 
+  // New handlers for editing username/email popup
+  const openEditInfoPopup = () => {
+    setEditUsername(username);
+    setEditEmail(email);
+    setShowEditInfoPopup(true);
+  };
+
+  const handleSaveInfo = async () => {
+    if (!user) return;
+    setSavingInfo(true);
+
+    try {
+      // Update Firebase Auth profile (username & email)
+      if (editUsername !== username) {
+        await updateProfile(user, { displayName: editUsername });
+      }
+      if (editEmail !== email) {
+        await updateEmail(user, editEmail);
+      }
+
+      // Update Firestore user doc
+      await setDoc(
+        doc(db, "users", user.uid),
+        { username: editUsername, email: editEmail },
+        { merge: true }
+      );
+
+      // Update local state after successful save
+      setUsername(editUsername);
+      setEmail(editEmail);
+      setShowEditInfoPopup(false);
+    } catch (err) {
+      console.error(err);
+      alert("Failed to update profile info. You might need to re-login.");
+    } finally {
+      setSavingInfo(false);
+    }
+  };
+
   return (
     <>
       <Header />
-      {showPopup && (
+      {/* <div className="max-w-7xl mx-auto px-6 mt-8 flex justify-end">
+        <label
+          onClick={openEditInfoPopup}
+          className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition"
+        >
+          <img
+            src={editIcon}
+            alt="Edit"
+            className="w-7 h-7"
+          />
+        </label>
+      </div> */}
+      {showEditInfoPopup && (
         <div className="fixed inset-0 bg-black bg-opacity-40 flex justify-center items-center z-50">
           <div className="bg-white p-6 rounded-2xl shadow-lg text-center w-[90%] max-w-md">
-            <h2 className="text-2xl font-semibold mb-4">Edit Profile Picture</h2>
-            {(newPreviewUrl || previewUrl) && (
-              <img
-                src={newPreviewUrl || previewUrl}
-                alt="Preview"
-                className="w-40 h-40 mx-auto rounded-full object-cover mb-4"
+            <h2 className="text-2xl font-semibold mb-4">Edit Profile Info</h2>
+            <div className="mb-4 text-left">
+              <label className="block mb-1 font-medium">Username</label>
+              <input
+                type="text"
+                value={editUsername}
+                onChange={(e) => setEditUsername(e.target.value)}
+                className="w-full border border-gray-300 rounded px-3 py-2 outline-none focus:ring-2 focus:ring-blue-400"
               />
-            )}
+            </div>
+            <div className="mb-4 text-left">
+              <label className="block mb-1 font-medium">Email</label>
+              <input
+                type="email"
+                value={editEmail}
+                onChange={(e) => setEditEmail(e.target.value)}
+                className="w-full border border-gray-300 rounded px-3 py-2 outline-none focus:ring-2 focus:ring-blue-400"
+              />
+            </div>
 
             <div className="flex justify-center gap-4 mt-4">
               <button
-                onClick={() => document.getElementById("imageUpload").click()}
-                className="bg-blue-500 text-white px-6 py-2 rounded-full hover:bg-blue-700"
+                onClick={() => setShowEditInfoPopup(false)}
+                className="px-6 py-2 rounded-full border border-gray-400 hover:bg-gray-100"
+                disabled={savingInfo}
               >
-                Edit
+                Cancel
               </button>
               <button
-                onClick={handleSave}
-                disabled={!newImageChosen || uploading}
+                onClick={handleSaveInfo}
+                disabled={savingInfo || !editUsername || !editEmail}
                 className={`px-6 py-2 rounded-full text-white ${
-                  newImageChosen && !uploading
-                  ? "bg-green-500 hover:bg-green-700" 
-                  : "bg-gray-400 cursor-not-allowed"
+                  !editUsername || !editEmail || savingInfo
+                    ? "bg-gray-400 cursor-not-allowed"
+                    : "bg-green-500 hover:bg-green-700"
                 }`}
               >
-                Save
+                {savingInfo ? "Saving..." : "Save"}
               </button>
             </div>
-
-            <button
-              onClick={() => setShowPopup(false)}
-              className="mt-4 text-sm text-gray-600 underline"
-            >
-              Cancel
-            </button>
           </div>
         </div>
       )}
 
-      <div className="flex items-center justify-around bg-[aliceblue] max-w-[75%] mt-12 mx-auto min-h-[65vh] rounded-[30px] text-left px-6">
-          <div className="relative w-[350px] h-[350px]">
-            <div className="w-full h-full bg-white rounded-full overflow-hidden">
-              {previewUrl ? (
-                <img
-                  src={previewUrl}
-                  alt="Profile"
-                  className="w-full h-full object-cover"
-                />
-              ) : (
-                <p>No Image</p>
-              )}
-            </div>
-
-            <label
-              onClick={handleEditClick}
-              className="absolute bottom-4 right-8 bg-blue-500 flex rounded-full cursor-pointer shadow-md w-12 h-12 items-center justify-center"
-            >
+      {/* Existing profile picture and info section */}
+      <div className="relative flex items-center justify-around bg-[aliceblue] w-full max-w-7xl mt-12 mx-auto min-h-[650px] rounded-[30px] text-left px-6">
+        <div className="absolute top-8 right-8">
+        <label
+          onClick={openEditInfoPopup}
+          className="cursor-pointer "
+        >
+          <img
+            src={editIcon}
+            alt="Edit"
+            className="w-7 h-7"
+          />
+        </label>
+      </div>
+        <div className="relative w-[350px] h-[350px]">
+          <div className="w-full h-full bg-white rounded-full overflow-hidden">
+            {previewUrl ? (
               <img
-                src={editIcon}
-                alt="Edit"
-                className="w-7 h-7 invert brightness-0"
+                src={previewUrl}
+                alt="Profile"
+                className="w-full h-full object-cover"
               />
-            </label>
-
-            <input
-              id="imageUpload"
-              type="file"
-              accept="image/*"
-              ref={fileInputRef}
-              onChange={handleImageChange}
-              className="hidden"
-            />
-
+            ) : (
+              <p>No Image</p>
+            )}
           </div>
 
-        
+          <label
+            onClick={handleEditClick}
+            className="absolute bottom-4 right-8 bg-blue-500 flex rounded-full cursor-pointer shadow-md w-12 h-12 items-center justify-center"
+          >
+            <img
+              src={editIcon}
+              alt="Edit"
+              className="w-7 h-7 invert brightness-0"
+            />
+          </label>
+
+          <input
+            id="imageUpload"
+            type="file"
+            accept="image/*"
+            ref={fileInputRef}
+            onChange={handleImageChange}
+            className="hidden"
+          />
+        </div>
+
+        <div className="w-px h-[350px] bg-gray-300 mx-6" />
+
 
         <div className="flex-1 max-w-[500px] text-left">
           <h1 className="text-5xl mb-4">Edit Profile</h1>
           <p className="text-lg">
             <strong>Username:</strong> {username || "Not set"}
           </p>
-          <p className="text-lg">
-            <strong>Email:</strong> {email}
+          <p className="text-lg mb-8">
+            <strong>Email:</strong> {email || "Not set"}
           </p>
 
+          {/* Image upload popup */}
+          {showPopup && (
+            <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+              <div className="bg-white rounded-xl p-6 shadow-lg w-[300px] text-center">
+                <h2 className="text-xl mb-4 font-semibold">Change Profile Image</h2>
+                {newImageChosen ? (
+                  <img
+                    src={newPreviewUrl}
+                    alt="New Preview"
+                    className="w-48 h-48 rounded-full mx-auto object-cover mb-4"
+                  />
+                ) : (
+                  <p>No image selected yet.</p>
+                )}
 
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={handleImageChange}
+                  className="my-2"
+                />
 
-    
+                <div className="flex justify-around mt-4">
+                  <button
+                    onClick={() => {
+                      setShowPopup(false);
+                      setImage(null);
+                      setNewImageChosen(false);
+                      setNewPreviewUrl("");
+                    }}
+                    disabled={uploading}
+                    className="px-4 py-2 rounded-full border border-gray-400 hover:bg-gray-100"
+                  >
+                    Cancel
+                  </button>
+
+                  <button
+                    onClick={handleSave}
+                    disabled={uploading || !newImageChosen}
+                    className={`px-4 py-2 rounded-full text-white ${
+                      uploading || !newImageChosen
+                        ? "bg-gray-400 cursor-not-allowed"
+                        : "bg-blue-600 hover:bg-blue-700"
+                    }`}
+                  >
+                    {uploading ? "Saving..." : "Save"}
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </>
@@ -209,4 +332,3 @@ function EditProfile() {
 }
 
 export default EditProfile;
-
