@@ -13,7 +13,7 @@ import Myreviews from "./routes/myreviews";
 import Profile from "./routes/profile";
 import Register from "./routes/register";
 import Review from "./routes/review";
-
+import Bookinformation from "./routes/bookinformation";
 import ProtectedRoute from "./components/ProtectedRoutes";
 
 function App() {
@@ -95,6 +95,14 @@ function App() {
           element={
             <ProtectedRoute>
               <EditProfile />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/book-information"
+          element={
+            <ProtectedRoute>
+              <Bookinformation />
             </ProtectedRoute>
           }
         />

@@ -25,6 +25,8 @@ function BookLogPopup({ reading, user, onClose, refresh }) {
   const [showReviewPrompt, setShowReviewPrompt] = useState(false);
   const [showReviewForm, setShowReviewForm] = useState(false);
   const [error, setError] = useState("");
+  const [readingNote, setReadingNote] = useState("");
+
   const [reviewData, setReviewData] = useState({
     title: reading.title || "",
     category: reading.category || "",
@@ -63,6 +65,7 @@ function BookLogPopup({ reading, user, onClose, refresh }) {
       pagesRead: readCount,
       newCurrentPage: currentPage,
       progress,
+      note: readingNote || "", 
     };
 
     try {
@@ -145,6 +148,15 @@ function BookLogPopup({ reading, user, onClose, refresh }) {
               min={1}
             />
             {error && <p className="text-red-600 text-sm">{error}</p>}
+
+            <textarea
+              placeholder="Add a note about today's reading (optional)"
+              value={readingNote}
+              onChange={(e) => setReadingNote(e.target.value)}
+              className="w-full border rounded px-3 py-2"
+              rows={3}
+            />
+
 
             <div className="flex justify-end gap-3">
               <button type="button" onClick={onClose} className="text-gray-600">Cancel</button>

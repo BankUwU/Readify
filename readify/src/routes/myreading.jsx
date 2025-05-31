@@ -3,15 +3,18 @@ import { collection, deleteDoc, doc, getDocs } from "firebase/firestore";
 import { useEffect, useState } from "react";
 import { FiPlus, FiTrash2 } from "react-icons/fi";
 import ReadingPopup from "../components/AddReadingPopup";
-import BookLogPopup from "../components/BookLogPopup";
 import Header from "../components/header";
 import { db } from "../config/firebaseConfig";
+import { useNavigate } from "react-router-dom";
+
 
 function MyReading() {
   const [showPopup, setShowPopup] = useState(false);
   const [user, setUser] = useState(null);
   const [readingList, setReadingList] = useState([]);
   const [selectedReading, setSelectedReading] = useState(null);
+  const navigate = useNavigate();
+
 
   useEffect(() => {
     const auth = getAuth();
@@ -69,7 +72,7 @@ function MyReading() {
             {readingList.map((book) => (
               <div
                 key={book.id}
-                onClick={() => setSelectedReading(book)}
+                onClick={() => navigate("/book-information", { state: { book } })}
                 className="bg-white p-4 rounded-xl shadow relative cursor-pointer hover:shadow-lg transition"
               >
                 <img
@@ -107,14 +110,14 @@ function MyReading() {
         />
       )}
 
-      {selectedReading && (
+      {/* {selectedReading && (
         <BookLogPopup
           reading={selectedReading}
           user={user}
           onClose={() => setSelectedReading(null)}
           refresh={() => fetchReadingList(user.uid)}
         />
-      )}
+      )} */}
     </>
   );
 }
