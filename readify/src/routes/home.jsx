@@ -99,15 +99,15 @@ function Home() {
 
        
           <>
-            {/* <h2 className="text-xl font-semibold">Hello {user.displayName} :)</h2> */}
 
             <div className="mt-4">
               <h3 className="text-lg font-bold">
-                <div className="text-black text-3xl ml-3">
+                <div className="text-2xl ml-3 text-slate-800">
                   {user?.displayName ? `${user.displayName}'s Readings` : "My Readings"}
                 </div>
               </h3>
-              <div className="flex flex-wrap rounded-3xl bg-blue-900 overflow-x-auto mt-2">
+              <div className="flex flex-wrap rounded-2xl bg-blue-100 overflow-x-auto mt-2"
+              style={{ boxShadow: '0 10px 15px -5px rgba(0, 0, 0, 0.2)' }}>
                 <Plus onClick={() => {
                   if (!user) {
                     navigate("/login");
@@ -121,19 +121,13 @@ function Home() {
             </div>
 
             <div className="mt-8">
-              <h3 className="text-3xl font-bold ml-3">Reviews</h3>
-              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 mt-4">
+              <h3 className="text-2xl font-bold ml-3 text-slate-800">Reviews</h3>
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mt-4 ">
               {bookreview.map((review, index) => (
-              <div 
-                key={review.id} 
-                className=" flex items-start border bg-blue-100 rounded-3xl p-3 mt-2 mb-4">
-
-              <Bookreview 
+             <Bookreview 
                 review={review}
                 isFavorite={favorites[index]}
                 onToggleFavorite={() => toggleFavorite(index)}/>
-              </div>
-             
             ))}
 
             </div>
