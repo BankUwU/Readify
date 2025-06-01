@@ -27,6 +27,7 @@ function ReadingPopup({ user, onClose, onReadingAdded }) {
   const [category, setCategory] = useState("");
   const [customCategory, setCustomCategory] = useState("");
   const [numberOfPage, setNumberOfPage] = useState("");
+  const [loading, setLoading] = useState(false); // prevent double submit
 
   const predefinedCategories = ["Fiction", "Non-fiction", "Sci-fi", "Biography", "Other"];
 
@@ -52,6 +53,8 @@ function ReadingPopup({ user, onClose, onReadingAdded }) {
       return;
     }
 
+    setLoading(true); // prevent double submit
+
     const readingId = uuidv4();
     const finalCategory = category === "Other" ? customCategory : category;
     const createDate = new Date().toLocaleDateString("en-US", {
@@ -76,6 +79,8 @@ function ReadingPopup({ user, onClose, onReadingAdded }) {
     } catch (error) {
       console.error("Error saving reading:", error);
       alert("Failed to save reading. Please try again.");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -141,8 +146,12 @@ function ReadingPopup({ user, onClose, onReadingAdded }) {
             <button type="button" onClick={onClose} className="text-gray-600">
               Cancel
             </button>
-            <button type="submit" className="bg-blue-600 text-white px-4 py-2 rounded">
-              Add Reading
+            <button
+              type="submit"
+              className={`px-4 py-2 rounded text-white ${loading ? "bg-gray-400" : "bg-blue-600"}`}
+              disabled={loading}
+            >
+              {loading ? "Saving..." : "Add Reading"}
             </button>
           </div>
         </form>
