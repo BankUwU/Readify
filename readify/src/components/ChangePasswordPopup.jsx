@@ -41,8 +41,8 @@ function ChangePasswordPopup({ onClose, onSubmit }) {
         {error && <p className="text-red-500 text-sm mb-2">{error}</p>}
 
         <div className="flex justify-center gap-3 mt-4">
-          <button onClick={onClose} className="px-4 py-2 rounded-full bg-gray-200 hover:bg-gray-300">Cancel</button>
-          <button onClick={handleSubmit} className="px-5 py-2 rounded-full bg-blue-600 text-white hover:bg-blue-700">Save</button>
+          <button onClick={onClose} className="px-4 py-2 rounded-xl bg-gray-200 hover:bg-gray-300">Cancel</button>
+          <button onClick={handleSubmit} className="px-5 py-2 rounded-xl bg-blue-600 text-white hover:bg-blue-700">Save</button>
         </div>
       </div>
     </div>

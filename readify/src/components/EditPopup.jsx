@@ -188,13 +188,13 @@ function EditPopup({ review, onClose, onSave, onDelete }) {
         <div className="flex justify-center gap-4 mt-10">
           <button
             onClick={onClose}
-            className="px-6 py-2 bg-gray-300 rounded-full hover:bg-gray-400"
+            className="px-6 py-2 bg-gray-300 rounded-xl hover:bg-gray-400"
           >
             Cancel
           </button>
           <button
             onClick={handleSave}
-            className="px-6 py-2 bg-blue-500 text-white rounded-full  hover:bg-blue-600"
+            className="px-6 py-2 bg-blue-500 text-white rounded-xl  hover:bg-blue-600"
           >
             Save
           </button>

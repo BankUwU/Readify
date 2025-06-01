@@ -9,6 +9,7 @@ import editIcon from "../img/edit-icon.png";
 import Longbg from "../img/longbg.jpg"
 import ChangePasswordPopup from "../components/ChangePasswordPopup";
 import { updatePassword } from "firebase/auth"; 
+import DeleteAccountPopup from "../components/DeleteAccountPopup";
 
 
 function EditProfile() {
@@ -22,6 +23,8 @@ function EditProfile() {
   const [newImageChosen, setNewImageChosen] = useState(false);
   const [newPreviewUrl, setNewPreviewUrl] = useState("");
   const [showChangePasswordPopup, setShowChangePasswordPopup] = useState(false);
+  const [showDeletePopup, setShowDeletePopup] = useState(false);
+
 
 
   // NEW STATES for editing username/email
@@ -247,7 +250,7 @@ function EditProfile() {
             <div className="flex justify-center gap-4 mt-6">
               <button
                 onClick={() => setShowEditInfoPopup(false)}
-                className="px-4 py-2 rounded-full border bg-gray-200 hover:bg-gray-300"
+                className="px-4 py-2 rounded-xl border bg-gray-200 hover:bg-gray-300"
                 disabled={savingInfo}
               >
                 Cancel
@@ -255,10 +258,10 @@ function EditProfile() {
               <button
                 onClick={handleSaveInfo}
                 disabled={savingInfo || !editUsername || !editEmail}
-                className={`px-6 py-2 rounded-full text-white ${
+                className={`px-6 py-2 rounded-xl text-white ${
                   !editUsername || !editEmail || savingInfo
                     ? "bg-gray-400 cursor-not-allowed"
-                    : "bg-blue-500 hover:bg-blue-700"
+                    : "bg-blue-600 hover:bg-blue-700"
                 }`}
               >
                 {savingInfo ? "Saving..." : "Save"}
@@ -301,8 +304,12 @@ function EditProfile() {
           >
             Change Password
           </button>
-
-          <button className="px-6 py-2 bg-red-600 hover:bg-red-700 rounded-xl shadow-md transition duration-300">Delete Account</button>
+          <button
+            onClick={() => setShowDeletePopup(true)}
+            className="px-6 py-2 bg-red-600 hover:bg-red-700 rounded-xl shadow-md transition duration-300"
+          >
+            Delete Account
+          </button>
         </div>
           
           {showPopup && (
@@ -343,7 +350,7 @@ function EditProfile() {
                       setNewPreviewUrl("");
                     }}
                     disabled={uploading}
-                    className="px-4 py-2 rounded-full border border-gray-400 hover:bg-gray-100"
+                    className="px-4 py-2 rounded-xl border border-gray-400 hover:bg-gray-100"
                   >
                     Cancel
                   </button>
@@ -351,7 +358,7 @@ function EditProfile() {
                   <button
                     onClick={handleSave}
                     disabled={uploading || !newImageChosen}
-                    className={`px-6 py-2 rounded-full text-white ${
+                    className={`px-6 py-2 rounded-xl text-white ${
                       uploading || !newImageChosen
                         ? "bg-gray-400 cursor-not-allowed"
                         : "bg-blue-600 hover:bg-blue-700"
@@ -369,6 +376,15 @@ function EditProfile() {
               onSubmit={handlePasswordChange}
             />
           )}
+          {showDeletePopup && (
+          <DeleteAccountPopup
+            onClose={() => setShowDeletePopup(false)}
+            onDeleteSuccess={() => {
+              setShowDeletePopup(false);
+              navigate("/login"); 
+            }}
+          />
+        )}
     </>
   );
 }
