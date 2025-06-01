@@ -10,6 +10,8 @@ import { getDoc, doc } from "firebase/firestore";
 import { useNavigate } from "react-router-dom";
 import ReadingPopup from "../components/AddReadingPopup";
 import AllReviewPopup from "../components/AllReviewPopup";
+import { addToFavorites, removeFromFavorites } from "../api/favorites";
+
 
 function Home() {
   const [user, setUser] = useState(null);
@@ -66,18 +68,40 @@ function Home() {
     console.error("Error fetching book reviews:", error);
   }
 }
+  const fetchFavorites = async () => {
+    try {
+      const snapshot = await getDocs(collection(db, "users", user.uid, "favorites"));
+      const favoriteIds = snapshot.docs.map((doc) => doc.id);
+
+      const updatedFavorites = bookreview.map((review) => favoriteIds.includes(review.id));
+      setFavorites(updatedFavorites);
+    } catch (error) {
+      console.error("Error fetching favorites:", error);
+    }
+  };
 
 
 
     fetchReadingList();
     fetchBookReviews();
-  }, [user]);
+    fetchFavorites();
+  }, [user, bookreview]);
 
-  const toggleFavorite = (index) => {
-    const updatedFavorites = [...favorites];
-    updatedFavorites[index] = !updatedFavorites[index];
-    setFavorites(updatedFavorites);
-  };
+  const toggleFavorite = async (index) => {
+  // if (!user) return;
+
+  const selectedReview = bookreview[index];
+  const updatedFavorites = [...favorites];
+  updatedFavorites[index] = !updatedFavorites[index];
+  setFavorites(updatedFavorites);
+
+  if (updatedFavorites[index]) {
+    await addToFavorites(user.uid, selectedReview);
+  } else {
+    await removeFromFavorites(user.uid, selectedReview.id);
+  }
+};
+
 
   return (
     <>

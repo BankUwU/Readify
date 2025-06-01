@@ -24,7 +24,10 @@ function Bookreview({ review, isFavorite, onToggleFavorite, userPhotoURL, onClic
     </div>
 
     <button
-      onClick={onToggleFavorite}
+      onClick={(e) => {
+      e.stopPropagation(); 
+      onToggleFavorite();  
+    }}
       aria-label="Favorite"
       className="absolute top-4 right-4 bg-transparent border-none cursor-pointer z-10"
     >
