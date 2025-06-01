@@ -6,6 +6,7 @@ import ReadingPopup from "../components/AddReadingPopup";
 import Header from "../components/header";
 import { db } from "../config/firebaseConfig";
 import { useNavigate } from "react-router-dom";
+import DeleteConfirmationModal from "../components/DeleteConfirmationModal";
 
 
 function MyReading() {
@@ -14,6 +15,9 @@ function MyReading() {
   const [readingList, setReadingList] = useState([]);
   const [selectedReading, setSelectedReading] = useState(null);
   const navigate = useNavigate();
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [bookToDelete, setBookToDelete] = useState(null);
+
 
 
   useEffect(() => {
@@ -38,18 +42,25 @@ function MyReading() {
     setShowPopup(false);
   };
 
-  const handleDelete = async (readingId) => {
-    const confirmDelete = window.confirm("Are you sure you want to delete this book?");
-    if (!confirmDelete) return;
+  const handleDeleteClick = (readingId) => {
+    setBookToDelete(readingId);
+    setShowDeleteModal(true);
+  };
 
+  const confirmDelete = async () => {
+    if (!bookToDelete) return;
     try {
-      await deleteDoc(doc(db, "users", user.uid, "myreading", readingId));
+      await deleteDoc(doc(db, "users", user.uid, "myreading", bookToDelete));
       fetchReadingList(user.uid);
     } catch (error) {
       console.error("Failed to delete reading:", error);
       alert("Error deleting the book. Try again.");
+    } finally {
+      setShowDeleteModal(false);
+      setBookToDelete(null);
     }
   };
+
 
   return (
     <>
@@ -83,15 +94,17 @@ function MyReading() {
                 <div className="ml-5 flex flex-col flex-grow text-gray-800">
                 <h3 className="text-xl font-semibold text-gray-800 break-words pr-8">{book.title || "Untitled"}</h3>
                 <p className="text-md mt-1 text-purple-700">{book.category}</p>
-                <p className="text-sm text-gray-600">Pages: {book.numberOfPage}</p>
-                {/* <p className="text-sm text-gray-400">📅 Date: {book.createDate}</p> */}
-                <p className="text-sm text-gray-600">Progress: {book.progress || 0}%</p>
+                {/* <p className="text-sm text-gray-600">Pages: {book.numberOfPage}</p> */}
+                {/* <p className="text-sm text-gray-400">📅 Date: {book.createDate}</p> */}               
+                <p className={`text-sm font-medium ${book.progress === 100 ? "text-green-600" : "text-gray-500"}`}>
+                {book.progress === 100 ? "Complete" : `In Progress (${book.progress || 0}%)`}
+              </p>
                 </div>
 
                 <button
                   onClick={(e) => {
                     e.stopPropagation();
-                    handleDelete(book.id);
+                    handleDeleteClick(book.id);
                   }}
                   className="absolute top-3 right-3 text-red-500 hover:text-red-700"
                   title="Delete"
@@ -111,15 +124,22 @@ function MyReading() {
           onReadingAdded={handleReadingAdded}
         />
       )}
+      <DeleteConfirmationModal
+        isOpen={showDeleteModal}
+        onClose={() => setShowDeleteModal(false)}
+        onConfirm={confirmDelete}
+      />
+
 
       {/* {selectedReading && (
-        <BookLogPopup
+        <BookLogPopupa
           reading={selectedReading}
           user={user}
           onClose={() => setSelectedReading(null)}
           refresh={() => fetchReadingList(user.uid)}
         />
       )} */}
+
     </>
   );
 }
