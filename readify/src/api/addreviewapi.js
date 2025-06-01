@@ -8,6 +8,7 @@ import {
 } from "firebase/firestore";
 import { db } from "../config/firebaseConfig";
 
+
 const CLOUD_NAME = "djxipn8kj";
 const UPLOAD_PRESET = "Readify";
 

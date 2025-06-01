@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { saveReview } from "../api/addreviewapi";
 import Header from "../components/header";
 import cloudIcon from "../img/cloud-upload-icon.png";
+import { serverTimestamp } from "firebase/firestore";
 
 function AddReview() {
   const dropArea = useRef(null);
@@ -78,7 +79,8 @@ function AddReview() {
       category: category,
       review: reviewText,
       displayName: user.displayName,
-      timestamp: new Date(),
+      // timestamp: new Date(),
+      timestamp: serverTimestamp(),
     };
 
     try {

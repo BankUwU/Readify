@@ -7,6 +7,9 @@ import Header from "../components/header";
 import { auth, db } from "../config/firebaseConfig";
 import editIcon from "../img/edit-icon.png";
 import Longbg from "../img/longbg.jpg"
+import ChangePasswordPopup from "../components/ChangePasswordPopup";
+import { updatePassword } from "firebase/auth"; 
+
 
 function EditProfile() {
   const [user, setUser] = useState(null);
@@ -18,6 +21,8 @@ function EditProfile() {
   const [showPopup, setShowPopup] = useState(false);
   const [newImageChosen, setNewImageChosen] = useState(false);
   const [newPreviewUrl, setNewPreviewUrl] = useState("");
+  const [showChangePasswordPopup, setShowChangePasswordPopup] = useState(false);
+
 
   // NEW STATES for editing username/email
   const [showEditInfoPopup, setShowEditInfoPopup] = useState(false);
@@ -123,6 +128,20 @@ function EditProfile() {
     setShowEditInfoPopup(true);
   };
 
+  const handlePasswordChange = (newPassword) => {
+  const currentUser = auth.currentUser;
+  updatePassword(currentUser, newPassword)
+    .then(() => {
+      alert("Password changed successfully.");
+      setShowChangePasswordPopup(false);
+    })
+    .catch((err) => {
+      console.error(err);
+      alert("Error changing password. You may need to re-login.");
+    });
+};
+
+
   const handleSaveInfo = async () => {
     if (!user) return;
     setSavingInfo(true);
@@ -182,12 +201,12 @@ function EditProfile() {
 
           <label
             onClick={handleEditClick}
-            className="absolute bottom-1 right-5 bg-blue-600 flex rounded-full cursor-pointer shadow-md w-10 h-10 items-center justify-center"
+            className="absolute bottom-1 right-6 bg-blue-600 flex rounded-full cursor-pointer shadow-md w-9 h-9 items-center justify-center"
           >
             <img
               src={editIcon}
               alt="Edit"
-              className="w-6 h-6 invert brightness-0"
+              className="w-5 h-5 invert brightness-0"
             />
           </label>
 
@@ -205,7 +224,7 @@ function EditProfile() {
       {showEditInfoPopup && (
         <div className="fixed inset-0 bg-black bg-opacity-40 flex justify-center items-center z-50">
           <div className="bg-white p-6 rounded-2xl shadow-lg text-center w-full max-w-md">
-            <h2 className="text-2xl font-semibold mb-4">Edit Profile Info</h2>
+            <h2 className="text-2xl font-semibold mb-4">Edit Profile</h2>
             <div className="mb-4 text-left">
               <label className="block text-sm font-medium">Username</label>
               <input
@@ -249,7 +268,7 @@ function EditProfile() {
         </div>
       )}
 
-      <div className="border relative mt-40 items-center bg-white shadow-xl w-full max-w-6xl grid grid-cols-1 md:grid-cols-2 mx-auto rounded-3xl p-8">
+      <div className="border relative mt-40 items-center bg-white shadow-xl w-full max-w-2xl grid grid-cols-1 md:grid-cols-2 mx-auto rounded-3xl p-8">
           <div>
              <label
               onClick={openEditInfoPopup}
@@ -258,17 +277,32 @@ function EditProfile() {
             <img
               src={editIcon}
               alt="Edit"
-              className="w-7 h-7 right-0"
+              className="w-4 h-4 right-0"
             />
         </label>
-            <h1 className="text-4xl font-bold text-gray-800">Edit Profile</h1>
-            <p className="text-lg text-gray-700">
-              <strong>Username:</strong> {username || "Not set"}
-            </p>
-            <p className="text-lg text-gray-700 mb-8">
-              <strong>Email:</strong> {email || "Not set"}
-            </p>
+            <h1 className="text-2xl font-bold text-gray-800">Edit Profile</h1>
+            <div className="mt-3 space-y-2">
+            <div className="grid grid-cols-[120px_1fr] gap-x-2">
+              <span className="font-medium text-gray-700">Username </span>
+              <span>{username || "Not set"}</span>
+            </div>
+            <div className="grid grid-cols-[120px_1fr] gap-x-2">
+              <span className="font-medium text-gray-700">Email </span>
+              <span>{email || "Not set"}</span>
+            </div>
           </div>
+          </div>
+        </div>
+
+        <div className="flex flex-col sm:flex-row items-center justify-center mt-10 gap-4 text-white">
+          <button
+            onClick={() => setShowChangePasswordPopup(true)}
+            className="px-5 py-2 bg-blue-600 hover:bg-blue-700 rounded-xl shadow-md transition duration-300"
+          >
+            Change Password
+          </button>
+
+          <button className="px-6 py-2 bg-red-600 hover:bg-red-700 rounded-xl shadow-md transition duration-300">Delete Account</button>
         </div>
           
           {showPopup && (
@@ -329,8 +363,12 @@ function EditProfile() {
               </div>
             </div>
           )}
-        
-    
+          {showChangePasswordPopup && (
+            <ChangePasswordPopup
+              onClose={() => setShowChangePasswordPopup(false)}
+              onSubmit={handlePasswordChange}
+            />
+          )}
     </>
   );
 }

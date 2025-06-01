@@ -58,34 +58,34 @@ function Myreviews() {
     <>
       <Header />
       <div className="px-10 py-10 min-h-screen">
-        <h1 className="text-3xl font-bold text-gray-800 mb-8">My Reviews</h1>
+        <h1 className="text-2xl font-bold text-gray-800 mb-8">My Reviews</h1>
 
         {loading ? (
           <p className="text-lg">Loading reviews...</p>
         ) : reviews.length === 0 ? (
           <p className="text-lg">No reviews yet.</p>
         ) : (
-          <div className="flex flex-col gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mt-4 ">
             {reviews.map((review) => (
               <div
                 key={review.reviewId}
-                className="relative bg-blue-100 p-6 rounded-2xl shadow-md hover:-translate-y-1 transition duration-200 flex flex-row cursor-pointer min-w-[1950px]"
+                className="relative p-6 rounded-2xl shadow-md hover:-translate-y-1 transition duration-200 flex flex-row cursor-pointer "
                 onClick={() => setSelectedReview(review)} // show view popup
               >
                 <img
                   src={review.books_pics_url}
                   alt={review.title}
-                  className="w-44 h-[250px] object-cover rounded-lg"
+                  className="w-[150px] h-[220px] object-cover rounded-lg"
                   onError={(e) => (e.target.src = "/placeholder.png")}
                 />
                 <div className="w-full ml-5">
-                  <h2 className="text-3xl font-semibold text-gray-800">
+                  <h2 className="text-xl font-semibold text-gray-800">
                     {review.title}
                   </h2>
-                  <h4 className="text-2xl  mt-2 text-purple-700 mb-2">
-                    Category: {review.category}
+                  <h4 className="text-md  mt-1 text-purple-700 mb-2">
+                    {review.category}
                   </h4>
-                  <div className="absolute gap-2 top-8 right-8">
+                  <div className="absolute gap-2 top-7 right-5">
                     <label
                       onClick={(e) => {
                         e.stopPropagation(); // Don't open view popup
@@ -96,7 +96,7 @@ function Myreviews() {
                       <img
                         src={editIcon}
                         alt="Edit"
-                        className="w-7 h-7"
+                        className="w-4 h-4"
                       />
                     </label>
                     
