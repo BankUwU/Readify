@@ -9,6 +9,7 @@ import { auth, db } from "../config/firebaseConfig";
 import { getDoc, doc } from "firebase/firestore";
 import { useNavigate } from "react-router-dom";
 import ReadingPopup from "../components/AddReadingPopup";
+import AllReviewPopup from "../components/AllReviewPopup";
 
 function Home() {
   const [user, setUser] = useState(null);
@@ -18,6 +19,7 @@ function Home() {
   const [userPhotos, setUserPhotos] = useState({});
   const navigate = useNavigate();
   const [showPopup, setShowPopup] = useState(false);
+  const [selectedReview, setSelectedReview] = useState(null);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
@@ -124,16 +126,22 @@ function Home() {
               <h3 className="text-2xl font-bold ml-3 text-slate-800">Reviews</h3>
               <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mt-4 ">
               {bookreview.map((review, index) => (
-             <Bookreview 
+              <Bookreview 
                 review={review}
                 isFavorite={favorites[index]}
-                onToggleFavorite={() => toggleFavorite(index)}/>
-            ))}
+                onToggleFavorite={() => toggleFavorite(index)}
+                onClick={() => setSelectedReview(review)}/>
+              ))}
 
-            </div>
+              </div>
             </div>
           </>
-        
+        {selectedReview && (
+        <AllReviewPopup
+          review={selectedReview}
+          onClose={() => setSelectedReview(null)}
+        />
+      )}
       </div>
     </>
   );

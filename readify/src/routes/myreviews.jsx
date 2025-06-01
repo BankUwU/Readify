@@ -3,7 +3,7 @@ import { collection, doc, getDocs } from "firebase/firestore";
 import { useEffect, useState } from "react";
 import EditPopup from "../components/EditPopup";
 import Header from "../components/header";
-import ReviewPopup from "../components/ReviewPopup";
+import ReviewPopup from "../components/MyReviewPopup";
 import { db } from "../config/firebaseConfig";
 import editIcon from "../img/edit-icon.png"
 

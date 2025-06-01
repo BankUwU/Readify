@@ -1,9 +1,9 @@
 import React from "react";
 import { FaStar } from "react-icons/fa";
 
-function Bookreview({ review, isFavorite, onToggleFavorite, userPhotoURL }) {
+function Bookreview({ review, isFavorite, onToggleFavorite, userPhotoURL, onClick }) {
   return (
-    <div className="relative flex flex-row p-5 bg-white shadow hover:shadow-lg transition cursor-pointer rounded-3xl">
+    <div className="relative flex flex-row p-5 bg-white shadow hover:shadow-lg transition cursor-pointer rounded-3xl" onClick={onClick}>
     <img
       src={review.books_pics_url || review.imageurl}
       alt={review.title}
