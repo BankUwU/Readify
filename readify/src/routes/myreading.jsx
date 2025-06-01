@@ -54,7 +54,7 @@ function MyReading() {
   return (
     <>
       <Header />
-      <div className="p-5 min-h-[calc(100vh-60px)]">
+      <div className="p-10 min-h-[calc(100vh-60px)]">
         <div className="flex justify-between items-center mb-6">
           <h2 className="text-2xl font-bold">My Reading List</h2>
           <button
@@ -68,23 +68,25 @@ function MyReading() {
         {readingList.length === 0 ? (
           <p>No readings yet.</p>
         ) : (
-          <div className="grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mt-4 ">
             {readingList.map((book) => (
               <div
                 key={book.id}
                 onClick={() => navigate("/book-information", { state: { book } })}
-                className="bg-white p-4 rounded-xl shadow relative cursor-pointer hover:shadow-lg transition"
+                className="relative flex flex-row p-5 bg-white shadow hover:shadow-lg transition cursor-pointer rounded-3xl"
               >
                 <img
                   src={book.booksCover}
                   alt="Book Cover"
-                  className="w-full h-64 object-cover rounded-lg"
+                  className="w-[150px] h-[220px] object-cover rounded-2xl"
                 />
-                <h3 className="mt-2 font-bold text-lg">{book.title || "Untitled"}</h3>
-                <p className="text-gray-600">📚 {book.category}</p>
-                <p className="text-gray-600">📄 Pages: {book.numberOfPage}</p>
-                <p className="text-sm text-gray-400">📅 Date: {book.createDate}</p>
-                <p className="text-sm text-gray-500">📈 Progress: {book.progress || 0}%</p>
+                <div className="ml-5 flex flex-col flex-grow text-gray-800">
+                <h3 className="text-xl font-semibold text-gray-800 break-words pr-8">{book.title || "Untitled"}</h3>
+                <p className="text-md mt-1 text-purple-700">{book.category}</p>
+                <p className="text-sm text-gray-600">Pages: {book.numberOfPage}</p>
+                {/* <p className="text-sm text-gray-400">📅 Date: {book.createDate}</p> */}
+                <p className="text-sm text-gray-600">Progress: {book.progress || 0}%</p>
+                </div>
 
                 <button
                   onClick={(e) => {
