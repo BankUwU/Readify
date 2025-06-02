@@ -17,6 +17,8 @@ import Bookinformation from "./routes/bookinformation";
 import ProtectedRoute from "./components/ProtectedRoutes";
 import AdminRoute from "./routes/admin/AdminRoute";
 import AdminPage from "./routes/admin/AdminPage";
+import AdminAchievements from "./routes/admin/AdminAchievements";
+import RequireAdmin from "./components/admin/RequireAdmin";
 
 function App() {
   return (
@@ -114,6 +116,14 @@ function App() {
             <AdminRoute>
               <AdminPage />
             </AdminRoute>
+          }
+        />
+        <Route
+          path="/admin/achievements"
+          element={
+            <RequireAdmin>
+              <AdminAchievements />
+            </RequireAdmin>
           }
         />
       </Routes>
