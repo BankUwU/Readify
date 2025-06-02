@@ -15,6 +15,8 @@ import Register from "./routes/register";
 import Review from "./routes/review";
 import Bookinformation from "./routes/bookinformation";
 import ProtectedRoute from "./components/ProtectedRoutes";
+import AdminRoute from "./routes/admin/AdminRoute";
+import AdminPage from "./routes/admin/AdminPage";
 
 function App() {
   return (
@@ -104,6 +106,14 @@ function App() {
             <ProtectedRoute>
               <Bookinformation />
             </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin"
+          element={
+            <AdminRoute>
+              <AdminPage />
+            </AdminRoute>
           }
         />
       </Routes>
