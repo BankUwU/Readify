@@ -57,7 +57,7 @@ const AllReviewPopup = ({ review, onClose }) => {
                 alt="User"
                 className="w-7 h-7 rounded-full object-cover"
                 />
-                <p className="text-sm text-gray-600 font-semibold">{review.createdBy || "Unknown"}</p>
+                <p className="ml-2 text-sm text-gray-600 font-semibold">{review.createdBy || "Unknown"}</p>
             </div>
           </div>
         </motion.div>

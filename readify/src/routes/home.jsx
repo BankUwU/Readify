@@ -10,6 +10,7 @@ import Header from "../components/header";
 import MyReadingList from "../components/myreadinglist";
 import Plus from "../components/plus";
 import { auth, db } from "../config/firebaseConfig";
+import { FiChevronLeft, FiChevronRight } from "react-icons/fi";
 
 function Home() {
   const [user, setUser] = useState(null);
@@ -19,6 +20,8 @@ function Home() {
   const navigate = useNavigate();
   const [showPopup, setShowPopup] = useState(false);
   const [selectedReview, setSelectedReview] = useState(null);
+  // const [readingPage, setReadingPage] = useState(0); 
+  // const itemsPerPage = 5;
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
@@ -108,6 +111,15 @@ function Home() {
     }
   };
 
+  const [readingPage, setReadingPage] = useState(0); 
+  const itemsPerPage = 5;
+
+  const totalPages = Math.ceil(readingList.length / itemsPerPage);
+    const paginatedReadingList = readingList.slice(
+      readingPage * itemsPerPage,
+      (readingPage + 1) * itemsPerPage
+    );
+
   return (
     <>
       <Header />
@@ -124,28 +136,70 @@ function Home() {
           />
         )}
 
-        <div className="mt-4">
-          <h3 className="text-lg font-bold">
-            <div className="text-2xl ml-3 text-slate-800">
-              {user?.displayName ? `${user.displayName}'s Readings` : "My Readings"}
-            </div>
-          </h3>
-          <div
-            className="flex flex-wrap rounded-2xl bg-blue-100 overflow-x-auto mt-2"
-            style={{ boxShadow: "0 10px 15px -5px rgba(0, 0, 0, 0.2)" }}
-          >
-            <Plus
-              onClick={() => {
-                if (!user) {
-                  navigate("/login");
-                } else {
-                  setShowPopup(true);
-                }
-              }}
-            />
-            <MyReadingList readingList={readingList} />
-          </div>
-        </div>
+        
+            <div className="mt-4">
+              <h3 className="text-lg font-bold">
+                <div className="text-2xl ml-3 text-slate-800">
+                  {user?.displayName ? `${user.displayName}'s Readings` : "My Readings"}
+                </div>
+              </h3>
+
+              <div
+                className="relative rounded-2xl bg-blue-100 mt-2 p-4 min-h-[200px]"
+                style={{
+                  boxShadow: "0 10px 15px -5px rgba(0, 0, 0, 0.2)",
+                  overflow: "hidden"
+                }}
+              >
+                {/* Left Arrow */}
+                {totalPages > 1 && readingPage > 0 && (
+                  <button
+                    onClick={() => setReadingPage((prev) => Math.max(prev - 1, 0))}
+                    className="absolute left-2 top-1/2  text-gray-500 backdrop:transform -translate-y-1/2 bg-gray-300 rounded-full p-[7px]  hover:bg-gray-400 transition duration-200"
+                  >
+                    <FiChevronLeft size={20} />
+                  </button>
+                )}
+
+                {/* Content */}
+                <div className="flex items-center ml-9">
+                  <Plus
+                    onClick={() => {
+                      if (!user) {
+                        navigate("/login");
+                      } else {
+                        setShowPopup(true);
+                      }
+                    }}
+                  />
+                  <MyReadingList readingList={paginatedReadingList} />
+                </div>
+
+                {/* Right Arrow */}
+                {totalPages > 1 && readingPage < totalPages - 1 && (
+                  <button
+                    onClick={() => setReadingPage((prev) => Math.min(prev + 1, totalPages - 1))}
+                    className="absolute right-2 top-1/2 text-gray-500 backdrop:transform -translate-y-1/2 bg-gray-300 rounded-full p-[7px] hover:bg-gray-400 transition duration-200 "
+                  >
+                    <FiChevronRight size={20} />
+                  </button>
+                )}
+                
+                {totalPages > 1 && (
+                  <div className="flex justify-center space-x-2 cursor-pointer">
+                    {Array.from({ length: totalPages }).map((_, i) => (
+                      <div
+                        key={i}
+                        className={`w-[9px] h-[9px] rounded-full ${
+                          i === readingPage ? "bg-black" : "bg-gray-300"
+                        }`}
+                        onClick={() => setReadingPage(i)}
+                      ></div>
+                    ))}
+                  </div>
+                )}
+              </div>
+              </div>
 
         <div className="mt-8">
           <h3 className="text-2xl font-bold ml-3 text-slate-800">Reviews</h3>
