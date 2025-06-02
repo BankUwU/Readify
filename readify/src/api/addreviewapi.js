@@ -8,6 +8,7 @@ import {
 } from "firebase/firestore";
 import { db } from "../config/firebaseConfig";
 
+
 const CLOUD_NAME = "djxipn8kj";
 const UPLOAD_PRESET = "Readify";
 
@@ -44,7 +45,6 @@ export const saveReview = async (reviewData, imageFile, user) => {
       books_pics_url: imageUrl,
       uid: user.uid,
       createdBy: user.displayName || "Anonymous",
-      userPhoto: user.photoURL || "", // ✅ Store current profile picture
     };
 
     // Save to global collection
