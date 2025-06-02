@@ -3,8 +3,8 @@ import { useNavigate } from "react-router-dom";
 function MyReadingList({ readingList }) {
   const navigate = useNavigate()
   return (
-    <div className="mt-8">
-      <div className="flex flex-wrap justify-center cursor-pointer">
+    <div>
+      <div className="flex flex-wrap cursor-pointer">
         {readingList.map((book) => (
           <div
             key={book.id}
@@ -17,7 +17,12 @@ function MyReadingList({ readingList }) {
               className="w-[150px] h-[220px] object-cover rounded-lg mb-1 mt-1 mx-auto block"
             />
             <div className="text-center w-full">
-              <h2 className="text-lg text-[#222] mb-1">{book.title}</h2>
+              <h2
+                className="text-sm sm:text-base text-black mb-1 text-center line-clamp-1"
+                title={book.title}
+              >
+                {book.title}
+              </h2>
             </div>
           </div>
         ))}

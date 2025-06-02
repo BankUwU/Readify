@@ -92,7 +92,10 @@ function MyReading() {
                   className="w-[150px] h-[220px] object-cover rounded-2xl"
                 />
                 <div className="ml-5 flex flex-col flex-grow text-gray-800">
-                <h3 className="text-xl font-semibold text-gray-800 break-words pr-8">{book.title || "Untitled"}</h3>
+                <h3 className="text-xl font-semibold text-gray-800 line-clamp-6 pr-8" title={book.title}>
+                  {book.title || "Untitled"}
+                </h3>
+
                 <p className="text-md mt-1 text-purple-700">{book.category}</p>
                 {/* <p className="text-sm text-gray-600">Pages: {book.numberOfPage}</p> */}
                 {/* <p className="text-sm text-gray-400">📅 Date: {book.createDate}</p> */}               
