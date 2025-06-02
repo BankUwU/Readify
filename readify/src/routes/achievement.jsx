@@ -12,6 +12,8 @@ function Achievement() {
   const [userProgress, setUserProgress] = useState({});
   const [userStats, setUserStats] = useState({});
   const [achievementsLoaded, setAchievementsLoaded] = useState(false);
+  const [userBaselines, setUserBaselines] = useState({});
+
 
   const ensureUserAchievementsExists = async (uid) => {
   const achRef = doc(db, "userAchievements", uid);
@@ -21,14 +23,24 @@ function Achievement() {
     const globalAchievementsSnapshot = await getDocs(collection(db, "achievements"));
 
     const initialProgress = {};
+    const baselineStats = {};
+
+    const statsSnap = await getDoc(doc(db, "users", uid, "stats", "progress"));
+    const currentStats = statsSnap.exists() ? statsSnap.data() : {};
+
     globalAchievementsSnapshot.forEach((doc) => {
       initialProgress[doc.id] = false;
+
+      const { trackKey } = doc.data();
+      baselineStats[doc.id] = currentStats[trackKey] || 0;
     });
 
-    await setDoc(achRef, { achievements: initialProgress });
+    await setDoc(achRef, {
+      achievements: initialProgress,
+      baselines: baselineStats,
+    });
   }
 };
-
 
   useEffect(() => {
     const auth = getAuth();
@@ -39,7 +51,6 @@ function Achievement() {
       } else {
         setUser(currentUser);
 
-        // ✅ Ensure userAchievements/{uid} document exists
         await ensureUserAchievementsExists(currentUser.uid);
 
         const achList = await fetchAchievements();
@@ -76,13 +87,17 @@ function Achievement() {
 
   // Fetch user completed achievements
   const fetchUserProgress = async (uid) => {
-    const userDoc = await getDoc(doc(db, "userAchievements", uid));
-    if (userDoc.exists()) {
-      setUserProgress(userDoc.data().achievements || {});
-    } else {
-      setUserProgress({});
-    }
-  };
+  const userDoc = await getDoc(doc(db, "userAchievements", uid));
+  if (userDoc.exists()) {
+    const data = userDoc.data();
+    setUserProgress(data.achievements || {});
+    setUserBaselines(data.baselines || {});
+  } else {
+    setUserProgress({});
+    setUserBaselines({});
+  }
+};
+
 
   // Mark achievement as completed in Firestore and local state
   const toggleAchievement = async (achievementId) => {
@@ -100,17 +115,22 @@ function Achievement() {
 
   // Auto-complete achievements when progress reaches 100%
   useEffect(() => {
-    if (!user || !achievementsLoaded) return;
+  if (!user || !achievementsLoaded) return;
 
-    achievements.forEach((ach) => {
-      const userValue = userStats[ach.id] || 0;
-      const percent = Math.min((userValue / ach.target) * 100, 100);
-      const isCompleted = userProgress[ach.id];
-      if (percent === 100 && !isCompleted) {
-        toggleAchievement(ach.id);
-      }
-    });
-  }, [userStats, userProgress, achievements, user, achievementsLoaded]);
+  achievements.forEach((ach) => {
+    const currentValue = userStats[ach.trackKey] || 0;
+    const baseline = userBaselines[ach.id] || 0;
+    const delta = currentValue - baseline;
+
+    const percent = Math.min((delta / ach.target) * 100, 100);
+    const isCompleted = userProgress[ach.id];
+
+    if (percent === 100 && !isCompleted) {
+      toggleAchievement(ach.id);
+    }
+  });
+}, [userStats, userProgress, achievements, userBaselines, user, achievementsLoaded]);
+
 
   return (
     <>
@@ -127,7 +147,7 @@ function Achievement() {
 
         <div className="grid gap-4 bg-gray-300 p-5 rounded-xl">
           {achievements.map((ach) => {
-            const userValue = userStats[ach.id] || 0;
+            const userValue = userStats[ach.trackKey] || 0;
             const percent = Math.min((userValue / ach.target) * 100, 100);
             const isCompleted = userProgress[ach.id];
 
