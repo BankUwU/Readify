@@ -98,13 +98,13 @@ function AddReview() {
   return (
     <>
       <Header />
-      <div className="bg-[aliceblue] rounded-2xl max-w-[85%] min-h-[80vh] mx-auto">
+      <div className="bg-[aliceblue] rounded-2xl w-full max-w-7xl h-auto mx-auto px-4 sm:px-6 lg:px-8 pb-8">
         <form
-          className="flex flex-row justify-center gap-24 mt-12"
+          className="flex flex-row justify-center gap-16 mt-10 ml-24"
           onSubmit={handleSave}
         >
           <div
-            className="w-[400px] h-[500px] p-8 bg-white text-center rounded-2xl mt-6 cursor-pointer"
+            className="w-[400px] h-[600px] p-8 bg-white text-center rounded-2xl mt-8 cursor-pointer"
             ref={dropArea}
             onClick={() => inputFile.current.click()}
           >
@@ -129,8 +129,8 @@ function AddReview() {
             </div>
           </div>
 
-          <div className="w-[500px] flex flex-col mt-4">
-            <h1 className="text-left text-4xl cursor-default mb-4">ADD REVIEW</h1>
+          <div className="w-[500px] flex flex-col mt-4 ml-5">
+            <h1 className="text-left font-semibold text-4xl mt-4 cursor-default mb-4">ADD REVIEW</h1>
 
             <label className="mt-4">Book Title:</label>
             <input
@@ -162,7 +162,7 @@ function AddReview() {
             />
 
             {/* Moved buttons inside the form */}
-            <div className="w-full flex justify-center gap-5 mt-5">
+            <div className="w-full flex justify-center gap-5 mt-5 mb-8">
               <button
                 type="button"
                 onClick={() => navigate("/")}
@@ -172,12 +172,13 @@ function AddReview() {
               </button>
               <button
                 type="submit"
-                className="px-12 py-2 rounded-lg bg-[#00BFFF] text-white hover:bg-[#01abe3] transition"
+                className="px-12 py-2 rounded-lg bg-blue-600 text-white hover:bg-blue-700 transition"
               >
                 Save
               </button>
             </div>
           </div>
+          
         </form>
       </div>
     </>
