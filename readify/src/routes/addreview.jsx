@@ -6,6 +6,7 @@ import Header from "../components/header";
 import cloudIcon from "../img/cloud-upload-icon.png";
 import { serverTimestamp } from "firebase/firestore";
 
+
 function AddReview() {
   const dropArea = useRef(null);
   const inputFile = useRef(null);
@@ -15,6 +16,10 @@ function AddReview() {
   const [category, setCategory] = useState("");
   const [reviewText, setReviewText] = useState("");
   const [imageFile, setImageFile] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [successPopup, setSuccessPopup] = useState(false);
+
+
 
   const auth = getAuth();
   const navigate = useNavigate();
@@ -60,44 +65,64 @@ function AddReview() {
   }, []);
 
   const handleSave = async (e) => {
-    e.preventDefault();
-    const user = auth.currentUser;
+  e.preventDefault();
+  const user = auth.currentUser;
 
-    if (!user) {
-      alert("You must be logged in to add a review.");
-      navigate("/login");
-      return;
-    }
+  if (!user) {
+    alert("You must be logged in to add a review.");
+    navigate("/login");
+    return;
+  }
 
-    if (!bookTitle || !category || !reviewText || !imageFile) {
-      alert("Please fill in all fields and upload an image.");
-      return;
-    }
+  if (!bookTitle || !category || !reviewText || !imageFile) {
+    alert("Please fill in all fields and upload an image.");
+    return;
+  }
 
-    const reviewData = {
-      title: bookTitle,
-      category: category,
-      review: reviewText,
-      displayName: user.displayName,
-      // timestamp: new Date(),
-      timestamp: serverTimestamp(),
-    };
-
-    try {
-      console.log("Attempting to save review...");
-      const id = await saveReview(reviewData, imageFile, user);
-      console.log("Review saved with ID:", id);
-      alert(`Review saved! ID: ${id}`);
-      navigate("/");
-    } catch (error) {
-      console.error("Error saving review:", error);
-      alert("Error saving review.");
-    }
+  const reviewData = {
+    title: bookTitle,
+    category: category,
+    review: reviewText,
+    displayName: user.displayName,
+    timestamp: serverTimestamp(),
   };
+
+  setLoading(true);
+  try {
+    const id = await saveReview(reviewData, imageFile, user);
+    setSuccessPopup(true); 
+    setTimeout(() => {
+      setSuccessPopup(false);
+      navigate("/");
+    }, 2000); 
+  } catch (error) {
+    console.error("Error saving review:", error);
+    alert("Error saving review.");
+  } finally {
+    setLoading(false);
+  }
+};
+
+
 
   return (
     <>
       <Header />
+      {loading && (
+        <div className="fixed inset-0 bg-black bg-opacity-30 flex items-center justify-center z-50">
+          <div className="animate-spin rounded-full h-16 w-16 border-4 border-blue-500 border-t-transparent"></div>
+        </div>
+      )}
+
+      {successPopup && (
+        <div className="fixed inset-0 bg-black bg-opacity-30 flex items-center justify-center z-50">
+          <div className="bg-white p-7 rounded-2xl shadow-lg flex flex-col items-center animate-scale-in">
+            <h2 className="text-lg font-semibold text-gray-800 mb-1">Review Saved Successfully</h2>
+            <p className="text-sm text-gray-500">Redirecting to home</p>
+          </div>
+        </div>
+      )}
+
       <div className="bg-[aliceblue] rounded-2xl w-full max-w-7xl h-auto mx-auto px-4 sm:px-6 lg:px-8 pb-8">
         <form
           className="flex flex-row justify-center gap-16 mt-10 ml-24"
