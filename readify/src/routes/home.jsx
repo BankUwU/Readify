@@ -1,6 +1,7 @@
 import { onAuthStateChanged } from "firebase/auth";
 import { collection, getDocs } from "firebase/firestore";
 import { useEffect, useState } from "react";
+import { FiChevronLeft, FiChevronRight } from "react-icons/fi";
 import { useNavigate } from "react-router-dom";
 import { addToFavorites, removeFromFavorites } from "../api/favorites";
 import ReadingPopup from "../components/AddReadingPopup";
@@ -10,7 +11,6 @@ import Header from "../components/header";
 import MyReadingList from "../components/myreadinglist";
 import Plus from "../components/plus";
 import { auth, db } from "../config/firebaseConfig";
-import { FiChevronLeft, FiChevronRight } from "react-icons/fi";
 
 function Home() {
   const [user, setUser] = useState(null);
@@ -20,8 +20,6 @@ function Home() {
   const navigate = useNavigate();
   const [showPopup, setShowPopup] = useState(false);
   const [selectedReview, setSelectedReview] = useState(null);
-  // const [readingPage, setReadingPage] = useState(0); 
-  // const itemsPerPage = 5;
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
@@ -52,7 +50,7 @@ function Home() {
           const review = {
             id: docSnap.id,
             ...data,
-            photoURL: data.userPhoto || null, // ✅ use userPhoto directly from the review
+            photoURL: data.userPhoto || null,
           };
           reviewsArray.push(review);
         }
@@ -111,19 +109,19 @@ function Home() {
     }
   };
 
-  const [readingPage, setReadingPage] = useState(0); 
+  const [readingPage, setReadingPage] = useState(0);
   const itemsPerPage = 5;
 
   const totalPages = Math.ceil(readingList.length / itemsPerPage);
-    const paginatedReadingList = readingList.slice(
-      readingPage * itemsPerPage,
-      (readingPage + 1) * itemsPerPage
-    );
+  const paginatedReadingList = readingList.slice(
+    readingPage * itemsPerPage,
+    (readingPage + 1) * itemsPerPage
+  );
 
   return (
     <>
       <Header />
-      <div className="p-5">
+      <div className="p-5 max-w-7xl mx-auto">
         {showPopup && (
           <ReadingPopup
             user={user}
@@ -136,73 +134,79 @@ function Home() {
           />
         )}
 
-        
-            <div className="mt-4">
-              <h3 className="text-lg font-bold">
-                <div className="text-2xl ml-3 text-slate-800">
-                  {user?.displayName ? `${user.displayName}'s Readings` : "My Readings"}
-                </div>
-              </h3>
+        <div className="mt-4">
+          <h3 className="text-lg font-bold">
+            <div className="text-2xl ml-3 text-slate-800">
+              {user?.displayName ? `${user.displayName}'s Readings` : "My Readings"}
+            </div>
+          </h3>
 
-              <div
-                className="relative rounded-2xl bg-blue-100 mt-2 p-4 min-h-[200px]"
-                style={{
-                  boxShadow: "0 10px 15px -5px rgba(0, 0, 0, 0.2)",
-                  overflow: "hidden"
-                }}
+          <div
+            className="relative rounded-2xl bg-blue-100 mt-2 p-4 min-h-[200px]"
+            style={{
+              boxShadow: "0 10px 15px -5px rgba(0, 0, 0, 0.2)",
+              overflow: "hidden",
+            }}
+          >
+            {/* Left Arrow */}
+            {totalPages > 1 && readingPage > 0 && (
+              <button
+                onClick={() => setReadingPage((prev) => Math.max(prev - 1, 0))}
+                className="absolute left-2 top-1/2 text-gray-500 -translate-y-1/2 bg-gray-300 rounded-full p-[7px] hover:bg-gray-400 transition duration-200"
+                aria-label="Previous page"
               >
-                {/* Left Arrow */}
-                {totalPages > 1 && readingPage > 0 && (
-                  <button
-                    onClick={() => setReadingPage((prev) => Math.max(prev - 1, 0))}
-                    className="absolute left-2 top-1/2  text-gray-500 backdrop:transform -translate-y-1/2 bg-gray-300 rounded-full p-[7px]  hover:bg-gray-400 transition duration-200"
-                  >
-                    <FiChevronLeft size={20} />
-                  </button>
-                )}
+                <FiChevronLeft size={20} />
+              </button>
+            )}
 
-                {/* Content */}
-                <div className="flex items-center ml-9">
-                  <Plus
-                    onClick={() => {
-                      if (!user) {
-                        navigate("/login");
-                      } else {
-                        setShowPopup(true);
-                      }
-                    }}
+            {/* Content */}
+            <div className="flex items-center ml-3 sm:ml-6 md:ml-9 overflow-x-auto scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-transparent">
+              <Plus
+                onClick={() => {
+                  if (!user) {
+                    navigate("/login");
+                  } else {
+                    setShowPopup(true);
+                  }
+                }}
+              />
+              <MyReadingList readingList={paginatedReadingList} />
+            </div>
+
+            {/* Right Arrow */}
+            {totalPages > 1 && readingPage < totalPages - 1 && (
+              <button
+                onClick={() => setReadingPage((prev) => Math.min(prev + 1, totalPages - 1))}
+                className="absolute right-2 top-1/2 text-gray-500 -translate-y-1/2 bg-gray-300 rounded-full p-[7px] hover:bg-gray-400 transition duration-200"
+                aria-label="Next page"
+              >
+                <FiChevronRight size={20} />
+              </button>
+            )}
+
+            {/* Pagination dots */}
+            {totalPages > 1 && (
+              <div className="flex justify-center space-x-2 cursor-pointer mt-4">
+                {Array.from({ length: totalPages }).map((_, i) => (
+                  <div
+                    key={i}
+                    className={`w-[9px] h-[9px] rounded-full ${
+                      i === readingPage ? "bg-black" : "bg-gray-300"
+                    }`}
+                    onClick={() => setReadingPage(i)}
+                    role="button"
+                    tabIndex={0}
+                    aria-label={`Go to page ${i + 1}`}
+                    onKeyDown={(e) => e.key === "Enter" && setReadingPage(i)}
                   />
-                  <MyReadingList readingList={paginatedReadingList} />
-                </div>
-
-                {/* Right Arrow */}
-                {totalPages > 1 && readingPage < totalPages - 1 && (
-                  <button
-                    onClick={() => setReadingPage((prev) => Math.min(prev + 1, totalPages - 1))}
-                    className="absolute right-2 top-1/2 text-gray-500 backdrop:transform -translate-y-1/2 bg-gray-300 rounded-full p-[7px] hover:bg-gray-400 transition duration-200 "
-                  >
-                    <FiChevronRight size={20} />
-                  </button>
-                )}
-                
-                {totalPages > 1 && (
-                  <div className="flex justify-center space-x-2 cursor-pointer">
-                    {Array.from({ length: totalPages }).map((_, i) => (
-                      <div
-                        key={i}
-                        className={`w-[9px] h-[9px] rounded-full ${
-                          i === readingPage ? "bg-black" : "bg-gray-300"
-                        }`}
-                        onClick={() => setReadingPage(i)}
-                      ></div>
-                    ))}
-                  </div>
-                )}
+                ))}
               </div>
-              </div>
+            )}
+          </div>
+        </div>
 
-        <div className="mt-8">
-          <h3 className="text-2xl font-bold ml-3 text-slate-800">Reviews</h3>
+        <div className="mt-8 px-3 sm:px-6 md:px-9">
+          <h3 className="text-2xl font-bold ml-0 sm:ml-3 text-slate-800">Reviews</h3>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mt-4">
             {bookreview.map((review, index) => (
               <Bookreview

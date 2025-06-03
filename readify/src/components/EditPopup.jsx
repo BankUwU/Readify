@@ -1,8 +1,8 @@
 import { getAuth } from "firebase/auth";
-import { doc, updateDoc, deleteDoc } from "firebase/firestore";
+import { deleteDoc, doc, getDoc, updateDoc } from "firebase/firestore";
 import { useEffect, useRef, useState } from "react";
 import { db } from "../config/firebaseConfig";
-import deleteIcon from "../img/delete-icon.png"
+import deleteIcon from "../img/delete-icon.png";
 
 const CLOUD_NAME = "djxipn8kj";
 const UPLOAD_PRESET = "Readify";
@@ -28,9 +28,6 @@ function EditPopup({ review, onClose, onSave, onDelete }) {
   const [imageUrl, setImageUrl] = useState("");
   const [imageFile, setImageFile] = useState(null);
   const inputRef = useRef();
-  const [reviews, setReviews] = useState([]);
-
-
 
   useEffect(() => {
     if (review) {
@@ -43,8 +40,6 @@ function EditPopup({ review, onClose, onSave, onDelete }) {
 
   if (!review) return null;
 
-  
-
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     if (file) {
@@ -54,30 +49,29 @@ function EditPopup({ review, onClose, onSave, onDelete }) {
     }
   };
 
-   const handleDelete = async (reviewId) => {
-  const user = getAuth().currentUser;
-  if (!user) return;
+  const handleDelete = async (reviewId) => {
+    const user = getAuth().currentUser;
+    if (!user) return;
 
-  const confirmDelete = window.confirm("Are you sure you want to delete this review?");
-  if (!confirmDelete) return;
+    const confirmDelete = window.confirm("Are you sure you want to delete this review?");
+    if (!confirmDelete) return;
 
-  try {
-    const userReviewRef = doc(db, "users", user.uid, "reviews", reviewId);
-    await deleteDoc(userReviewRef);
+    try {
+      const userReviewRef = doc(db, "users", user.uid, "reviews", reviewId);
+      await deleteDoc(userReviewRef);
 
-    const globalReviewRef = doc(db, "allreview", reviewId);
-    await deleteDoc(globalReviewRef);
+      const globalReviewRef = doc(db, "allreview", reviewId);
+      await deleteDoc(globalReviewRef);
 
-    console.log("Review deleted successfully");
+      console.log("Review deleted successfully");
 
-    if (typeof onDelete === "function") {
-      onDelete(reviewId); 
+      if (typeof onDelete === "function") {
+        onDelete(reviewId);
+      }
+    } catch (error) {
+      console.error("Error deleting review:", error);
     }
-  } catch (error) {
-    console.error("Error deleting review:", error);
-  }
-};
-
+  };
 
   const handleSave = async () => {
     const auth = getAuth();
@@ -86,6 +80,50 @@ function EditPopup({ review, onClose, onSave, onDelete }) {
     if (!user) {
       alert("You must be logged in to edit a review.");
       return;
+    }
+
+    let userInfo = {
+      displayName: user.displayName || "Anonymous",
+      email: user.email || "no-email@example.com",
+      photoURL: user.photoURL || "",
+      userPhoto: user.photoURL || "",
+    };
+
+    // Check Firestore user doc for missing fields
+    try {
+      const userDocRef = doc(db, "users", user.uid);
+      const userSnapshot = await getDoc(userDocRef);
+
+      if (userSnapshot.exists()) {
+        const existingData = userSnapshot.data();
+        const updateData = {};
+
+        if (!existingData.displayName && user.displayName) {
+          updateData.displayName = user.displayName;
+        }
+        if (!existingData.email && user.email) {
+          updateData.email = user.email;
+        }
+        if (!existingData.photoURL && user.photoURL) {
+          updateData.photoURL = user.photoURL;
+        }
+        if (!existingData.userPhoto && user.photoURL) {
+          updateData.userPhoto = user.photoURL;
+        }
+
+        if (Object.keys(updateData).length > 0) {
+          await updateDoc(userDocRef, updateData);
+          console.log("✅ Auto-completed missing user profile fields.");
+        }
+
+        userInfo = {
+          ...userInfo,
+          ...existingData,
+          ...updateData,
+        };
+      }
+    } catch (err) {
+      console.error("⚠️ Failed to check/update user profile:", err);
     }
 
     let finalImageUrl = imageUrl;
@@ -105,17 +143,21 @@ function EditPopup({ review, onClose, onSave, onDelete }) {
           month: "short",
           day: "numeric",
         }),
+        displayName: userInfo.displayName,
+        email: userInfo.email,
+        photoURL: userInfo.photoURL,
+        userPhoto: userInfo.userPhoto,
       };
 
-      // Update user review
+      // Save to user review
       const userReviewRef = doc(db, `users/${user.uid}/reviews/${review.reviewId}`);
       await updateDoc(userReviewRef, updatedReview);
 
-      // Update global review
-      const allReviewRef = doc(db, `allreview/${review.reviewId}`);
-      await updateDoc(allReviewRef, updatedReview);
+      // Save to global review
+      const globalReviewRef = doc(db, `allreview/${review.reviewId}`);
+      await updateDoc(globalReviewRef, updatedReview);
 
-      if (onSave) onSave(); // notify parent to refresh data
+      if (onSave) onSave();
       onClose();
     } catch (error) {
       console.error("🔥 Error updating review:", error);
@@ -130,16 +172,12 @@ function EditPopup({ review, onClose, onSave, onDelete }) {
 
         <label
           onClick={(e) => {
-            e.stopPropagation(); // Don't open view popup
+            e.stopPropagation();
             handleDelete(review.reviewId);
           }}
           className="absolute bg-red-600 hover:bg-red-700 text-white w-12 h-12 flex justify-center items-center cursor-pointer rounded-full transition duration-300 right-5 top-5"
         >
-          <img 
-            src={deleteIcon}
-            alt="Delete"
-            className="w-7 h-7 invert brightness-0"
-            />
+          <img src={deleteIcon} alt="Delete" className="w-7 h-7 invert brightness-0" />
         </label>
 
         <label>Book Title</label>
@@ -194,7 +232,7 @@ function EditPopup({ review, onClose, onSave, onDelete }) {
           </button>
           <button
             onClick={handleSave}
-            className="px-6 py-2 bg-blue-500 text-white rounded-xl  hover:bg-blue-600"
+            className="px-6 py-2 bg-blue-500 text-white rounded-xl hover:bg-blue-600"
           >
             Save
           </button>

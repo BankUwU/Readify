@@ -13,7 +13,9 @@ function BookInformation() {
   const [showLogPopup, setShowLogPopup] = useState(false);
   const auth = getAuth();
   const user = auth.currentUser;
-  const book = location.state?.book;
+
+  const initialBook = location.state?.book;
+  const [book, setBook] = useState(initialBook);
   const [totalPagesRead, setTotalPagesRead] = useState(0);
 
   if (!book) {
@@ -32,13 +34,20 @@ function BookInformation() {
     );
   }
 
+  const updateProgress = (newProgress, newCurrentPage) => {
+    setBook(prev => ({
+      ...prev,
+      progress: newProgress,
+      currentPage: newCurrentPage
+    }));
+  };
+
   return (
     <>
       <div className="fixed top-0 w-full z-10">
         <Header />
       </div>
 
-      {/* Back button added here */}
       <div className="p-4 mt-16">
         <BackButton />
       </div>
@@ -93,6 +102,7 @@ function BookInformation() {
             reading={book}
             user={user}
             onClose={() => setShowLogPopup(false)}
+            refresh={updateProgress} // ✅ FIXED
           />
         )}
       </div>

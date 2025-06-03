@@ -8,7 +8,6 @@ import {
 } from "firebase/firestore";
 import { db } from "../config/firebaseConfig";
 
-
 const CLOUD_NAME = "djxipn8kj";
 const UPLOAD_PRESET = "Readify";
 
@@ -45,6 +44,7 @@ export const saveReview = async (reviewData, imageFile, user) => {
       books_pics_url: imageUrl,
       uid: user.uid,
       createdBy: user.displayName || "Anonymous",
+      userPhoto: user.photoURL || "",
     };
 
     // Save to global collection
@@ -54,7 +54,7 @@ export const saveReview = async (reviewData, imageFile, user) => {
     // Save to user's personal subcollection
     const userReviewRef = doc(db, `users/${user.uid}/reviews/${allReviewRef.id}`);
     await setDoc(userReviewRef, { ...review, reviewId: allReviewRef.id });
-
+    
     // Update user's stats
     const statRef = doc(db, `users/${user.uid}/stats/progress`);
     await setDoc(statRef, { totalReviews: increment(1) }, { merge: true });
