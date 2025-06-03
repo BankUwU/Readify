@@ -7,6 +7,7 @@ import Header from "../components/header";
 import { db } from "../config/firebaseConfig";
 import { useNavigate } from "react-router-dom";
 import DeleteConfirmationModal from "../components/DeleteConfirmationModal";
+import Toast from "../components/Toast";
 
 
 function MyReading() {
@@ -17,6 +18,10 @@ function MyReading() {
   const navigate = useNavigate();
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [bookToDelete, setBookToDelete] = useState(null);
+  const [toast, setToast] = useState({ message: "", type: "" });
+  const [loading, setLoading] = useState(false);
+
+
 
 
 
@@ -48,18 +53,22 @@ function MyReading() {
   };
 
   const confirmDelete = async () => {
-    if (!bookToDelete) return;
-    try {
-      await deleteDoc(doc(db, "users", user.uid, "myreading", bookToDelete));
-      fetchReadingList(user.uid);
-    } catch (error) {
-      console.error("Failed to delete reading:", error);
-      alert("Error deleting the book. Try again.");
-    } finally {
-      setShowDeleteModal(false);
-      setBookToDelete(null);
-    }
-  };
+  if (!bookToDelete) return;
+  setLoading(true);
+  try {
+    await deleteDoc(doc(db, "users", user.uid, "myreading", bookToDelete));
+    await fetchReadingList(user.uid);
+    setToast({ message: "Book deleted successfully.", type: "success" });
+  } catch (error) {
+    console.error("Failed to delete reading:", error);
+    setToast({ message: "Failed to delete book. Please try again.", type: "error" });
+  } finally {
+    setLoading(false);
+    setShowDeleteModal(false);
+    setBookToDelete(null);
+  }
+};
+
 
 
   return (
@@ -107,10 +116,15 @@ function MyReading() {
                 <button
                   onClick={(e) => {
                     e.stopPropagation();
-                    handleDeleteClick(book.id);
+                    if (!loading) {
+                      handleDeleteClick(book.id);
+                    }
                   }}
-                  className="absolute top-3 right-3 text-red-500 hover:text-red-700"
+                  className={`absolute top-3 right-3 text-red-500 hover:text-red-700 ${
+                    loading ? "cursor-not-allowed opacity-50 pointer-events-none" : "cursor-pointer"
+                  }`}
                   title="Delete"
+                  disabled={loading}
                 >
                   <FiTrash2 size={20} />
                 </button>
@@ -131,6 +145,7 @@ function MyReading() {
         isOpen={showDeleteModal}
         onClose={() => setShowDeleteModal(false)}
         onConfirm={confirmDelete}
+        loading={loading}
       />
 
 
@@ -142,6 +157,15 @@ function MyReading() {
           refresh={() => fetchReadingList(user.uid)}
         />
       )} */}
+
+      {toast.message && (
+        <Toast
+          message={toast.message}
+          type={toast.type}
+          onClose={() => setToast({ message: "", type: "" })}
+        />
+      )}
+
 
     </>
   );

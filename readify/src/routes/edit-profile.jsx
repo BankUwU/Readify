@@ -29,10 +29,6 @@ function EditProfile() {
   const [showDeletePopup, setShowDeletePopup] = useState(false);
   const [toast, setToast] = useState({ message: "", type: "" });
 
-
-
-
-  // NEW STATES for editing username/email
   const [showEditInfoPopup, setShowEditInfoPopup] = useState(false);
   const [editUsername, setEditUsername] = useState("");
   const [editEmail, setEditEmail] = useState("");
