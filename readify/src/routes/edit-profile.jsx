@@ -10,6 +10,8 @@ import Longbg from "../img/longbg.jpg"
 import ChangePasswordPopup from "../components/ChangePasswordPopup";
 import { updatePassword } from "firebase/auth"; 
 import DeleteAccountPopup from "../components/DeleteAccountPopup";
+import defaultProfilePic from "../img/profilepic.png";
+
 
 
 function EditProfile() {
@@ -187,18 +189,14 @@ function EditProfile() {
           className="w-full object-cover h-[200px]"
         />
 
-        <div className="absolute inset-0 top-[80px] flex bg-white w-[250px] h-[250px] mx-auto rounded-full items-center justify-center">
+        <div className="absolute top-[80px] left-1/2 transform -translate-x-1/2 flex bg-white w-[250px] h-[250px] rounded-full items-center justify-center">
         <div className="relative w-[230px] h-[230px]">
           <div className="w-full h-full bg-white rounded-full overflow-hidden">
-            {previewUrl ? (
               <img
-                src={previewUrl}
+                src={previewUrl || defaultProfilePic}
                 alt="Profile"
-                className="w-full h-full object-cover"
+                className="w-full h-full object-center object-cover"
               />
-            ) : (
-              <p>No Image</p>
-            )}
           </div>
           
 
@@ -323,7 +321,11 @@ function EditProfile() {
                     className="w-48 h-48 rounded-full mx-auto object-cover mb-4"
                   />
                 ) : (
-                  <p>No image selected yet.</p>
+                  <img
+                    src={defaultProfilePic}
+                    alt="Default Profile"
+                    className="w-48 h-48 rounded-full mx-auto object-cover mb-4"
+                  />
                 )}
 
                 <button
