@@ -23,13 +23,20 @@ const uploadToCloudinary = async (file) => {
   return data.secure_url;
 };
 
-function EditPopup({ review, onClose, onSave, onDelete }) {
+function EditPopup({ review, onClose, onSave, onDelete, showToast }) {
   const [title, setTitle] = useState("");
   const [category, setCategory] = useState("");
   const [reviewText, setReviewText] = useState("");
   const [imageUrl, setImageUrl] = useState("");
   const [imageFile, setImageFile] = useState(null);
   const inputRef = useRef();
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [deleting, setDeleting] = useState(false);
+  const [saving, setSaving] = useState(false);
+
+
+
+
 
   useEffect(() => {
     if (review) {
@@ -52,28 +59,22 @@ function EditPopup({ review, onClose, onSave, onDelete }) {
   };
 
   const handleDelete = async (reviewId) => {
-    const user = getAuth().currentUser;
-    if (!user) return;
+  const user = getAuth().currentUser;
+  if (!user) return;
 
-    const confirmDelete = window.confirm("Are you sure you want to delete this review?");
-    if (!confirmDelete) return;
+  try {
+    await deleteDoc(doc(db, "users", user.uid, "reviews", reviewId));
+    await deleteDoc(doc(db, "allreview", reviewId));
 
-    try {
-      const userReviewRef = doc(db, "users", user.uid, "reviews", reviewId);
-      await deleteDoc(userReviewRef);
+    if (onDelete) onDelete(reviewId);
+    if (showToast) showToast("Review deleted successfully", "success");
 
-      const globalReviewRef = doc(db, "allreview", reviewId);
-      await deleteDoc(globalReviewRef);
+  } catch (error) {
+    console.error("Error deleting review:", error);
+    if (showToast) showToast("Failed to delete review.", "error");
+  }
+};
 
-      console.log("Review deleted successfully");
-
-      if (typeof onDelete === "function") {
-        onDelete(reviewId);
-      }
-    } catch (error) {
-      console.error("Error deleting review:", error);
-    }
-  };
 
   const handleSave = async () => {
     const auth = getAuth();
@@ -83,6 +84,8 @@ function EditPopup({ review, onClose, onSave, onDelete }) {
       alert("You must be logged in to edit a review.");
       return;
     }
+
+    setSaving(true);
 
     let userInfo = {
       displayName: user.displayName || "Anonymous",
@@ -151,20 +154,18 @@ function EditPopup({ review, onClose, onSave, onDelete }) {
         userPhoto: userInfo.userPhoto,
       };
 
-      // Save to user review
-      const userReviewRef = doc(db, `users/${user.uid}/reviews/${review.reviewId}`);
-      await updateDoc(userReviewRef, updatedReview);
-
-      // Save to global review
-      const globalReviewRef = doc(db, `allreview/${review.reviewId}`);
-      await updateDoc(globalReviewRef, updatedReview);
+      await updateDoc(doc(db, `users/${user.uid}/reviews/${review.reviewId}`), updatedReview);
+      await updateDoc(doc(db, `allreview/${review.reviewId}`), updatedReview);
 
       if (onSave) onSave();
+      if (showToast) showToast("Review updated successfully", "success");
       onClose();
     } catch (error) {
       console.error("Error updating review:", error);
-      alert("Failed to update review.");
-    }
+      if (showToast) showToast("Failed to update review.", "error");
+    } finally {
+    setSaving(false); 
+  }
   };
 
   return (
@@ -197,7 +198,7 @@ function EditPopup({ review, onClose, onSave, onDelete }) {
         <label
           onClick={(e) => {
             e.stopPropagation();
-            handleDelete(review.reviewId);
+            setShowDeleteConfirm(true);
           }}
           className="absolute  text-red-500 hover:text-red-700 w-12 h-12 flex justify-center items-center cursor-pointer rounded-full transition duration-300 right-5 top-4"
         >
@@ -248,12 +249,50 @@ function EditPopup({ review, onClose, onSave, onDelete }) {
           </button>
           <button
             onClick={handleSave}
-            className="px-6 py-2 bg-blue-500 text-white rounded-xl hover:bg-blue-600"
+            disabled={saving}
+            className={`px-6 py-2 rounded-xl text-white transition ${
+              saving
+                ? "bg-gray-400 cursor-not-allowed"
+                : "bg-blue-500 hover:bg-blue-600"
+            }`}
           >
             Save
           </button>
         </div>
       </div>
+      {showDeleteConfirm && (
+      <div className="fixed inset-0 bg-black bg-opacity-10 flex items-center justify-center z-50">
+        <div className="bg-white p-6 rounded-xl shadow-lg w-[90%] max-w-sm">
+          <h3 className="text-lg font-semibold mb-4 text-center">Are you sure you want to <br></br> delete this review?</h3>
+          <div className="flex justify-center gap-4">
+            <button
+              onClick={() => setShowDeleteConfirm(false)}
+              className="px-4 py-2 bg-gray-300 rounded-lg hover:bg-gray-400"
+            >
+              Cancel
+            </button>
+            <button
+              onClick={async () => {
+                setDeleting(true); 
+                await handleDelete(review.reviewId);
+                setDeleting(false); 
+                onClose(); 
+              }}
+              disabled={deleting}
+              className={`px-4 py-2 rounded-lg text-white ${
+                deleting
+                  ? "bg-gray-400 cursor-not-allowed"
+                  : "bg-red-500 hover:bg-red-600"
+              }`}
+            >
+              Delete
+            </button>
+
+          </div>
+        </div>
+      </div>
+    )}
+
     </div>
   );
 }

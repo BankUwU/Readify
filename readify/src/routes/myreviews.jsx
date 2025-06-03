@@ -6,12 +6,16 @@ import Header from "../components/header";
 import ReviewPopup from "../components/MyReviewPopup";
 import { db } from "../config/firebaseConfig";
 import editIcon from "../img/edit-icon.png"
+import Toast from "../components/Toast";
+
 
 function Myreviews() {
   const [reviews, setReviews] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedReview, setSelectedReview] = useState(null);
-  const [editReview, setEditReview] = useState(null); // For edit popup
+  const [editReview, setEditReview] = useState(null); 
+  const [toastMessage, setToastMessage] = useState("");
+  const [toastType, setToastType] = useState("success");
 
   const auth = getAuth();
   const user = auth.currentUser;
@@ -127,10 +131,21 @@ function Myreviews() {
         onSave={handleUpdate}
         onDelete={(deletedId) => {
           setReviews((prev) => prev.filter((r) => r.reviewId !== deletedId));
-          setEditReview(null); 
+          setEditReview(null);
         }}
-      />
+        showToast={(message, type = "success") => {
+          setToastMessage(message);
+          setToastType(type);
+        }}
+      />    
 
+      {toastMessage && (
+        <Toast
+          message={toastMessage}
+          type={toastType}
+          onClose={() => setToastMessage("")}
+        />
+      )}
     </>
   );
 }
