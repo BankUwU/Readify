@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { auth } from "../config/firebaseConfig";
 import { reauthenticateWithCredential, EmailAuthProvider, deleteUser } from "firebase/auth";
+import { doc, deleteDoc } from "firebase/firestore";
+import { db } from "../config/firebaseConfig";
 
 function DeleteAccountPopup({ onClose, onDeleteSuccess }) {
   const [password, setPassword] = useState("");
@@ -23,6 +25,7 @@ function DeleteAccountPopup({ onClose, onDeleteSuccess }) {
 
     try {
       await reauthenticateWithCredential(user, credential);
+      await deleteDoc(doc(db, "users", user.uid));
       await deleteUser(user);
       alert("Account deleted successfully.");
       onDeleteSuccess();
