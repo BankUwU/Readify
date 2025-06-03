@@ -10,6 +10,8 @@ import { auth, db } from "../config/firebaseConfig";
 import editIcon from "../img/edit-icon.png";
 import Longbg from "../img/longbg.jpg";
 import defaultProfilePic from "../img/profilepic.png";
+import Toast from "../components/Toast"; 
+
 
 
 
@@ -25,6 +27,8 @@ function EditProfile() {
   const [newPreviewUrl, setNewPreviewUrl] = useState("");
   const [showChangePasswordPopup, setShowChangePasswordPopup] = useState(false);
   const [showDeletePopup, setShowDeletePopup] = useState(false);
+  const [toast, setToast] = useState({ message: "", type: "" });
+
 
 
 
@@ -136,14 +140,15 @@ function EditProfile() {
   const currentUser = auth.currentUser;
   updatePassword(currentUser, newPassword)
     .then(() => {
-      alert("Password changed successfully.");
+      setToast({ message: "Password changed successfully.", type: "success" });
       setShowChangePasswordPopup(false);
     })
     .catch((err) => {
       console.error(err);
-      alert("Error changing password. You may need to re-login.");
+      setToast({ message: "Error changing password. You may need to re-login.", type: "error" });
     });
 };
+
 
 
   const handleSaveInfo = async () => {
@@ -386,6 +391,14 @@ function EditProfile() {
             }}
           />
         )}
+        {toast.message && (
+        <Toast
+          message={toast.message}
+          type={toast.type}
+          onClose={() => setToast({ message: "", type: "" })}
+        />
+      )}
+
     </>
   );
 }

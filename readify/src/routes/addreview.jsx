@@ -5,6 +5,8 @@ import { saveReview } from "../api/addreviewapi";
 import Header from "../components/header";
 import cloudIcon from "../img/cloud-upload-icon.png";
 import { serverTimestamp } from "firebase/firestore";
+import Toast from "../components/Toast";
+
 
 
 function AddReview() {
@@ -17,7 +19,9 @@ function AddReview() {
   const [reviewText, setReviewText] = useState("");
   const [imageFile, setImageFile] = useState(null);
   const [loading, setLoading] = useState(false);
-  const [successPopup, setSuccessPopup] = useState(false);
+  const [toastMessage, setToastMessage] = useState("");
+  const [toastType, setToastType] = useState("success");
+
 
 
 
@@ -90,11 +94,11 @@ function AddReview() {
   setLoading(true);
   try {
     const id = await saveReview(reviewData, imageFile, user);
-    setSuccessPopup(true); 
+    setToastMessage("Review saved successfully! Redirecting to homepage...");
+    setToastType("success");
     setTimeout(() => {
-      setSuccessPopup(false);
       navigate("/");
-    }, 2000); 
+    }, 3000);
   } catch (error) {
     console.error("Error saving review:", error);
     alert("Error saving review.");
@@ -114,14 +118,14 @@ function AddReview() {
         </div>
       )}
 
-      {successPopup && (
-        <div className="fixed inset-0 bg-black bg-opacity-30 flex items-center justify-center z-50">
-          <div className="bg-white p-7 rounded-2xl shadow-lg flex flex-col items-center animate-scale-in">
-            <h2 className="text-lg font-semibold text-gray-800 mb-1">Review Saved Successfully</h2>
-            <p className="text-sm text-gray-500">Redirecting to home</p>
-          </div>
-        </div>
+      {toastMessage && (
+        <Toast
+          message={toastMessage}
+          type={toastType}
+          onClose={() => setToastMessage("")}
+        />
       )}
+
 
       <div className="bg-[aliceblue] rounded-2xl w-full max-w-7xl h-auto mx-auto px-4 sm:px-6 lg:px-8 pb-8">
         <form
