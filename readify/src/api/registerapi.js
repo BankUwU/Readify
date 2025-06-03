@@ -15,7 +15,6 @@ export const registerUser = async (email, username, password) => {
       email,
       displayName: username,
       photoURL: "",
-      review: "",
       createdAt: serverTimestamp(),
       role: "user", 
     });
