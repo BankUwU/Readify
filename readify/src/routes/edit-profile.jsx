@@ -1,15 +1,14 @@
 import axios from "axios";
-import { onAuthStateChanged, updateProfile, updateEmail } from "firebase/auth";
+import { onAuthStateChanged, updateEmail, updatePassword, updateProfile } from "firebase/auth";
 import { doc, getDoc, setDoc } from "firebase/firestore";
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import ChangePasswordPopup from "../components/ChangePasswordPopup";
+import DeleteAccountPopup from "../components/DeleteAccountPopup";
 import Header from "../components/header";
 import { auth, db } from "../config/firebaseConfig";
 import editIcon from "../img/edit-icon.png";
-import Longbg from "../img/longbg.jpg"
-import ChangePasswordPopup from "../components/ChangePasswordPopup";
-import { updatePassword } from "firebase/auth"; 
-import DeleteAccountPopup from "../components/DeleteAccountPopup";
+import Longbg from "../img/longbg.jpg";
 import defaultProfilePic from "../img/profilepic.png";
 
 
@@ -392,3 +391,4 @@ function EditProfile() {
 }
 
 export default EditProfile;
+  

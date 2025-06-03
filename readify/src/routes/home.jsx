@@ -121,7 +121,7 @@ function Home() {
   return (
     <>
       <Header />
-      <div className="p-5 max-w-7xl mx-auto">
+      <div className="p-5 w-[1200px] mx-auto min-w-[1200px]">
         {showPopup && (
           <ReadingPopup
             user={user}
@@ -135,32 +135,26 @@ function Home() {
         )}
 
         <div className="mt-4">
-          <h3 className="text-lg font-bold">
-            <div className="text-2xl ml-3 text-slate-800">
-              {user?.displayName ? `${user.displayName}'s Readings` : "My Readings"}
-            </div>
+          <h3 className="text-2xl font-bold text-slate-800 ml-2">
+            {user?.displayName ? `${user.displayName}'s Readings` : "My Readings"}
           </h3>
 
           <div
-            className="relative rounded-2xl bg-blue-100 mt-2 p-4 min-h-[200px]"
-            style={{
-              boxShadow: "0 10px 15px -5px rgba(0, 0, 0, 0.2)",
-              overflow: "hidden",
-            }}
+            className="relative rounded-2xl bg-blue-100 mt-2 p-4 min-h-[200px] overflow-hidden"
+            style={{ boxShadow: "0 10px 15px -5px rgba(0, 0, 0, 0.2)" }}
           >
             {/* Left Arrow */}
             {totalPages > 1 && readingPage > 0 && (
               <button
                 onClick={() => setReadingPage((prev) => Math.max(prev - 1, 0))}
-                className="absolute left-2 top-1/2 text-gray-500 -translate-y-1/2 bg-gray-300 rounded-full p-[7px] hover:bg-gray-400 transition duration-200"
-                aria-label="Previous page"
+                className="absolute left-2 top-1/2 text-gray-500 -translate-y-1/2 bg-gray-300 rounded-full p-[7px] hover:bg-gray-400"
               >
                 <FiChevronLeft size={20} />
               </button>
             )}
 
             {/* Content */}
-            <div className="flex items-center ml-3 sm:ml-6 md:ml-9 overflow-x-auto scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-transparent">
+            <div className="flex items-center ml-4 overflow-x-auto w-full max-w-full scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-transparent">
               <Plus
                 onClick={() => {
                   if (!user) {
@@ -177,14 +171,13 @@ function Home() {
             {totalPages > 1 && readingPage < totalPages - 1 && (
               <button
                 onClick={() => setReadingPage((prev) => Math.min(prev + 1, totalPages - 1))}
-                className="absolute right-2 top-1/2 text-gray-500 -translate-y-1/2 bg-gray-300 rounded-full p-[7px] hover:bg-gray-400 transition duration-200"
-                aria-label="Next page"
+                className="absolute right-2 top-1/2 text-gray-500 -translate-y-1/2 bg-gray-300 rounded-full p-[7px] hover:bg-gray-400"
               >
                 <FiChevronRight size={20} />
               </button>
             )}
 
-            {/* Pagination dots */}
+            {/* Pagination Dots */}
             {totalPages > 1 && (
               <div className="flex justify-center space-x-2 cursor-pointer mt-4">
                 {Array.from({ length: totalPages }).map((_, i) => (
@@ -194,10 +187,6 @@ function Home() {
                       i === readingPage ? "bg-black" : "bg-gray-300"
                     }`}
                     onClick={() => setReadingPage(i)}
-                    role="button"
-                    tabIndex={0}
-                    aria-label={`Go to page ${i + 1}`}
-                    onKeyDown={(e) => e.key === "Enter" && setReadingPage(i)}
                   />
                 ))}
               </div>
@@ -205,9 +194,9 @@ function Home() {
           </div>
         </div>
 
-        <div className="mt-8 px-3 sm:px-6 md:px-9">
-          <h3 className="text-2xl font-bold ml-0 sm:ml-3 text-slate-800">Reviews</h3>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mt-4">
+        <div className="mt-8 px-0">
+          <h3 className="text-2xl font-bold text-slate-800">Reviews</h3>
+          <div className="grid grid-cols-4 gap-6 mt-4">
             {bookreview.map((review, index) => (
               <Bookreview
                 key={review.id}
