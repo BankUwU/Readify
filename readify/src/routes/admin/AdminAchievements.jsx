@@ -7,62 +7,76 @@ function AdminAchievements() {
   const [achievements, setAchievements] = useState([]);
   const [form, setForm] = useState({ title: "", description: "", target: 0, trackKey: "" });
   const [editId, setEditId] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [deleteTargetId, setDeleteTargetId] = useState(null);
+  const [deleteLoading, setDeleteLoading] = useState(false);
 
-  // Fetch all achievements
+
+
   const fetchAchievements = async () => {
+  setLoading(true);
+  try {
     const snapshot = await getDocs(collection(db, "achievements"));
     setAchievements(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
-  };
+  } catch (err) {
+    console.error("Failed to fetch achievements:", err);
+  } finally {
+    setLoading(false);
+  }
+};
+
 
   useEffect(() => {
     fetchAchievements();
   }, []);
 
-  // Handle form input change
-  const handleChange = (e) => {
+    const handleChange = (e) => {
     const { name, value } = e.target;
     setForm(prev => ({ ...prev, [name]: name === "target" ? Number(value) : value }));
   };
 
-  // Add new achievement
   const handleAdd = async () => {
   if (!form.title.trim()) return alert("Title required");
 
-  // 1. Add new achievement
-  const newDoc = await addDoc(collection(db, "achievements"), form);
+  setLoading(true);
+  try {
+    const newDoc = await addDoc(collection(db, "achievements"), form);
 
-  // 2. Get all users
-  const userSnapshot = await getDocs(collection(db, "users"));
+    const userSnapshot = await getDocs(collection(db, "users"));
 
-  // 3. For each user, update their userAchievements doc
-  const promises = userSnapshot.docs.map(async (userDoc) => {
-    const userId = userDoc.id;
-    const userAchRef = doc(db, "userAchievements", userId);
-    const achSnap = await getDoc(userAchRef);
+    const promises = userSnapshot.docs.map(async (userDoc) => {
+      const userId = userDoc.id;
+      const userAchRef = doc(db, "userAchievements", userId);
+      const achSnap = await getDoc(userAchRef);
 
-    if (achSnap.exists()) {
-      const data = achSnap.data();
-      const updated = {
-        ...data.achievements,
-        [newDoc.id]: false, // Mark new achievement as not completed
-      };
-      await updateDoc(userAchRef, { achievements: updated });
-    } else {
-      await setDoc(userAchRef, {
-        achievements: {
+      if (achSnap.exists()) {
+        const data = achSnap.data();
+        const updated = {
+          ...data.achievements,
           [newDoc.id]: false,
-        },
-      });
-    }
-  });
+        };
+        await updateDoc(userAchRef, { achievements: updated });
+      } else {
+        await setDoc(userAchRef, {
+          achievements: {
+            [newDoc.id]: false,
+          },
+        });
+      }
+    });
 
-  await Promise.all(promises);
-  setForm({ title: "", description: "", target: 0 });
-  fetchAchievements();
+    await Promise.all(promises);
+    setForm({ title: "", description: "", target: 0, trackKey: "" });
+    fetchAchievements();
+  } catch (err) {
+    console.error("Failed to add achievement:", err);
+  } finally {
+    setLoading(false);
+  }
 };
 
 
-  // Start editing an achievement
   const handleEdit = (achievement) => {
   setEditId(achievement.id);
   setForm({
@@ -74,27 +88,82 @@ function AdminAchievements() {
 };
 
 
-  // Save update
   const handleUpdate = async () => {
-    if (!form.title.trim()) return alert("Title required");
+  if (!form.title.trim()) return alert("Title required");
+
+  setLoading(true);
+  try {
     const docRef = doc(db, "achievements", editId);
     await updateDoc(docRef, form);
     setEditId(null);
-    setForm({ title: "", description: "", target: 0 });
+    setForm({ title: "", description: "", target: 0, trackKey: "" });
     fetchAchievements();
-  };
+  } catch (err) {
+    console.error("Failed to update achievement:", err);
+  } finally {
+    setLoading(false);
+  }
+};
 
-  // Delete achievement
-  const handleDelete = async (id) => {
-    if (!window.confirm("Delete this achievement?")) return;
-    await deleteDoc(doc(db, "achievements", id));
+
+  const handleDelete = (id) => {
+  setDeleteTargetId(id);
+  setShowDeleteModal(true);
+};
+
+  const confirmDelete = async () => {
+  if (!deleteTargetId) return;
+  setDeleteLoading(true);
+  try {
+    await deleteDoc(doc(db, "achievements", deleteTargetId));
     fetchAchievements();
-  };
+  } catch (err) {
+    console.error("Failed to delete achievement:", err);
+  } finally {
+    setDeleteLoading(false);
+    setShowDeleteModal(false);
+    setDeleteTargetId(null);
+  }
+};
+
+
 
   return (
     
     <div>
      <Header />
+     {loading && (
+        <div className="fixed inset-0 bg-black bg-opacity-30 flex items-center justify-center z-50">
+          <div className="animate-spin rounded-full h-16 w-16 border-4 border-blue-500 border-t-transparent"></div>
+        </div>
+      )}
+
+      {showDeleteModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-30 z-50 flex items-center justify-center">
+          <div className="bg-white rounded-xl shadow-lg p-6 w-[90%] max-w-md">
+            <h2 className="text-xl font-bold mb-2">Confirm Deletion</h2>
+            <p className="mb-5">Are you sure you want to delete this achievement?</p>
+            <div className="flex justify-end space-x-3">
+              <button
+                onClick={() => setShowDeleteModal(false)}
+                className="px-4 py-2 rounded-lg bg-gray-300 hover:bg-gray-400"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={confirmDelete}
+                disabled={deleteLoading}
+                className={`px-4 py-2 rounded-lg text-white transition duration-200 ${
+                  deleteLoading ? "bg-gray-400 cursor-not-allowed" : "bg-red-500 hover:bg-red-600"
+                }`}
+              >
+                Confirm
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
      <div className="p-10 min-h-[calc(100vh-60px)] ">
       <h1 className="text-2xl font-bold mb-4">Manage Achievements</h1>
 

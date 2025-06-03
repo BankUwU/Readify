@@ -261,7 +261,7 @@ function EditProfile() {
                     : "bg-blue-600 hover:bg-blue-700"
                 }`}
               >
-                {savingInfo ? "Saving..." : "Save"}
+                Save
               </button>
             </div>
           </div>

@@ -110,7 +110,7 @@ function Home() {
   };
 
   const [readingPage, setReadingPage] = useState(0);
-  const itemsPerPage = 5;
+  const itemsPerPage = 4;
 
   const totalPages = Math.ceil(readingList.length / itemsPerPage);
   const paginatedReadingList = readingList.slice(
@@ -121,7 +121,7 @@ function Home() {
   return (
     <>
       <Header />
-      <div className="p-5 w-[1200px] mx-auto min-w-[1200px]">
+      <div className="p-5 w-[1400px] mx-auto min-w-[1200px]">
         {showPopup && (
           <ReadingPopup
             user={user}
