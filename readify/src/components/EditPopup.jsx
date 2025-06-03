@@ -2,7 +2,9 @@ import { getAuth } from "firebase/auth";
 import { deleteDoc, doc, getDoc, updateDoc } from "firebase/firestore";
 import { useEffect, useRef, useState } from "react";
 import { db } from "../config/firebaseConfig";
-import deleteIcon from "../img/delete-icon.png";
+// import deleteIcon from "../img/delete-icon.png";
+import { FiTrash2 } from "react-icons/fi";
+
 
 const CLOUD_NAME = "djxipn8kj";
 const UPLOAD_PRESET = "Readify";
@@ -113,7 +115,7 @@ function EditPopup({ review, onClose, onSave, onDelete }) {
 
         if (Object.keys(updateData).length > 0) {
           await updateDoc(userDocRef, updateData);
-          console.log("✅ Auto-completed missing user profile fields.");
+          console.log("Auto-completed missing user profile fields.");
         }
 
         userInfo = {
@@ -123,7 +125,7 @@ function EditPopup({ review, onClose, onSave, onDelete }) {
         };
       }
     } catch (err) {
-      console.error("⚠️ Failed to check/update user profile:", err);
+      console.error("Failed to check/update user profile:", err);
     }
 
     let finalImageUrl = imageUrl;
@@ -160,26 +162,51 @@ function EditPopup({ review, onClose, onSave, onDelete }) {
       if (onSave) onSave();
       onClose();
     } catch (error) {
-      console.error("🔥 Error updating review:", error);
+      console.error("Error updating review:", error);
       alert("Failed to update review.");
     }
   };
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
-      <div className="bg-white p-6 rounded-xl shadow-xl w-[90%] max-w-xl relative">
-        <h2 className="text-2xl font-semibold mb-4">Edit Review</h2>
+      <div className="bg-white p-6 rounded-xl shadow-xl w-[95%] max-w-2xl relative">
+        <h2 className="text-2xl font-semibold mb-4 ">Edit Review</h2>
+
+      <div className="flex flex-col md:flex-row gap-8">
+          <div className="flex flex-col items-start mt-3 min-w-[160px]">
+
+          <div className="relative group w-40 h-60 mb-4 rounded overflow-hidden shadow-md">
+            <img
+              src={imageUrl}
+              alt="Book Cover Preview"
+              className="w-full h-full object-cover rounded transition duration-300 group-hover:brightness-75"
+            />
+            <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition duration-300 bg-black bg-opacity-50">
+              <button
+                onClick={() => inputRef.current.click()}
+                className="text-white px-4 py-1 bg-blue-600 rounded hover:bg-blue-700 text-sm"
+              >
+                Change Image
+              </button>
+            </div>
+          </div>
+
+
+          </div>
 
         <label
           onClick={(e) => {
             e.stopPropagation();
             handleDelete(review.reviewId);
           }}
-          className="absolute bg-red-600 hover:bg-red-700 text-white w-12 h-12 flex justify-center items-center cursor-pointer rounded-full transition duration-300 right-5 top-5"
+          className="absolute  text-red-500 hover:text-red-700 w-12 h-12 flex justify-center items-center cursor-pointer rounded-full transition duration-300 right-5 top-4"
         >
-          <img src={deleteIcon} alt="Delete" className="w-7 h-7 invert brightness-0" />
+          <FiTrash2 size={22} />
         </label>
 
+        <div>
+        
+          <div className="flex-grow">
         <label>Book Title</label>
         <input
           type="text"
@@ -208,19 +235,8 @@ function EditPopup({ review, onClose, onSave, onDelete }) {
           onChange={(e) => setReviewText(e.target.value)}
         />
 
-        <label>Book Cover Image</label>
-        <div className="mb-4">
-          <img
-            src={imageUrl}
-            alt="Preview"
-            className="w-40 h-60 object-cover rounded mb-2"
-          />
-          <input
-            type="file"
-            accept="image/*"
-            onChange={handleImageChange}
-            ref={inputRef}
-          />
+            </div>
+          </div>
         </div>
 
         <div className="flex justify-center gap-4 mt-10">

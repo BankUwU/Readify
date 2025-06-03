@@ -79,13 +79,17 @@ function Myreviews() {
                   onError={(e) => (e.target.src = "/placeholder.png")}
                 />
                 <div className="w-full ml-5">
-                  <h2 className="text-xl font-semibold text-gray-800">
+                  <h2
+                    className="text-xl font-semibold text-gray-800 line-clamp-6 break-words overflow-hidden"
+                    title={review.title}
+                  >
                     {review.title}
                   </h2>
+
                   <h4 className="text-md  mt-1 text-purple-700 mb-2">
                     {review.category}
                   </h4>
-                  <div className="absolute gap-2 top-7 right-5">
+                  <div className="absolute gap-2 top-6 right-4">
                     <label
                       onClick={(e) => {
                         e.stopPropagation(); // Don't open view popup
