@@ -30,7 +30,7 @@ function Home() {
 
   useEffect(() => {
     async function fetchReadingList() {
-      if (!user) return;
+      // if (!user) return;
       try {
         const snapshot = await getDocs(collection(db, "users", user.uid, "myreading"));
         const booksArray = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
@@ -62,7 +62,7 @@ function Home() {
     }
 
     const fetchFavorites = async () => {
-      if (!user) return;
+      // if (!user) return;
       try {
         const snapshot = await getDocs(collection(db, "users", user.uid, "favorites"));
         const favoriteIds = snapshot.docs.map((doc) => doc.id);
@@ -74,16 +74,18 @@ function Home() {
       }
     };
 
+    fetchBookReviews();
+    
     if (user) {
       fetchReadingList();
-      fetchBookReviews();
+      // fetchBookReviews();
       fetchFavorites();
     }
   }, [user]);
 
   useEffect(() => {
     const fetchFavorites = async () => {
-      if (!user) return;
+      // if (!user) return;
       try {
         const snapshot = await getDocs(collection(db, "users", user.uid, "favorites"));
         const favoriteIds = snapshot.docs.map((doc) => doc.id);
