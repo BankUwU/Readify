@@ -20,11 +20,11 @@ function Home() {
   const [bookreview, setBookReview] = useState([]);
   const [filteredReviews, setFilteredReviews] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
-  const [sortOrder, setSortOrder] = useState("latest");
   const navigate = useNavigate();
   const [showPopup, setShowPopup] = useState(false);
   const [selectedReview, setSelectedReview] = useState(null);
   const [selectedCategory, setSelectedCategory] = useState("All");
+  const [sortMode, setSortMode] = useState("default"); 
 
 
   useEffect(() => {
@@ -119,15 +119,15 @@ function Home() {
     });
   }
 
-  // Step 3: Sort the filtered result
-  if (sortOrder === "latest") {
-    filtered.sort((a, b) => (b.createdAt || "").localeCompare(a.createdAt || ""));
-  } else if (sortOrder === "oldest") {
-    filtered.sort((a, b) => (a.createdAt || "").localeCompare(b.createdAt || ""));
-  }
+  if (sortMode === "newest") {
+  filtered.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+} else if (sortMode === "oldest") {
+  filtered.sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
+}
+
 
   setFilteredReviews(filtered);
-}, [searchQuery, sortOrder, selectedCategory, bookreview]);
+}, [searchQuery, selectedCategory, bookreview, sortMode]);
 
 
   const toggleFavorite = async (index) => {
@@ -236,12 +236,12 @@ function Home() {
 
         <div className="flex items-center justify-between mt-8 mb-4">
           <h3 className="text-2xl font-bold text-slate-800">Reviews</h3>
-          <ReviewSearchBar
-            searchQuery={searchQuery}
-            onSearchChange={setSearchQuery}
-            sortOrder={sortOrder}
-            onSortChange={setSortOrder}
-          />
+          <div className="flex-grow">
+            <ReviewSearchBar
+              searchQuery={searchQuery}
+              onSearchChange={setSearchQuery}
+            />
+          </div>
 
           <div className="flex items-center space-x-2">
           <label htmlFor="category" className="text-gray-700 font-medium">Filter By :</label>
@@ -259,45 +259,51 @@ function Home() {
             <option value="Historail">Historial</option>
             <option value="Others">Others</option>
           </select>
+            <button
+              onClick={() =>
+                setSortMode((prev) => (prev === "newest" ? "default" : "newest"))
+              }
+              className={`px-4 py-1 rounded-md border text-sm transition duration-200 ${
+                sortMode === "newest"
+                  ? "bg-gray-700 text-white"
+                  : "bg-white text-gray-700 border-gray-300 hover:bg-gray-100"
+              }`}
+            >
+              Newest
+            </button>
+
+            <button
+              onClick={() =>
+                setSortMode((prev) => (prev === "oldest" ? "default" : "oldest"))
+              }
+              className={`px-4 py-1 rounded-md border text-sm transition duration-200 ${
+                sortMode === "oldest"
+                  ? "bg-gray-700 text-white"
+                  : "bg-white text-gray-700 border-gray-300 hover:bg-gray-100"
+              }`}
+            >
+              Oldest
+            </button>
         </div>
 
         </div>
 
         <div className="grid grid-cols-4 gap-6 mt-4">
             {filteredReviews.map((review, index) => (
-  <Bookreview
-    key={review.id}
-    review={review}
-    isFavorite={favorites[bookreview.findIndex((r) => r.id === review.id)]}
-    onToggleFavorite={() => toggleFavorite(index)}
-    onClick={() => setSelectedReview(review)}
-  />
-))}
+            <Bookreview
+              key={review.id}
+              review={review}
+              isFavorite={favorites[bookreview.findIndex((r) => r.id === review.id)]}
+              onToggleFavorite={() => toggleFavorite(index)}
+              onClick={() => setSelectedReview(review)}
+            />
+          ))}
 
-        </div>
-        <div className="mt-8">
-          {/* <div className="min-h-[400px] mt-4">
-            {filteredReviews.length > 0 ? (
-              <div className="grid grid-cols-4 gap-6">
-                {filteredReviews.map((review, index) => (
-                  <Bookreview
-                    key={review.id}
-                    review={review}
-                    isFavorite={favorites[bookreview.findIndex((r) => r.id === review.id)]}
-                    onToggleFavorite={() => toggleFavorite(index)}
-                    onClick={() => setSelectedReview(review)}
-                  />
-                ))}
-              </div>
-            ) : (
-              <p className="text-gray-500 text-center mt-10">No reviews found.</p>
-            )}
-          </div> */}
-
-        {selectedReview && (
+          {selectedReview && (
           <AllReviewPopup review={selectedReview} onClose={() => setSelectedReview(null)} />
         )}
-      </div>
+
+        </div>
       </div>
     </>
     
