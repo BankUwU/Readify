@@ -242,9 +242,10 @@ function Home() {
 
         <div className="mt-8">
           <h3 className="text-2xl font-bold text-slate-800 mb-2">Reviews</h3>
-          <div className="flex flex-wrap gap-4 items-center mb-4">
-            <ReviewSearchBar searchQuery={searchQuery} onSearchChange={setSearchQuery} className="w-[600px]" />
+          <div className="flex flex-wrap justify-between gap-4 items-center mb-4">
+            <ReviewSearchBar searchQuery={searchQuery} onSearchChange={setSearchQuery} className="w-[700px]" />
 
+            <div className="flex gap-4">
             <label htmlFor="category" className="text-gray-700 font-medium">Filter By :</label>
             <select
               id="category"
@@ -286,6 +287,7 @@ function Home() {
             >
               Oldest
             </button>
+            </div>
           </div>
         </div>
 
