@@ -5,7 +5,6 @@ import BG1 from "../img/BG1.png";
 import BG2 from "../img/BG2.png";
 import ReadifyLogo from "../img/Readify_Logo.webp";
 
-
 function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -33,11 +32,10 @@ function Login() {
       {/* Center form */}
       <div className="w-full md:w-2/4 flex items-center justify-center bg-white px-6 py-12 shadow-lg">
         <div className="w-full max-w-md">
-          {/* <h1 className="text-4xl font-bold text-center mb-8 text-blue-600">Readify</h1> */}
           <div className="flex justify-center">
             <img
               src={ReadifyLogo}
-              alt="background"
+              alt="Readify Logo"
               className="h-[170px] w-[170px] object-cover mb-4"
             />
           </div>
