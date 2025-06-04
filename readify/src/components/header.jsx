@@ -129,11 +129,13 @@ const Header = () => {
       )}
 
       {/* Sidebar */}
+      
       <div
         className={`fixed top-0 left-0 h-full w-64 bg-white shadow-lg z-50 transform transition-transform duration-300 ${
           isSidebarOpen ? "translate-x-0" : "-translate-x-full"
-        } flex flex-col p-6 space-y-4`}
+        } flex flex-col p-6`}
       >
+        <div className="flex flex-col space-y-4">
         <Link
           to="/"
           className="text-blue-900 font-bold px-3 py-2 rounded hover:bg-blue-100"
@@ -176,15 +178,17 @@ const Header = () => {
         >
           My Reviews
         </Link>
+        </div>
+
         {user && (
           <button
             onClick={() => {
               handleLogout();
               closeSidebar();
             }}
-            className="text-left text-blue-900 font-bold px-3 py-2 rounded hover:bg-blue-100"
+            className="mt-auto text-left text-blue-900 font-bold px-3 py-2 rounded hover:bg-blue-100"
           >
-            Log Out
+            LOG OUT
           </button>
         )}
       </div>
