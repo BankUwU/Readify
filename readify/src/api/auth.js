@@ -1,12 +1,21 @@
-import { signInWithEmailAndPassword } from "firebase/auth"; // Import Firebase Auth methods
-import { auth, db } from "../config/firebaseConfig";// Import Firebase auth
+import { sendEmailVerification, signInWithEmailAndPassword } from "firebase/auth";
+import { auth } from "../config/firebaseConfig";
 
-// Login Function
 export const loginWithEmailAndPassword = async (email, password) => {
   try {
     const userCredential = await signInWithEmailAndPassword(auth, email, password);
-    return { success: true, user: userCredential.user }; // Return user object if successful
+    const user = userCredential.user;
+
+    if (!user.emailVerified) {
+      await sendEmailVerification(user);
+      return {
+        success: false,
+        error: "Please verify your email. A new verification link has been sent.",
+      };
+    }
+
+    return { success: true, user };
   } catch (error) {
-    return { success: false, error: "Please Check Your Email or Password" }; // Return error message if failed
+    return { success: false, error: error.message };
   }
 };
