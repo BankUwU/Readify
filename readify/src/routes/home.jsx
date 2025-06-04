@@ -83,23 +83,16 @@ function Home() {
   }, [user]);
 
   useEffect(() => {
-    const fetchFavorites = async () => {
-      try {
-        const snapshot = await getDocs(collection(db, "users", user.uid, "favorites"));
-        const favoriteIds = snapshot.docs.map((doc) => doc.id);
-        const updatedFavorites = bookreview.map((review) => favoriteIds.includes(review.id));
-        setFavorites(updatedFavorites);
-      } catch (error) {
-        console.error("Error fetching favorites:", error);
-      }
-    };
-
-    if (user) fetchFavorites();
-  }, [bookreview]);
-
-  useEffect(() => {
   let filtered = [...bookreview];
 
+  // Step 1: Filter by selected category
+  if (selectedCategory !== "All") {
+    filtered = filtered.filter(
+      (review) => review.category === selectedCategory
+    );
+  }
+
+  // Step 2: Apply search filter
   if (searchQuery.trim() !== "") {
     const query = searchQuery.toLowerCase();
     const queryParts = query
@@ -112,22 +105,21 @@ function Home() {
       const createdBy = review.createdBy?.toLowerCase() || "";
 
       if (queryParts.length === 2) {
-        // Case: both title and creator are provided, in any order
         return (
           (title.includes(queryParts[0]) && createdBy.includes(queryParts[1])) ||
           (title.includes(queryParts[1]) && createdBy.includes(queryParts[0]))
         );
       } else if (queryParts.length === 1) {
-        // Case: only one search term, match either
         return (
           title.includes(queryParts[0]) || createdBy.includes(queryParts[0])
         );
       } else {
-        return false; // Edge case: no valid search term
+        return false;
       }
     });
   }
 
+  // Step 3: Sort the filtered result
   if (sortOrder === "latest") {
     filtered.sort((a, b) => (b.createdAt || "").localeCompare(a.createdAt || ""));
   } else if (sortOrder === "oldest") {
@@ -135,7 +127,8 @@ function Home() {
   }
 
   setFilteredReviews(filtered);
-  }, [searchQuery, sortOrder, bookreview]);
+}, [searchQuery, sortOrder, selectedCategory, bookreview]);
+
 
   const toggleFavorite = async (index) => {
     if (!user) {
@@ -243,6 +236,13 @@ function Home() {
 
         <div className="flex items-center justify-between mt-8 mb-4">
           <h3 className="text-2xl font-bold text-slate-800">Reviews</h3>
+          <ReviewSearchBar
+            searchQuery={searchQuery}
+            onSearchChange={setSearchQuery}
+            sortOrder={sortOrder}
+            onSortChange={setSortOrder}
+          />
+
           <div className="flex items-center space-x-2">
           <label htmlFor="category" className="text-gray-700 font-medium">Filter By :</label>
           <select
@@ -254,7 +254,7 @@ function Home() {
             <option value="All">All</option>
             <option value="Fiction">Fiction</option>
             <option value="Non-Fiction">Non-fiction</option>
-            <option value="Sci-fi">Sci-fi</option>
+            <option value="Sci-Fi">Sci-Fi</option>
             <option value="Romance">Romance</option>
             <option value="Historail">Historial</option>
             <option value="Others">Others</option>
@@ -264,29 +264,19 @@ function Home() {
         </div>
 
         <div className="grid grid-cols-4 gap-6 mt-4">
-            {bookreview
-            .filter((review) => selectedCategory === "All" || review.category === selectedCategory)
-            .map((review, index) => (
-              <Bookreview
-                key={review.id}
-                review={review}
-                isFavorite={favorites[index]}
-                onToggleFavorite={() => toggleFavorite(index)}
-                onClick={() => setSelectedReview(review)}
-              />
-            ))}
+            {filteredReviews.map((review, index) => (
+  <Bookreview
+    key={review.id}
+    review={review}
+    isFavorite={favorites[bookreview.findIndex((r) => r.id === review.id)]}
+    onToggleFavorite={() => toggleFavorite(index)}
+    onClick={() => setSelectedReview(review)}
+  />
+))}
+
         </div>
         <div className="mt-8">
-          <h3 className="text-2xl font-bold text-slate-800">Reviews</h3>
-
-          <ReviewSearchBar
-            searchQuery={searchQuery}
-            onSearchChange={setSearchQuery}
-            sortOrder={sortOrder}
-            onSortChange={setSortOrder}
-          />
-
-          <div className="min-h-[400px] mt-4">
+          {/* <div className="min-h-[400px] mt-4">
             {filteredReviews.length > 0 ? (
               <div className="grid grid-cols-4 gap-6">
                 {filteredReviews.map((review, index) => (
@@ -302,7 +292,7 @@ function Home() {
             ) : (
               <p className="text-gray-500 text-center mt-10">No reviews found.</p>
             )}
-          </div>
+          </div> */}
 
         {selectedReview && (
           <AllReviewPopup review={selectedReview} onClose={() => setSelectedReview(null)} />
