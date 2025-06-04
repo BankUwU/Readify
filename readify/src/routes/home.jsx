@@ -20,6 +20,8 @@ function Home() {
   const navigate = useNavigate();
   const [showPopup, setShowPopup] = useState(false);
   const [selectedReview, setSelectedReview] = useState(null);
+  const [selectedCategory, setSelectedCategory] = useState("All");
+
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
@@ -201,10 +203,32 @@ function Home() {
           </div>
         </div>
 
-        <div className="mt-8 px-0">
+        <div className="flex items-center justify-between mt-8 mb-4">
           <h3 className="text-2xl font-bold text-slate-800">Reviews</h3>
-          <div className="grid grid-cols-4 gap-6 mt-4">
-            {bookreview.map((review, index) => (
+          <div className="flex items-center space-x-2">
+          <label htmlFor="category" className="text-gray-700 font-medium">Filter By :</label>
+          <select
+            id="category"
+            className="border border-gray-300 rounded-md px-4 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200"
+            value={selectedCategory}
+            onChange={(e) => setSelectedCategory(e.target.value)}
+          >
+            <option value="All">All</option>
+            <option value="Fiction">Fiction</option>
+            <option value="Non-Fiction">Non-fiction</option>
+            <option value="Sci-fi">Sci-fi</option>
+            <option value="Romance">Romance</option>
+            <option value="Historail">Historial</option>
+            <option value="Others">Others</option>
+          </select>
+        </div>
+
+        </div>
+
+        <div className="grid grid-cols-4 gap-6 mt-4">
+            {bookreview
+            .filter((review) => selectedCategory === "All" || review.category === selectedCategory)
+            .map((review, index) => (
               <Bookreview
                 key={review.id}
                 review={review}
@@ -214,7 +238,6 @@ function Home() {
               />
             ))}
           </div>
-        </div>
 
         {selectedReview && (
           <AllReviewPopup review={selectedReview} onClose={() => setSelectedReview(null)} />
