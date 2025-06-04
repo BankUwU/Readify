@@ -26,6 +26,7 @@ function Home() {
   const [selectedReview, setSelectedReview] = useState(null);
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [sortMode, setSortMode] = useState("default");
+  const [itemsPerPage, setItemsPerPage] = useState(4);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
@@ -152,8 +153,24 @@ function Home() {
     }
   };
 
+   useEffect(() => {
+    function updateItemsPerPage() {
+      if (window.innerWidth < 640) { // Tailwind 'sm' breakpoint: 640px
+        setItemsPerPage(2);
+      } else {
+        setItemsPerPage(4);
+      }
+    }
+
+    updateItemsPerPage(); // initial check
+
+    window.addEventListener("resize", updateItemsPerPage);
+
+    return () => window.removeEventListener("resize", updateItemsPerPage);
+  }, []);
+
   const [readingPage, setReadingPage] = useState(0);
-  const itemsPerPage = 4;
+  // const itemsPerPage = 4;
 
   const totalPages = Math.ceil(readingList.length / itemsPerPage);
   const paginatedReadingList = readingList.slice(
@@ -164,7 +181,7 @@ function Home() {
   return (
     <>
       <Header />
-      <div className="p-5 w-[1400px] mx-auto min-w-[1200px]">
+      <div className="p-5 w-full max-w-screen-xl mx-auto">
         {showPopup && (
           <ReadingPopup
             user={user}
@@ -196,7 +213,7 @@ function Home() {
             {totalPages > 1 && readingPage > 0 && (
               <button
                 onClick={() => setReadingPage((prev) => Math.max(prev - 1, 0))}
-                className="absolute left-2 top-1/2 text-gray-500 -translate-y-1/2 bg-gray-300 rounded-full p-[7px] hover:bg-gray-400"
+                className="absolute left-2 top-1/2 text-gray-500 -translate-y-1/2 bg-gray-300 rounded-full p-1 sm:p-[7px] hover:bg-gray-400"
               >
                 <FiChevronLeft size={20} />
               </button>
@@ -218,7 +235,7 @@ function Home() {
             {totalPages > 1 && readingPage < totalPages - 1 && (
               <button
                 onClick={() => setReadingPage((prev) => Math.min(prev + 1, totalPages - 1))}
-                className="absolute right-2 top-1/2 text-gray-500 -translate-y-1/2 bg-gray-300 rounded-full p-[7px] hover:bg-gray-400"
+                className="absolute right-2 top-1/2 text-gray-500 -translate-y-1/2 bg-gray-300 rounded-full p-1 sm:p-[7px] hover:bg-gray-400"
               >
                 <FiChevronRight size={20} />
               </button>
@@ -291,7 +308,7 @@ function Home() {
           </div>
         </div>
 
-        <div className="grid grid-cols-4 gap-6 mt-4 min-h-[260px]">
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-6">
           {filteredReviews.length === 0 ? (
             <div className="col-span-4 text-center text-gray-600 text-lg py-10">
               No reviews found.

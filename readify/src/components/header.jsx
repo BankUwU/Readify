@@ -80,7 +80,7 @@ const Header = () => {
 
   return (
     <>
-      <header className="flex items-center justify-between bg-blue-900 px-5 py-3 h-16 relative z-50">
+      <header className="w-full flex items-center justify-between bg-blue-900 px-5 py-3 h-16 relative z-50">
         {/* Hamburger menu */}
         <div
           className="flex flex-col justify-between h-5 cursor-pointer"
