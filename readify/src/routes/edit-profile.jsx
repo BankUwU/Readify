@@ -189,8 +189,8 @@ function EditProfile() {
           className="w-full object-cover h-[200px]"
         />
 
-        <div className="absolute top-[80px] left-1/2 transform -translate-x-1/2 flex bg-white w-[250px] h-[250px] rounded-full items-center justify-center">
-        <div className="relative w-[230px] h-[230px]">
+        <div className="absolute top-[80px] left-1/2 transform -translate-x-1/2 flex bg-white w-[180px] h-[180px] sm:w-[250px] sm:h-[250px] rounded-full items-center justify-center">
+        <div className="relative w-[160px] h-[160px] sm:w-[230px] sm:h-[230px]">
           <div className="w-full h-full bg-white rounded-full overflow-hidden">
               <img
                 src={previewUrl || defaultProfilePic}
@@ -202,7 +202,7 @@ function EditProfile() {
 
           <label
             onClick={handleEditClick}
-            className="absolute bottom-1 right-6 bg-blue-600 flex rounded-full cursor-pointer shadow-md w-9 h-9 items-center justify-center"
+            className="absolute bottom-1 right-2 sm:right-6 bg-blue-600 flex rounded-full cursor-pointer shadow-md w-9 h-9 items-center justify-center"
           >
             <img
               src={editIcon}
@@ -224,8 +224,8 @@ function EditProfile() {
     </div>
       {showEditInfoPopup && (
         <div className="fixed inset-0 bg-black bg-opacity-40 flex justify-center items-center z-50">
-          <div className="bg-white p-6 rounded-2xl shadow-lg text-center w-full max-w-md">
-            <h2 className="text-2xl font-semibold mb-4">Edit Profile</h2>
+          <div className="bg-white p-4 sm:p-6 mx-4 rounded-2xl shadow-lg text-center w-full max-w-md">
+            <h2 className="text-xl font-semibold mb-4">Edit Profile</h2>
             <div className="mb-4 text-left">
               <label className="block text-sm font-medium">Username</label>
               <input
@@ -269,7 +269,7 @@ function EditProfile() {
         </div>
       )}
 
-      <div className="border relative mt-40 items-center bg-white shadow-xl w-full max-w-2xl grid grid-cols-1 md:grid-cols-2 mx-auto rounded-3xl p-8">
+      <div className="border relative mt-40 items-center bg-white shadow-xl w-[90%] max-w-2xl grid grid-cols-1 md:grid-cols-2 mx-auto rounded-3xl p-8">
           <div>
              <label
               onClick={openEditInfoPopup}
@@ -298,13 +298,13 @@ function EditProfile() {
         <div className="flex flex-col sm:flex-row items-center justify-center mt-10 gap-4 text-white">
           <button
             onClick={() => setShowChangePasswordPopup(true)}
-            className="px-5 py-2 bg-blue-600 hover:bg-blue-700 rounded-xl shadow-md transition duration-300"
+             className="text-sm sm:text-base px-3 py-2 sm:px-5 sm:py-2 bg-blue-600 hover:bg-blue-700 rounded-xl shadow-md transition duration-300"
           >
             Change Password
           </button>
           <button
             onClick={() => setShowDeletePopup(true)}
-            className="px-6 py-2 bg-red-600 hover:bg-red-700 rounded-xl shadow-md transition duration-300"
+            className="text-sm sm:text-base px-5 py-2 sm:px-6 sm:py-2 bg-red-600 hover:bg-red-700 rounded-xl shadow-md transition duration-300"
           >
             Delete Account
           </button>
