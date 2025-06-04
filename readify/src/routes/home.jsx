@@ -10,13 +10,17 @@ import Bookreview from "../components/bookreview";
 import Header from "../components/header";
 import MyReadingList from "../components/myreadinglist";
 import Plus from "../components/plus";
+import ReviewSearchBar from "../components/ReviewSearchBar";
 import { auth, db } from "../config/firebaseConfig";
 
 function Home() {
   const [user, setUser] = useState(null);
-  const [favorites, setFavorites] = useState([false, false]);
+  const [favorites, setFavorites] = useState([]);
   const [readingList, setReadingList] = useState([]);
   const [bookreview, setBookReview] = useState([]);
+  const [filteredReviews, setFilteredReviews] = useState([]);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [sortOrder, setSortOrder] = useState("latest");
   const navigate = useNavigate();
   const [showPopup, setShowPopup] = useState(false);
   const [selectedReview, setSelectedReview] = useState(null);
@@ -32,7 +36,6 @@ function Home() {
 
   useEffect(() => {
     async function fetchReadingList() {
-      // if (!user) return;
       try {
         const snapshot = await getDocs(collection(db, "users", user.uid, "myreading"));
         const booksArray = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
@@ -45,17 +48,14 @@ function Home() {
     async function fetchBookReviews() {
       try {
         const querySnapshot = await getDocs(collection(db, "allreview"));
-        const reviewsArray = [];
-
-        for (const docSnap of querySnapshot.docs) {
+        const reviewsArray = querySnapshot.docs.map((docSnap) => {
           const data = docSnap.data();
-          const review = {
+          return {
             id: docSnap.id,
             ...data,
             photoURL: data.userPhoto || null,
           };
-          reviewsArray.push(review);
-        }
+        });
 
         setBookReview(reviewsArray);
       } catch (error) {
@@ -64,11 +64,9 @@ function Home() {
     }
 
     const fetchFavorites = async () => {
-      // if (!user) return;
       try {
         const snapshot = await getDocs(collection(db, "users", user.uid, "favorites"));
         const favoriteIds = snapshot.docs.map((doc) => doc.id);
-
         const updatedFavorites = bookreview.map((review) => favoriteIds.includes(review.id));
         setFavorites(updatedFavorites);
       } catch (error) {
@@ -77,17 +75,15 @@ function Home() {
     };
 
     fetchBookReviews();
-    
+
     if (user) {
       fetchReadingList();
-      // fetchBookReviews();
       fetchFavorites();
     }
   }, [user]);
 
   useEffect(() => {
     const fetchFavorites = async () => {
-      // if (!user) return;
       try {
         const snapshot = await getDocs(collection(db, "users", user.uid, "favorites"));
         const favoriteIds = snapshot.docs.map((doc) => doc.id);
@@ -97,21 +93,64 @@ function Home() {
         console.error("Error fetching favorites:", error);
       }
     };
+
     if (user) fetchFavorites();
   }, [bookreview]);
 
+  useEffect(() => {
+  let filtered = [...bookreview];
+
+  if (searchQuery.trim() !== "") {
+    const query = searchQuery.toLowerCase();
+    const queryParts = query
+      .split(",")
+      .map((part) => part.trim())
+      .filter((part) => part.length > 0);
+
+    filtered = filtered.filter((review) => {
+      const title = review.title?.toLowerCase() || "";
+      const createdBy = review.createdBy?.toLowerCase() || "";
+
+      if (queryParts.length === 2) {
+        // Case: both title and creator are provided, in any order
+        return (
+          (title.includes(queryParts[0]) && createdBy.includes(queryParts[1])) ||
+          (title.includes(queryParts[1]) && createdBy.includes(queryParts[0]))
+        );
+      } else if (queryParts.length === 1) {
+        // Case: only one search term, match either
+        return (
+          title.includes(queryParts[0]) || createdBy.includes(queryParts[0])
+        );
+      } else {
+        return false; // Edge case: no valid search term
+      }
+    });
+  }
+
+  if (sortOrder === "latest") {
+    filtered.sort((a, b) => (b.createdAt || "").localeCompare(a.createdAt || ""));
+  } else if (sortOrder === "oldest") {
+    filtered.sort((a, b) => (a.createdAt || "").localeCompare(b.createdAt || ""));
+  }
+
+  setFilteredReviews(filtered);
+  }, [searchQuery, sortOrder, bookreview]);
+
   const toggleFavorite = async (index) => {
     if (!user) {
-    navigate("/login");
-    return;
-  }
-  
-    const selectedReview = bookreview[index];
+      navigate("/login");
+      return;
+    }
+
+    const selectedReview = filteredReviews[index];
     const updatedFavorites = [...favorites];
-    updatedFavorites[index] = !updatedFavorites[index];
+    const actualIndex = bookreview.findIndex((r) => r.id === selectedReview.id);
+
+    updatedFavorites[actualIndex] = !updatedFavorites[actualIndex];
     setFavorites(updatedFavorites);
 
-    if (updatedFavorites[index]) {
+    if (updatedFavorites[actualIndex]) {
       await addToFavorites(user.uid, selectedReview);
     } else {
       await removeFromFavorites(user.uid, selectedReview.id);
@@ -162,7 +201,6 @@ function Home() {
               </button>
             )}
 
-            {/* Content */}
             <div className="flex items-center ml-4 overflow-x-auto w-full max-w-full scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-transparent">
               <Plus
                 onClick={() => {
@@ -237,13 +275,42 @@ function Home() {
                 onClick={() => setSelectedReview(review)}
               />
             ))}
+        </div>
+        <div className="mt-8">
+          <h3 className="text-2xl font-bold text-slate-800">Reviews</h3>
+
+          <ReviewSearchBar
+            searchQuery={searchQuery}
+            onSearchChange={setSearchQuery}
+            sortOrder={sortOrder}
+            onSortChange={setSortOrder}
+          />
+
+          <div className="min-h-[400px] mt-4">
+            {filteredReviews.length > 0 ? (
+              <div className="grid grid-cols-4 gap-6">
+                {filteredReviews.map((review, index) => (
+                  <Bookreview
+                    key={review.id}
+                    review={review}
+                    isFavorite={favorites[bookreview.findIndex((r) => r.id === review.id)]}
+                    onToggleFavorite={() => toggleFavorite(index)}
+                    onClick={() => setSelectedReview(review)}
+                  />
+                ))}
+              </div>
+            ) : (
+              <p className="text-gray-500 text-center mt-10">No reviews found.</p>
+            )}
           </div>
 
         {selectedReview && (
           <AllReviewPopup review={selectedReview} onClose={() => setSelectedReview(null)} />
         )}
       </div>
+      </div>
     </>
+    
   );
 }
 
