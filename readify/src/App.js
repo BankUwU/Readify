@@ -1,7 +1,12 @@
 import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
 import './App.css';
+import RequireAdmin from "./components/admin/RequireAdmin";
+import ProtectedRoute from "./components/ProtectedRoutes";
 import Achievement from "./routes/achievement";
-import AddReview from "./routes/addreview";
+import AdminAchievements from "./routes/admin/AdminAchievements";
+import AdminPage from "./routes/admin/AdminPage";
+import AdminRoute from "./routes/admin/AdminRoute";
+import Bookinformation from "./routes/bookinformation";
 import CheckEmail from "./routes/checkemail";
 import EditProfile from "./routes/edit-profile";
 import Favorite from "./routes/favorites";
@@ -13,12 +18,6 @@ import Myreviews from "./routes/myreviews";
 import Profile from "./routes/profile";
 import Register from "./routes/register";
 import Review from "./routes/review";
-import Bookinformation from "./routes/bookinformation";
-import ProtectedRoute from "./components/ProtectedRoutes";
-import AdminRoute from "./routes/admin/AdminRoute";
-import AdminPage from "./routes/admin/AdminPage";
-import AdminAchievements from "./routes/admin/AdminAchievements";
-import RequireAdmin from "./components/admin/RequireAdmin";
 
 function App() {
   return (
@@ -67,14 +66,6 @@ function App() {
           element={
             <ProtectedRoute>
               <Achievement />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/add-review"
-          element={
-            <ProtectedRoute>
-              <AddReview />
             </ProtectedRoute>
           }
         />

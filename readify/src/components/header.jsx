@@ -1,7 +1,7 @@
 import { onAuthStateChanged, signOut } from "firebase/auth";
 import { doc, getDoc } from "firebase/firestore";
 import { useEffect, useState } from "react";
-import { Link, useNavigate, useLocation } from "react-router-dom"; 
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { auth, db } from "../config/firebaseConfig";
 import defaultProfilePic from "../img/profilepic.png";
 
@@ -175,13 +175,6 @@ const Header = () => {
           onClick={closeSidebar}
         >
           My Reviews
-        </Link>
-        <Link
-          to="/add-review"
-          className="text-blue-900 font-bold px-3 py-2 rounded hover:bg-blue-100"
-          onClick={closeSidebar}
-        >
-          Add Review
         </Link>
         {user && (
           <button
