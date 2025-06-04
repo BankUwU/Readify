@@ -48,7 +48,16 @@ const ReviewPopup = ({ review, onClose }) => {
           {/* Right: Info */}
           <div className="flex flex-col mt-3">
             <h2 className="text-3xl font-bold text-gray-800">{review.title}</h2>
-            <p className="text-sm text-gray-600 mt-1">{review.createdAt || "N/A"}</p>
+<div className="text-gray-500 text-sm mt-1">
+  {review.createdAt
+    ? new Date(review.createdAt.seconds * 1000).toLocaleDateString(undefined, {
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+      }) 
+    : "No date"}
+</div>
+
             <p className="text-sm text-purple-700 mt-1">{review.category}</p>
             <p className="text-sm text-gray-700 mt-[30px] pr-10">{review.review}</p>
           </div>

@@ -4,6 +4,32 @@ import { AnimatePresence, motion } from "framer-motion";
 const AllReviewPopup = ({ review, onClose }) => {
   if (!review) return null;
 
+  const getFormattedDate = (createdAt) => {
+  if (!createdAt) return "N/A";
+
+  // Case 1: Firestore Timestamp object
+  if (createdAt.seconds) {
+    return new Date(createdAt.seconds * 1000).toLocaleDateString(undefined, {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    });
+  }
+
+  // Case 2: JavaScript Date object or ISO string
+  const date = new Date(createdAt);
+  if (!isNaN(date.getTime())) {
+    return date.toLocaleDateString(undefined, {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    });
+  }
+
+  return "Invalid date";
+};
+
+
   return (
     <AnimatePresence>
       <motion.div
@@ -48,7 +74,10 @@ const AllReviewPopup = ({ review, onClose }) => {
           {/* Right: Info */}
           <div className="flex flex-col mt-3">
             <h2 className="text-3xl font-bold text-gray-800">{review.title}</h2>
-            <p className="text-sm text-gray-600 mt-1">{review.createdAt || "N/A"}</p>
+            <p className="text-sm text-gray-600 mt-1">
+              {getFormattedDate(review.createdAt)}
+            </p>
+
             <p className="text-sm text-purple-700 mt-1">{review.category}</p>
             <p className="text-sm text-gray-700 mt-[30px] pr-10">{review.review}</p>
             <div className="flex items-center  mt-8">
