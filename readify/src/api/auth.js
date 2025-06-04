@@ -1,4 +1,5 @@
 import { sendEmailVerification, signInWithEmailAndPassword } from "firebase/auth";
+import { useAuthState } from "react-firebase-hooks/auth";
 import { auth } from "../config/firebaseConfig";
 
 export const loginWithEmailAndPassword = async (email, password) => {
@@ -18,4 +19,9 @@ export const loginWithEmailAndPassword = async (email, password) => {
   } catch (error) {
     return { success: false, error: error.message };
   }
+  
+};
+export const useAuth = () => {
+  const [user] = useAuthState(auth);
+  return { currentUser: user };
 };
