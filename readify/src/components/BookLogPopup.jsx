@@ -65,7 +65,7 @@ function BookLogPopup({ reading, user, onClose, refresh }) {
       pagesRead: readCount,
       newCurrentPage: currentPage,
       progress,
-      note: readingNote || "", 
+      note: readingNote || "",
     };
 
     try {
@@ -80,12 +80,11 @@ function BookLogPopup({ reading, user, onClose, refresh }) {
       if (progress === 100) {
         const statRef = doc(db, `users/${user.uid}/stats/progress`);
         await setDoc(statRef, { totalRead: increment(1) }, { merge: true });
-        setShowReviewPrompt(true);
+        setShowReviewPrompt(true); // show review choice
       } else {
-        onClose();
+        onClose(); // close immediately
+        refresh(); // only if user logged progress
       }
-
-      refresh();
     } catch (error) {
       console.error("Error logging reading:", error);
       alert("Failed to save log.");
@@ -122,7 +121,8 @@ function BookLogPopup({ reading, user, onClose, refresh }) {
       await setDoc(statRef, { totalReviews: increment(1) }, { merge: true });
 
       setShowReviewForm(false);
-      onClose();
+      onClose(); // Close popup after review
+      refresh(); // Refresh after review saved
     } catch (err) {
       console.error("🔥 Error in saveReview:", err.message, err);
       alert("Failed to save review.");
@@ -157,9 +157,10 @@ function BookLogPopup({ reading, user, onClose, refresh }) {
               rows={3}
             />
 
-
             <div className="flex justify-end gap-3">
-              <button type="button" onClick={onClose} className="text-gray-600">Cancel</button>
+              <button type="button" onClick={() => onClose(false)} className="text-gray-600">
+                Cancel
+              </button>
               <button type="submit" disabled={loading} className="bg-blue-600 text-white px-4 py-2 rounded">
                 {loading ? "Saving..." : "Log"}
               </button>
@@ -177,7 +178,7 @@ function BookLogPopup({ reading, user, onClose, refresh }) {
               <button
                 onClick={() => {
                   setShowReviewPrompt(false);
-                  onClose();
+                  onClose(false); // This won't call refresh()
                 }}
                 className="text-gray-600"
               >
@@ -242,3 +243,4 @@ function BookLogPopup({ reading, user, onClose, refresh }) {
 }
 
 export default BookLogPopup;
+
