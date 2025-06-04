@@ -269,7 +269,7 @@ function Home() {
           </div>
         </div>
 
-        <div className="grid grid-cols-4 gap-6 mt-4 min-h-[300px]">
+        <div className="grid grid-cols-4 gap-6 mt-4 min-h-[260px]">
           {filteredReviews.length === 0 ? (
             <div className="col-span-4 text-center text-gray-600 text-lg py-10">
               No reviews found.
