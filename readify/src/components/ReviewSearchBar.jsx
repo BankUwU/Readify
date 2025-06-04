@@ -1,10 +1,10 @@
-const ReviewSearchBar = ({ searchQuery, onSearchChange }) => {
+const ReviewSearchBar = ({ searchQuery, onSearchChange, className }) => {
   return (
     <div className="flex justify-center items-center mt-4 mb-2">
       <input
         type="text"
         placeholder="Search by Book Title or User..."
-        className="border border-gray-300 rounded-md px-4 py-2 w-[70%] focus:outline-none focus:ring-2 focus:ring-blue-400"
+        className={`border border-gray-300 rounded-md px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200 ${className}`}
         value={searchQuery}
         onChange={(e) => onSearchChange(e.target.value)}
       />
