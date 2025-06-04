@@ -32,11 +32,23 @@ function Myreviews() {
     try {
       const reviewsRef = collection(db, "users", currentUser.uid, "reviews");
       const snapshot = await getDocs(reviewsRef);
-      const userReviews = snapshot.docs.map((doc) => ({
-        reviewId: doc.id,
-        userId: currentUser.uid,
-        ...doc.data(),
-      }));
+      const userReviews = snapshot.docs
+        .map((doc) => ({
+          reviewId: doc.id,
+          userId: currentUser.uid,
+          ...doc.data(),
+        }))
+        .sort((a, b) => {
+          // Sort by createdAt (newest first)
+          const dateA = a.createdAt?.seconds
+            ? new Date(a.createdAt.seconds * 1000)
+            : new Date(0);
+          const dateB = b.createdAt?.seconds
+            ? new Date(b.createdAt.seconds * 1000)
+            : new Date(0);
+          return dateB - dateA; // descending
+        });
+
       setReviews(userReviews);
     } catch (error) {
       console.error("Error fetching reviews:", error);
@@ -96,9 +108,6 @@ function Myreviews() {
                   <h4 className="text-md mt-1 text-purple-700 mb-2">
                     {review.category}
                   </h4>
-                  <p className="text-sm text-gray-500">
-                    by {review.displayName || "Unknown"}
-                  </p>
                 </div>
 
                 <div className="absolute gap-2 top-6 right-4">

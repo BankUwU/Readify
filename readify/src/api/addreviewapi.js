@@ -29,8 +29,8 @@ export const saveReview = async (reviewData, imageFile, user) => {
   try {
     const imageUrl = await uploadToCloudinary(imageFile);
 
-    // Format date only (e.g., May 27, 2025)
-    const date = new Date().toLocaleDateString("en-US", {
+    const now = new Date();
+    const displayDate = now.toLocaleDateString("en-US", {
       year: "numeric",
       month: "short",
       day: "numeric",
@@ -40,7 +40,8 @@ export const saveReview = async (reviewData, imageFile, user) => {
       title: reviewData.title,
       category: reviewData.category,
       review: reviewData.review,
-      createdAt: date,
+      createdAt: now, 
+      displayDate: displayDate,
       books_pics_url: imageUrl,
       uid: user.uid,
       createdBy: user.displayName || "Anonymous",

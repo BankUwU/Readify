@@ -63,6 +63,10 @@ function Home() {
             id: docSnap.id,
             ...data,
             photoURL: data.userPhoto || null,
+            createdAt: (data.createdAt && typeof data.createdAt.toDate === "function")
+  ? data.createdAt.toDate()
+  : new Date(0),
+
           };
         });
 
@@ -239,7 +243,7 @@ function Home() {
         <div className="mt-8">
           <h3 className="text-2xl font-bold text-slate-800 mb-2">Reviews</h3>
           <div className="flex flex-wrap gap-4 items-center mb-4">
-            <ReviewSearchBar searchQuery={searchQuery} onSearchChange={setSearchQuery} className="w-[500px]" />
+            <ReviewSearchBar searchQuery={searchQuery} onSearchChange={setSearchQuery} className="w-[600px]" />
 
             <label htmlFor="category" className="text-gray-700 font-medium">Filter By :</label>
             <select
