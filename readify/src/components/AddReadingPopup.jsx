@@ -2,6 +2,7 @@ import { doc, setDoc } from "firebase/firestore";
 import { useState } from "react";
 import { v4 as uuidv4 } from "uuid";
 import { db } from "../config/firebaseConfig";
+import { serverTimestamp } from "firebase/firestore";
 
 const CLOUD_NAME = "djxipn8kj";
 const UPLOAD_PRESET = "Readify";
@@ -67,6 +68,8 @@ function ReadingPopup({ user, onClose, onReadingAdded }) {
       title,
       booksCover,
       createDate,
+      createdAt: new Date(),
+      // createdAt: serverTimestamp(),
       category: finalCategory,
       numberOfPage: parseInt(numberOfPage, 10),
       progress: 0,

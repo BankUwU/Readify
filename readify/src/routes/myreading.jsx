@@ -37,10 +37,21 @@ function MyReading() {
   }, []);
 
   const fetchReadingList = async (uid) => {
-    const snapshot = await getDocs(collection(db, "users", uid, "myreading"));
-    const list = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
-    setReadingList(list);
-  };
+  const snapshot = await getDocs(collection(db, "users", uid, "myreading"));
+  const list = snapshot.docs.map((doc) => {
+    const data = doc.data();
+    return {
+      id: doc.id,
+      ...data,
+      createdAt: data.createdAt?.toDate?.() || new Date(0),
+    };
+  });
+
+  // Sort newest to oldest
+  list.sort((a, b) => b.createdAt - a.createdAt);
+  setReadingList(list);
+};
+
 
   const handleReadingAdded = () => {
     fetchReadingList(user.uid);
