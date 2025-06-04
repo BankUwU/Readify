@@ -1,3 +1,4 @@
+// [Imports remain unchanged]
 import { onAuthStateChanged } from "firebase/auth";
 import { collection, getDocs } from "firebase/firestore";
 import { useEffect, useState } from "react";
@@ -24,8 +25,7 @@ function Home() {
   const [showPopup, setShowPopup] = useState(false);
   const [selectedReview, setSelectedReview] = useState(null);
   const [selectedCategory, setSelectedCategory] = useState("All");
-  const [sortMode, setSortMode] = useState("default"); 
-
+  const [sortMode, setSortMode] = useState("default");
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
@@ -83,52 +83,41 @@ function Home() {
   }, [user]);
 
   useEffect(() => {
-  let filtered = [...bookreview];
+    let filtered = [...bookreview];
 
-  // Step 1: Filter by selected category
-  if (selectedCategory !== "All") {
-    filtered = filtered.filter(
-      (review) => review.category === selectedCategory
-    );
-  }
+    if (selectedCategory !== "All") {
+      filtered = filtered.filter((review) => review.category === selectedCategory);
+    }
 
-  // Step 2: Apply search filter
-  if (searchQuery.trim() !== "") {
-    const query = searchQuery.toLowerCase();
-    const queryParts = query
-      .split(",")
-      .map((part) => part.trim())
-      .filter((part) => part.length > 0);
+    if (searchQuery.trim() !== "") {
+      const query = searchQuery.toLowerCase();
+      const queryParts = query.split(",").map((part) => part.trim()).filter((part) => part.length > 0);
 
-    filtered = filtered.filter((review) => {
-      const title = review.title?.toLowerCase() || "";
-      const createdBy = review.createdBy?.toLowerCase() || "";
+      filtered = filtered.filter((review) => {
+        const title = review.title?.toLowerCase() || "";
+        const createdBy = review.createdBy?.toLowerCase() || "";
 
-      if (queryParts.length === 2) {
-        return (
-          (title.includes(queryParts[0]) && createdBy.includes(queryParts[1])) ||
-          (title.includes(queryParts[1]) && createdBy.includes(queryParts[0]))
-        );
-      } else if (queryParts.length === 1) {
-        return (
-          title.includes(queryParts[0]) || createdBy.includes(queryParts[0])
-        );
-      } else {
-        return false;
-      }
-    });
-  }
+        if (queryParts.length === 2) {
+          return (
+            (title.includes(queryParts[0]) && createdBy.includes(queryParts[1])) ||
+            (title.includes(queryParts[1]) && createdBy.includes(queryParts[0]))
+          );
+        } else if (queryParts.length === 1) {
+          return title.includes(queryParts[0]) || createdBy.includes(queryParts[0]);
+        } else {
+          return false;
+        }
+      });
+    }
 
-  if (sortMode === "newest") {
-  filtered.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-} else if (sortMode === "oldest") {
-  filtered.sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
-}
+    if (sortMode === "newest") {
+      filtered.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+    } else if (sortMode === "oldest") {
+      filtered.sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
+    }
 
-
-  setFilteredReviews(filtered);
-}, [searchQuery, selectedCategory, bookreview, sortMode]);
-
+    setFilteredReviews(filtered);
+  }, [searchQuery, selectedCategory, bookreview, sortMode]);
 
   const toggleFavorite = async (index) => {
     if (!user) {
@@ -184,7 +173,6 @@ function Home() {
             className="relative rounded-2xl bg-blue-100 mt-2 p-4 min-h-[200px] overflow-hidden"
             style={{ boxShadow: "0 10px 15px -5px rgba(0, 0, 0, 0.2)" }}
           >
-            {/* Left Arrow */}
             {totalPages > 1 && readingPage > 0 && (
               <button
                 onClick={() => setReadingPage((prev) => Math.max(prev - 1, 0))}
@@ -207,7 +195,6 @@ function Home() {
               <MyReadingList readingList={paginatedReadingList} />
             </div>
 
-            {/* Right Arrow */}
             {totalPages > 1 && readingPage < totalPages - 1 && (
               <button
                 onClick={() => setReadingPage((prev) => Math.min(prev + 1, totalPages - 1))}
@@ -217,7 +204,6 @@ function Home() {
               </button>
             )}
 
-            {/* Pagination Dots */}
             {totalPages > 1 && (
               <div className="flex justify-center space-x-2 cursor-pointer mt-4">
                 {Array.from({ length: totalPages }).map((_, i) => (
@@ -234,31 +220,27 @@ function Home() {
           </div>
         </div>
 
-        <div className="flex items-center justify-between mt-8 mb-4">
-          <h3 className="text-2xl font-bold text-slate-800">Reviews</h3>
-          <div className="flex-grow">
-            <ReviewSearchBar
-              searchQuery={searchQuery}
-              onSearchChange={setSearchQuery}
-            />
-          </div>
+        <div className="mt-8">
+          <h3 className="text-2xl font-bold text-slate-800 mb-2">Reviews</h3>
+          <div className="flex flex-wrap gap-4 items-center mb-4">
+            <ReviewSearchBar searchQuery={searchQuery} onSearchChange={setSearchQuery} className="w-[500px]" />
 
-          <div className="flex items-center space-x-2">
-          <label htmlFor="category" className="text-gray-700 font-medium">Filter By :</label>
-          <select
-            id="category"
-            className="border border-gray-300 rounded-md px-4 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200"
-            value={selectedCategory}
-            onChange={(e) => setSelectedCategory(e.target.value)}
-          >
-            <option value="All">All</option>
-            <option value="Fiction">Fiction</option>
-            <option value="Non-Fiction">Non-fiction</option>
-            <option value="Sci-Fi">Sci-Fi</option>
-            <option value="Romance">Romance</option>
-            <option value="Historail">Historial</option>
-            <option value="Others">Others</option>
-          </select>
+            <label htmlFor="category" className="text-gray-700 font-medium">Filter By :</label>
+            <select
+              id="category"
+              className="border border-gray-300 rounded-md px-4 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200"
+              value={selectedCategory}
+              onChange={(e) => setSelectedCategory(e.target.value)}
+            >
+              <option value="All">All</option>
+              <option value="Fiction">Fiction</option>
+              <option value="Non-Fiction">Non-fiction</option>
+              <option value="Sci-Fi">Sci-Fi</option>
+              <option value="Romance">Romance</option>
+              <option value="Historail">Historial</option>
+              <option value="Others">Others</option>
+            </select>
+
             <button
               onClick={() =>
                 setSortMode((prev) => (prev === "newest" ? "default" : "newest"))
@@ -284,29 +266,32 @@ function Home() {
             >
               Oldest
             </button>
+          </div>
         </div>
 
-        </div>
-
-        <div className="grid grid-cols-4 gap-6 mt-4">
-            {filteredReviews.map((review, index) => (
-            <Bookreview
-              key={review.id}
-              review={review}
-              isFavorite={favorites[bookreview.findIndex((r) => r.id === review.id)]}
-              onToggleFavorite={() => toggleFavorite(index)}
-              onClick={() => setSelectedReview(review)}
-            />
-          ))}
+        <div className="grid grid-cols-4 gap-6 mt-4 min-h-[300px]">
+          {filteredReviews.length === 0 ? (
+            <div className="col-span-4 text-center text-gray-600 text-lg py-10">
+              No reviews found.
+            </div>
+          ) : (
+            filteredReviews.map((review, index) => (
+              <Bookreview
+                key={review.id}
+                review={review}
+                isFavorite={favorites[bookreview.findIndex((r) => r.id === review.id)]}
+                onToggleFavorite={() => toggleFavorite(index)}
+                onClick={() => setSelectedReview(review)}
+              />
+            ))
+          )}
 
           {selectedReview && (
-          <AllReviewPopup review={selectedReview} onClose={() => setSelectedReview(null)} />
-        )}
-
+            <AllReviewPopup review={selectedReview} onClose={() => setSelectedReview(null)} />
+          )}
         </div>
       </div>
     </>
-    
   );
 }
 
