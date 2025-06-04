@@ -36,14 +36,23 @@ function Home() {
 
   useEffect(() => {
     async function fetchReadingList() {
-      try {
-        const snapshot = await getDocs(collection(db, "users", user.uid, "myreading"));
-        const booksArray = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
-        setReadingList(booksArray);
-      } catch (error) {
-        console.error("Error fetching reading list:", error);
-      }
+    try {
+      const snapshot = await getDocs(collection(db, "users", user.uid, "myreading"));
+      const booksArray = snapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+        createdAt: doc.data().createdAt?.toDate() || new Date(0), // Convert Firestore Timestamp to JS Date
+      }));
+
+      // Sort by date (oldest first)
+      booksArray.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+
+      setReadingList(booksArray);
+    } catch (error) {
+      console.error("Error fetching reading list:", error);
     }
+  }
+
 
     async function fetchBookReviews() {
       try {
@@ -158,7 +167,14 @@ function Home() {
             onClose={() => setShowPopup(false)}
             onReadingAdded={async () => {
               const snapshot = await getDocs(collection(db, "users", user.uid, "myreading"));
-              const booksArray = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+              const booksArray = snapshot.docs.map((doc) => ({
+                id: doc.id,
+                ...doc.data(),
+                createdAt: doc.data().createdAt?.toDate() || new Date(0),
+              }));
+
+              booksArray.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+
               setReadingList(booksArray);
             }}
           />
