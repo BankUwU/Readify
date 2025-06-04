@@ -222,10 +222,12 @@ function EditPopup({ review, onClose, onSave, onDelete, showToast }) {
           value={category}
           onChange={(e) => setCategory(e.target.value)}
         >
-          <option value="fiction">Fiction</option>
-          <option value="non-fiction">Non-Fiction</option>
-          <option value="sci-fi">Sci-Fi</option>
-          <option value="thriller">Thriller</option>
+          <option value="Fiction">Fiction</option>
+          <option value="Non-Fiction">Non-Fiction</option>
+          <option value="Sci-Fi">Sci-Fi</option>
+          <option value="Romance">Romance</option>
+          <option value="Historail">Historial</option>
+          <option value="Others">Others</option>
         </select>
 
         <label>Review</label>
