@@ -155,7 +155,7 @@ function Achievement() {
               <div
                 key={ach.id}
                 className={`bg-white p-4 rounded-lg shadow flex flex-col gap-2 ${
-                  isCompleted ? "border-l-8 border-green-400" : ""
+                  isCompleted ? "border-l-8 border-green-600" : ""
                 }`}
               >
                 <div className="flex justify-between items-start">
@@ -175,9 +175,9 @@ function Achievement() {
                 </div>
 
                 {/* Progress Bar */}
-                <div className="w-full bg-gray-200 rounded-full h-3">
+                <div className="w-full bg-gray-200 rounded-full h-2">
                   <div
-                    className="bg-blue-500 h-3 rounded-full transition-all duration-500"
+                    className="bg-blue-500 h-2 rounded-full transition-all duration-500"
                     style={{ width: `${percent}%` }}
                   ></div>
                 </div>

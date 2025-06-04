@@ -8,7 +8,7 @@ import DeleteAccountPopup from "../components/DeleteAccountPopup";
 import Header from "../components/header";
 import { auth, db } from "../config/firebaseConfig";
 import editIcon from "../img/edit-icon.png";
-import Longbg from "../img/longbg.jpg";
+import Longbg from "../img/longbg.webp";
 import defaultProfilePic from "../img/profilepic.png";
 import Toast from "../components/Toast"; 
 

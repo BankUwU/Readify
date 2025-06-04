@@ -2,6 +2,9 @@ import { sendEmailVerification } from "firebase/auth";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { registerUser } from "../api/registerapi";
+import Registerbg from "../img/registerbg.png";
+import ReadifyLogo from "../img/Readify_Logo.png";
+
 
 function Register() {
   const [email, setEmail] = useState("");
@@ -36,25 +39,30 @@ function Register() {
   return (
     <div className="flex h-screen overflow-hidden">
       {/* Left Side with Animated Gradient */}
-      <div className="w-1/2 bg-gradient-to-br from-blue-400 via-indigo-400 to-purple-500 animate-gradient-x flex flex-col justify-center items-center p-8 text-white">
-        <h1 className="text-5xl font-bold mb-4 animate-bounce">Readify</h1>
-        <p className="mb-4 text-lg">Already have an account?</p>
-        <button
-          className="px-6 py-2 border border-white text-white rounded hover:bg-white hover:text-blue-600 transition duration-300"
-          onClick={() => navigate("/login")}
-        >
-          Login
-        </button>
+      <div className="w-1/2 relative flex flex-col justify-center items-center text-white">
+      <img
+        src={Registerbg}
+        alt="background"
+        className="h-full object-cover"
+      />
       </div>
 
       {/* Right Side with Fade-in Form */}
       <div className="w-1/2 flex justify-center items-center p-8 bg-white animate-slide-in-right">
-        <div className="w-full max-w-md">
+        <div className="w-full max-w-md bg-gray-50 shadow-xl rounded-xl p-8">
           <form
             onSubmit={handleRegister}
-            className="space-y-5 animate-fade-in-up"
+            className="space-y-4 animate-fade-in-up"
           >
-            <h2 className="text-3xl font-bold text-center mb-6 text-gray-700">
+            <div className="flex justify-center">
+          <img
+            src={ReadifyLogo}
+            alt="background"
+            className="h-[90px] w-[110px] object-cover"
+          />
+                </div>
+            {/* <h1 className="text-4xl font-bold text-center text-gray-700 mb-4">Readify</h1> */}
+            <h2 className="text-2xl font-semibold text-center mt-0 text-gray-700">
               Create Account
             </h2>
 
@@ -109,9 +117,19 @@ function Register() {
               disabled={loading}
               className="w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-600 transition duration-300 disabled:opacity-50"
             >
-              {loading ? "Registering..." : "Register"}
+              Register
             </button>
           </form>
+
+          <div className="mt-6 text-center text-sm text-gray-600">
+              Already have an account?{" "}
+              <button
+                onClick={() => navigate("/login")}
+                className="text-blue-600 hover:underline font-medium"
+              >
+                Login
+              </button>
+            </div>
         </div>
       </div>
     </div>

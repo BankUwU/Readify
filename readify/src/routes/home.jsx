@@ -99,6 +99,11 @@ function Home() {
   }, [bookreview]);
 
   const toggleFavorite = async (index) => {
+    if (!user) {
+    navigate("/login");
+    return;
+  }
+  
     const selectedReview = bookreview[index];
     const updatedFavorites = [...favorites];
     updatedFavorites[index] = !updatedFavorites[index];
