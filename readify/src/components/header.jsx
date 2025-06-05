@@ -9,6 +9,7 @@ import defaultProfilePic from "../img/profilepic.png";
 const Header = () => {
   const [user, setUser] = useState(() => auth.currentUser);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [userRole, setUserRole] = useState(null);
   const navigate = useNavigate(); 
   const location = useLocation();
 
@@ -43,6 +44,7 @@ const Header = () => {
           displayName: userData.username || currentUser.displayName,
           photoURL: userData.photoURL || currentUser.photoURL || null,
         });
+        setUserRole(userData.role || null); 
       } else {
         setUser({
           ...currentUser,
@@ -178,6 +180,17 @@ const Header = () => {
         >
           My Reviews
         </Link>
+
+        {userRole === "admin" && (
+          <Link
+            to="/admin/achievements"
+            className="text-blue-900 font-bold px-3 py-2 rounded hover:bg-blue-100"
+            onClick={closeSidebar}
+          >
+            Manage Achievements
+          </Link>
+        )}
+
         </div>
 
         {user && (
