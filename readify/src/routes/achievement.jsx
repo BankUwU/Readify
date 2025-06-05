@@ -46,7 +46,6 @@ function Achievement() {
     const auth = getAuth();
     const unsubscribeAuth = onAuthStateChanged(auth, async (currentUser) => {
       if (!currentUser) {
-        alert("Please login to continue.");
         navigate("/login");
       } else {
         setUser(currentUser);

@@ -6,11 +6,11 @@ import { useNavigate } from "react-router-dom";
 import ChangePasswordPopup from "../components/ChangePasswordPopup";
 import DeleteAccountPopup from "../components/DeleteAccountPopup";
 import Header from "../components/header";
+import Toast from "../components/Toast";
 import { auth, db } from "../config/firebaseConfig";
 import editIcon from "../img/edit-icon.png";
 import Longbg from "../img/longbg.webp";
 import defaultProfilePic from "../img/profilepic.png";
-import Toast from "../components/Toast"; 
 
 
 
@@ -57,7 +57,6 @@ function EditProfile() {
           setEmail(currentUser.email || "");
         }
       } else {
-        alert("Please Login to continue");
         navigate("/login", { replace: true });
       }
     });
