@@ -1,17 +1,19 @@
 import { onAuthStateChanged } from "firebase/auth";
 import { collection, getDocs } from "firebase/firestore";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
+import { FaStar } from "react-icons/fa";
+import { removeFromFavorites } from "../api/favorites";
+import AllReviewPopup from "../components/AllReviewPopup"; // ✅ import the popup
 import Header from "../components/header";
 import { auth, db } from "../config/firebaseConfig";
-import { removeFromFavorites } from "../api/favorites"; 
-import { FaStar } from "react-icons/fa";
 
 function Favorite() {
   const [reviews, setReviews] = useState([]);
   const [loading, setLoading] = useState(true);
   const [user, setUser] = useState(null);
   const [removingId, setRemovingId] = useState(null);
-
+  const [showPopup, setShowPopup] = useState(false);
+  const [selectedReview, setSelectedReview] = useState(null);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
@@ -62,6 +64,10 @@ function Favorite() {
     }
   };
 
+  const handleCardClick = (review) => {
+    setSelectedReview(review);
+    setShowPopup(true);
+  };
 
   return (
     <>
@@ -78,6 +84,7 @@ function Favorite() {
             {reviews.map((review) => (
               <div
                 key={review.id}
+                onClick={() => handleCardClick(review)}
                 className="relative flex flex-row p-5 bg-white shadow hover:shadow-lg transition cursor-pointer rounded-3xl"
               >
                 <img
@@ -116,6 +123,17 @@ function Favorite() {
               </div>
             ))}
           </div>
+        )}
+
+        {/* ✅ Review detail popup */}
+        {showPopup && selectedReview && (
+          <AllReviewPopup
+            review={selectedReview}
+            onClose={() => {
+              setShowPopup(false);
+              setSelectedReview(null);
+            }}
+          />
         )}
       </div>
     </>
